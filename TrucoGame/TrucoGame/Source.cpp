@@ -1,4 +1,5 @@
-#include "afxwin.h"
+﻿#include "afxwin.h"
+#include <tuple>
 
 class CMyApp : public CWinApp {
 public:
@@ -7,23 +8,34 @@ public:
 
 class CMyWnd : public CFrameWnd {
 private:
-	CEdit edit;
-	CButton button;
+	CEdit playerOneEdit, playerTwoEdit;
+	CButton startButton;
+	CStatic titleLabel, playerOneLabel, playerTwoLabel;
 
 public:
 	CMyWnd() {
-		Create(NULL, _T("Windows MFC"), WS_OVERLAPPEDWINDOW, CRect(100, 100, 1200, 800));
+		Create(NULL, _T("Truco Game"), WS_OVERLAPPEDWINDOW, CRect(100, 100, 1300, 800));
 
-		edit.Create(WS_CHILD | WS_BORDER | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-			CRect(50, 50, 450, 250), this, 1);
+		titleLabel.Create(_T("♣♠ TRUCO ♠♣"), WS_CHILD | WS_VISIBLE | SS_CENTER, CRect(240, 100, 960, 200), this);
 
-		button.Create(_T("Enviar"), WS_CHILD | WS_VISIBLE, CRect(470, 220, 570, 250), this, 2);
+		CFont* titleFont = new CFont;
+		titleFont->CreatePointFont(800, _T("Arial"));
+		titleLabel.SetFont(titleFont);
+
+		playerOneLabel.Create(_T("Jogador 1:"), WS_CHILD | WS_VISIBLE, CRect(240, 300, 310, 320), this);
+		playerOneEdit.Create(WS_CHILD | WS_BORDER | WS_VISIBLE, CRect(310, 300, 450, 320), this, 1);
+
+		playerTwoLabel.Create(_T("Jogador 2:"), WS_CHILD | WS_VISIBLE, CRect(240, 330, 310, 350), this);
+		playerTwoEdit.Create(WS_CHILD | WS_BORDER | WS_VISIBLE, CRect(310, 330, 450, 350), this, 2);
+
+		startButton.Create(_T("Jogar"), WS_CHILD | WS_VISIBLE, CRect(550, 450, 650, 480), this, 3);
 	}
 
-	CString getEditText() {
-		CString textString;
-		edit.GetWindowText(textString);
-		return textString;
+	std::tuple<bool, bool> checkIfPlayerNamesAreEmpty() {
+		CString playerOneName, playerTwoName;
+		playerOneEdit.GetWindowText(playerOneName);
+		playerTwoEdit.GetWindowText(playerTwoName);
+		return std::make_tuple(playerOneName.Trim().IsEmpty(), playerTwoName.Trim().IsEmpty());
 	}
 
 	afx_msg void OnButtonClicked();
@@ -38,12 +50,16 @@ BOOL CMyApp::InitInstance() {
 }
 
 BEGIN_MESSAGE_MAP(CMyWnd, CFrameWnd)
-	ON_COMMAND(2, OnButtonClicked)
+	ON_COMMAND(3, OnButtonClicked)
 END_MESSAGE_MAP()
 
 void CMyWnd::OnButtonClicked() {
-	CString editText = getEditText();
-	AfxMessageBox(editText);
+	bool isPlayerOneEmpty, isPlayerTwoEmpty;
+
+	std::tie(isPlayerOneEmpty, isPlayerTwoEmpty) = checkIfPlayerNamesAreEmpty();
+
+	if (isPlayerOneEmpty || isPlayerTwoEmpty)
+		AfxMessageBox(L"Por favor, preencha os nomes dos jogadores antes de iniciar a partida!");
 }
 
 CMyApp mfcApp;
