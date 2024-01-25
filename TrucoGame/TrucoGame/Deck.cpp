@@ -32,3 +32,11 @@ Card Deck::DrawCard() {
 void Deck::AddCard(Card& card) {
 	cards.push_back(card);
 }
+
+std::vector<Card> Deck::DrawHand() {
+	std::vector<Card> hand = std::vector<Card>();
+	hand.push_back(DrawCard());
+	hand.push_back(DrawCard());
+	hand.push_back(DrawCard());
+	return hand;
+}

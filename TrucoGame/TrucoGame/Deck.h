@@ -16,4 +16,5 @@ public:
 	void Shuffle();
 	Card DrawCard();
 	void AddCard(Card& card);
+	std::vector<Card> DrawHand();
 };

@@ -6,6 +6,10 @@ Card::Card(std::string inputValue, std::string inputType)
 	type = inputType;
 }
 
+Card::Card() {
+
+}
+
 std::string Card::GetValue() {
 	return value;
 }

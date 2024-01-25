@@ -9,6 +9,7 @@ private:
 
 public:
 	Card(std::string inputValue, std::string inputType);
+	Card();
 
 	enum Type { SPADES, HEARTS, DIAMONDS, CLUBS };
 	enum Value { TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE };
