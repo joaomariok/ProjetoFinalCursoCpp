@@ -5,11 +5,6 @@
 
 class Player
 {
-private:
-	std::string name;
-	int score;
-	std::vector<Card> hand;
-
 public:
 	Player(std::string inputName);
 	std::string GetName();
@@ -20,4 +15,9 @@ public:
 
 	/*void PrintHand();
 	void Truco();*/
+
+private:
+	std::string name;
+	int score;
+	std::vector<Card> hand;
 };

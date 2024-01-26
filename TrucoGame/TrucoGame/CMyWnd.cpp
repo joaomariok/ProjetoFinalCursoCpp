@@ -43,5 +43,5 @@ void CMyWnd::OnButtonClicked() {
 	playerOneEdit.GetWindowText(playerOneName);
 	playerTwoEdit.GetWindowText(playerTwoName);
 
-	controller_ = std::make_unique<Controller>(this, std::string(), std::string());
+	controller_ = std::make_unique<Controller>(this, std::string("Player 1"), std::string("Player 2"));
 }

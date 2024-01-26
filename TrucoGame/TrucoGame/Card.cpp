@@ -1,19 +1,17 @@
 #include "Card.h"
 
-Card::Card(std::string inputValue, std::string inputType)
-{
-	value = inputValue;
-	type = inputType;
+Card::Card(Suit inputSuit, Rank inputRank) :
+	suit_(inputSuit), rank_(inputRank) {}
+
+Card::Card() :
+	suit_(Suit::SPADES), rank_(Rank::ACE) {}
+
+Card::~Card() = default;
+
+Card::Suit Card::GetSuit() {
+	return suit_;
 }
 
-Card::Card() {
-
-}
-
-std::string Card::GetValue() {
-	return value;
-}
-
-std::string Card::GetType() {
-	return type;
+Card::Rank Card::GetRank() {
+	return rank_;
 }

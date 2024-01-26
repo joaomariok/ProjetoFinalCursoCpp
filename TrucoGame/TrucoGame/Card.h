@@ -3,18 +3,18 @@
 
 class Card
 {
-private:
-	std::string value;
-	std::string type;
-
 public:
-	Card(std::string inputValue, std::string inputType);
+	enum Suit { SPADES, HEARTS, DIAMONDS, CLUBS };
+	enum Rank { TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE };
+
+	Card(Suit inputSuit, Rank inputRank);
 	Card();
+	~Card();
 
-	enum Type { SPADES, HEARTS, DIAMONDS, CLUBS };
-	enum Value { TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE };
+	Suit GetSuit();
+	Rank GetRank();
 
-	std::string GetValue();
-
-	std::string GetType();
+private:
+	Suit suit_;
+	Rank rank_;
 };

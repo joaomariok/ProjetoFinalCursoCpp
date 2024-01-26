@@ -5,7 +5,6 @@
 #include "Card.h"
 #include "Deck.h"
 #include "Player.h"
-//#include "CMyWnd.h"
 
 class CMyWnd;
 
@@ -13,6 +12,7 @@ class Controller
 {
 public:
 	Controller(CMyWnd* view, std::string player_one_name, std::string player_two_name);
+	~Controller();
 
 	std::vector<Card> GetPlayerHand(Player* player);
 

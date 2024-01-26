@@ -14,3 +14,27 @@ Controller::Controller(CMyWnd* view, std::string player_one_name, std::string pl
 
 	vira_ = deck_->DrawCard();
 }
+
+Controller::~Controller() {
+	view_ = nullptr;
+}
+
+std::vector<Card> Controller::GetPlayerHand(Player* player) {
+	return player->GetHand();
+}
+
+void Controller::PlayCard(Player* player, Card card, bool visible) {
+}
+
+void Controller::Trucar(Player* player, int value) {
+}
+
+void Controller::AcceptTruco(Player* player) {
+}
+
+void Controller::RunFromTruco(Player* player) {
+}
+
+int Controller::GetPlayerScore(Player* player) {
+	return player->GetScore();
+}

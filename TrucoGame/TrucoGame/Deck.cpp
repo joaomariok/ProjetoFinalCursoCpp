@@ -1,22 +1,29 @@
 #include "Deck.h"
 
-Deck::Deck()
-{
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <random>
+#include <ctime>
+
+Deck::Deck() {
 	currentCardIndex = 0;
 	InitializeDeck();
 }
 
 void Deck::InitializeDeck() {
-	/*for (int type = Card::SPADES; type <= Card::CLUBS; ++type) {
-		for (int value = Card::TWO; value <= Card::ACE; ++value) {
-			cards.emplace_back(static_cast<Card::Type>(type), static_cast<Card::Value>(value));
+	for (int suit = Card::SPADES; suit <= Card::CLUBS; ++suit) {
+		for (int rank = Card::TWO; rank <= Card::ACE; ++rank) {
+			cards.emplace_back(static_cast<Card::Suit>(suit), static_cast<Card::Rank>(rank));
 		}
-	}*/
+	}
 }
 
 void Deck::Shuffle() {
 	std::srand(static_cast<unsigned int>(std::time(0)));
-	//std::random_shuffle(cards.begin(), cards.end());
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(cards.begin(), cards.end(), g);
 	currentCardIndex = 0;
 }
 
@@ -26,7 +33,7 @@ Card Deck::DrawCard() {
 	}
 	// Handle out-of-cards situation (e.g., reshuffle or end of the game)
 	// For simplicity, this example does not implement reshuffling.
-	return Card("SPADES", "TWO");
+	return Card(Card::Suit::SPADES, Card::Rank::TWO);
 }
 
 void Deck::AddCard(Card& card) {
