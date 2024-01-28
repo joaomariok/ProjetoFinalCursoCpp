@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-Controller::Controller(CMyWnd* view, std::string player_one_name, std::string player_two_name) :
+Controller::Controller(CMainWnd* view, std::string player_one_name, std::string player_two_name) :
 	view_(view),
 	player_one_(std::make_unique<Player>(player_one_name)),
 	player_two_(std::make_unique<Player>(player_two_name)) {
