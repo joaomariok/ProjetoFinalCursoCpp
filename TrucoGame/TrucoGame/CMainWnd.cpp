@@ -63,5 +63,6 @@ void CMainWnd::OnButtonClicked() {
 	//	}
 	//}
 
-	controller_ = std::make_unique<Controller>(this, std::string("Player 1"), std::string("Player 2"));
+	controller_ = std::make_unique<Controller>(this);
+	controller_->Init(std::string("Player 1"), std::string("Player 2"));
 }
