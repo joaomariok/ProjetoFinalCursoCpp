@@ -161,6 +161,7 @@
     <Image Include="Assets\Background.bmp" />
     <Image Include="Assets\Background2players.bmp" />
     <Image Include="Assets\Background4players.bmp" />
+    <Image Include="Assets\BackgroundMenu.bmp" />
     <Image Include="Assets\CardBack.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

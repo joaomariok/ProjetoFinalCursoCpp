@@ -105,5 +105,8 @@
     <Image Include="Assets\Background4players.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\BackgroundMenu.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
