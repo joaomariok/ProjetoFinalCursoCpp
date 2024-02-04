@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by TrucoGame.rc
 //
+#define WM_CUSTOM_MESSAGE (WM_APP + 1)
 #define IDD_GAMINGVIEW                  101
 #define IDB_BACKGROUND                  102
 #define IDB_CARD_BACK                   103

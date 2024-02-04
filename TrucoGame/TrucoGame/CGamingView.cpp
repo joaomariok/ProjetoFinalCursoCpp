@@ -19,6 +19,12 @@ CGamingView::~CGamingView()
 {
 }
 
+void CGamingView::SetController(int playerNumber_, Controller *controller_)
+{
+	playerNumber = playerNumber_;
+	controller = controller_;
+}
+
 void CGamingView::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -68,32 +74,46 @@ BOOL CGamingView::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	//card_1.ModifyStyle(0, SS_NOTIFY);
-	//card_1.SubclassDlgItem(IDC_CARD_1, this);
-	//CStatic* backgroundImg = (CStatic*)GetDlgItem(IDC_BACKGROUND);
+	/* DIALOG TITLE */
+	CString title;
+	title.Format(_T("Jogador %d"), playerNumber);
+	SetWindowText(title);
 
+	/* BACKGROUND AND PLAYERS INFO*/
+	int numberOfPlayers = controller->GetNumberOfPlayers();
 	CBitmap backgroundBmp;
-	backgroundBmp.LoadBitmap(IDB_BACKGROUND_4PLAYERS);
+	if (numberOfPlayers == 2) {
+		backgroundBmp.LoadBitmap(IDB_BACKGROUND_2PLAYERS);
+		player2_name.ShowWindow(SW_HIDE);
+		player4_name.ShowWindow(SW_HIDE);
+
+		for (int i = 1; i <= numberOfPlayers; ++i) {
+			Player* player = controller->GetPlayer(i);
+			if (player != nullptr) {
+				if (i == playerNumber)
+					player1_name.SetWindowText(CStringW(player->GetName().c_str()));
+				else
+					player3_name.SetWindowText(CStringW(player->GetName().c_str()));
+			}
+		}
+	}
+	else {
+		backgroundBmp.LoadBitmap(IDB_BACKGROUND_4PLAYERS);
+		for (int i = 1; i <= numberOfPlayers; ++i) {
+			Player* player = controller->GetPlayer(i);
+			if (player != nullptr) {
+				CStatic* textComponent = GetViewComponent(i, numberOfPlayers);
+				if (textComponent != nullptr)
+					textComponent->SetWindowText(CStringW(player->GetName().c_str()));
+			}
+		}
+	}
 	backgroundImg.SetBitmap((HBITMAP)backgroundBmp.Detach());
 
+	/* CREATING CLICKABLE CARDS */
 	card_1.Create(_T("Card1"),SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP , CRect(505, 538, 594, 678), this, IDC_CARD_1);
-	card_1.LoadImage(_T("Assets/Diamond07.png"));
 	card_2.Create(_T("Card2"), SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP, CRect(612, 538, 702, 678), this, IDC_CARD_2);
-	card_2.LoadImage(_T("Assets/Diamond07.png"));
 	card_3.Create(_T("Card3"), SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP, CRect(720, 538, 810, 678), this, IDC_CARD_3);
-	card_3.LoadImage(_T("Assets/Diamond07.png"));
-
-	card_p2_1.LoadImage(_T("Assets/CardBackRotated.png"));
-	card_p2_2.LoadImage(_T("Assets/CardBackRotated.png"));
-	card_p2_3.LoadImage(_T("Assets/CardBackRotated.png"));
-
-	card_p3_1.LoadImage(_T("Assets/CardBack2.png"));
-	card_p3_2.LoadImage(_T("Assets/CardBack2.png"));
-	card_p3_3.LoadImage(_T("Assets/CardBack2.png"));
-
-	card_p4_1.LoadImage(_T("Assets/CardBackRotated.png"));
-	card_p4_2.LoadImage(_T("Assets/CardBackRotated.png"));
-	card_p4_3.LoadImage(_T("Assets/CardBackRotated.png"));
 
 	word_truco_p1.LoadImage(_T("Assets/Truco.png"));
 	word_truco_p2.LoadImage(_T("Assets/Truco.png"));
@@ -103,7 +123,7 @@ BOOL CGamingView::OnInitDialog()
 	score_2_img.LoadImage(_T("Assets/Blue.png"));
 	score_3_img.LoadImage(_T("Assets/Red.png"));
 
-	card_manilha.LoadImage(_T("Assets/Club13.png"));
+	LoadCardAsset(&card_manilha, controller->GetVira());
 	card_manilha_back.LoadImage(_T("Assets/CardBackRotated.png"));
 
 	return TRUE;
@@ -112,6 +132,26 @@ BOOL CGamingView::OnInitDialog()
 void CGamingView::OnPaint()
 {
 	CPaintDC dc(this);
+
+	/* PAINT ALL PLAYER CARDS */
+	int numberOfPlayers = controller->GetNumberOfPlayers();
+	for (int i = 1; i <= numberOfPlayers; ++i)
+	{
+		Player* player = controller->GetPlayer(i);
+		if (player != nullptr) {
+			std::vector<Card> cards = player->GetHand();
+			if (i == playerNumber) { //Is the current player, so it must to show its cards
+				LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
+				LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
+				LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
+			}
+			else {
+				LoadCardBackAsset(GetViewComponent(i, numberOfPlayers, 0), cards.size() > 0 ? &cards[0] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetViewComponent(i, numberOfPlayers, 1), cards.size() > 1 ? &cards[1] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetViewComponent(i, numberOfPlayers, 2), cards.size() > 2 ? &cards[2] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+			}
+		}
+	}
 }
 
 void CGamingView::OnBnClickedTrucoBtn()
@@ -125,6 +165,7 @@ void CGamingView::OnBnClickedDesceBtn()
 
 void CGamingView::OnBnClickedPassoBtn()
 {
+	SendMessageToParent();
 }
 
 void CGamingView::OnCard1Clicked()
@@ -144,6 +185,149 @@ void CGamingView::OnCard3Clicked()
 	card_3.ShowWindow(SW_HIDE);
 }
 
+LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
+{
+	//Message received
+	return 0;
+}
+
+void CGamingView::SendMessageToParent()
+{
+	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM("teste"), LPARAM(0));
+}
+
+CStatic* CGamingView::GetViewComponent(int playerIndex, int numberOfPlayers)
+{
+	if (numberOfPlayers == 2) //The position of player 2 is on top
+		return playerNumber == playerIndex ? &player1_name : &player3_name;
+
+	if (numberOfPlayers == 4) { //The position of players respect its index
+		if (playerNumber == playerIndex)
+			return &player1_name;
+		if (playerNumber == 1) {
+			if (playerIndex == 2)
+				return &player2_name;
+			else if (playerIndex == 3)
+				return &player3_name;
+			else if (playerIndex == 4)
+				return &player4_name;
+		}
+		if (playerNumber == 2) {
+			if (playerIndex == 3)
+				return &player2_name;
+			else if (playerIndex == 4)
+				return &player3_name;
+			else if (playerIndex == 1)
+				return &player4_name;
+		}
+	}
+	return nullptr;
+}
+
+CTransparentImage* CGamingView::GetViewComponent(int playerIndex, int numberOfPlayers, int cardIndex)
+{
+	if (numberOfPlayers == 2) //The position of player 2 is on top
+		return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
+	
+	if (numberOfPlayers == 4) { //The position of players respect its index
+		if (playerNumber == 1) {
+			if (playerIndex == 2)
+				return cardIndex == 0 ? &card_p2_1 : cardIndex == 1 ? &card_p2_2 : &card_p2_3;
+			else if (playerIndex == 3)
+				return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
+			else if (playerIndex == 4)
+				return cardIndex == 0 ? &card_p4_1 : cardIndex == 1 ? &card_p4_2 : &card_p4_3;
+		}
+		if (playerNumber == 2) {
+			if (playerIndex == 3)
+				return cardIndex == 0 ? &card_p2_1 : cardIndex == 1 ? &card_p2_2 : &card_p2_3;
+			else if (playerIndex == 4)
+				return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
+			else if (playerIndex == 1)
+				return cardIndex == 0 ? &card_p4_1 : cardIndex == 1 ? &card_p4_2 : &card_p4_3;
+		}
+	}
+	return nullptr;
+}
+
+void CGamingView::LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard)
+{
+	if (cardComponent == nullptr)
+		return;
+
+	if (card == nullptr) {
+		cardComponent->ShowWindow(SW_HIDE);
+		return;
+	}
+	cardComponent->LoadImage(isHalfCard ? _T("Assets/CardBack2.png") : _T("Assets/CardBackRotated.png"));
+
+}
+void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card)
+{
+	if (cardComponent == nullptr)
+		return;
+
+	//Player does not have this card anymore, so hide it
+	if (card == nullptr) {
+		cardComponent->ShowWindow(SW_HIDE);
+		return;
+	}
+
+	//TODO: Made this could be in a Utils?
+	CString cardSuit, cardRank;
+
+	switch (card->GetSuit()) {
+		case Card::Suit::SPADES:
+			cardSuit = "Spade";
+			break;
+		case Card::Suit::HEARTS:
+			cardSuit = "Heart";
+			break;
+		case Card::Suit::DIAMONDS:
+			cardSuit = "Diamond";
+			break;
+		case Card::Suit::CLUBS:
+			cardSuit = "Club";
+			break;
+	}
+
+	switch (card->GetRank()) {
+		case Card::Rank::ACE:
+			cardRank = "01";
+			break;
+		case Card::Rank::TWO:
+			cardRank = "02";
+			break;
+		case Card::Rank::THREE:
+			cardRank = "03";
+			break;
+		case Card::Rank::FOUR:
+			cardRank = "04";
+			break;
+		case Card::Rank::FIVE:
+			cardRank = "05";
+			break;
+		case Card::Rank::SIX:
+			cardRank = "06";
+			break;
+		case Card::Rank::SEVEN:
+			cardRank = "07";
+			break;
+		case Card::Rank::JACK:
+			cardRank = "11";
+			break;
+		case Card::Rank::QUEEN:
+			cardRank = "12";
+			break;
+		case Card::Rank::KING:
+			cardRank = "13";
+			break;
+	}
+	CString assetsPath;
+	assetsPath.Format(_T("Assets/%s%s.png"), cardSuit, cardRank);
+	cardComponent->LoadImage(assetsPath);
+}
+
 BEGIN_MESSAGE_MAP(CGamingView, CDialog)
 	ON_WM_PAINT()
 	ON_STN_CLICKED(IDC_CARD_1, OnCard1Clicked)
@@ -152,4 +336,5 @@ BEGIN_MESSAGE_MAP(CGamingView, CDialog)
 	ON_BN_CLICKED(IDC_TRUCO_BTN, OnBnClickedTrucoBtn)
 	ON_BN_CLICKED(IDC_DESCE_BTN, OnBnClickedDesceBtn)
 	ON_BN_CLICKED(IDC_PASSO_BTN, OnBnClickedPassoBtn)
+	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)
 END_MESSAGE_MAP()

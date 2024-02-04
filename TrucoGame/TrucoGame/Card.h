@@ -5,7 +5,7 @@ class Card
 {
 public:
 	enum Suit { SPADES, HEARTS, DIAMONDS, CLUBS };
-	enum Rank { TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE };
+	enum Rank { TWO, THREE, FOUR, FIVE, SIX, SEVEN, JACK, QUEEN, KING, ACE };
 
 	Card(Suit inputSuit, Rank inputRank);
 	Card();

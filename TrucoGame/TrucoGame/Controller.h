@@ -15,7 +15,7 @@ public:
 	Controller(CMainWnd* view);
 	~Controller();
 
-	void Init(std::string player_one_name, std::string player_two_name);
+	void Init(std::string player_one_name, std::string player_two_name, bool hasFourPlayers);
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
@@ -24,8 +24,10 @@ public:
 	void Trucar(Player* player, int value);
 	void AcceptTruco(Player* player);
 	void RunFromTruco(Player* player);
-
 	int GetPlayerScore(Player* player);
+	int GetNumberOfPlayers();
+	Player* GetPlayer(int position);
+	Card* GetVira();
 
 private:
 	CMainWnd * view_;
@@ -33,6 +35,8 @@ private:
 	std::unique_ptr<Deck> deck_ = nullptr;
 	std::unique_ptr<Player> player_one_ = nullptr;
 	std::unique_ptr<Player> player_two_ = nullptr;
+	std::unique_ptr<Player> player_three_ = nullptr;
+	std::unique_ptr<Player> player_four_ = nullptr;
 	Card vira_;
 };
 

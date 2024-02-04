@@ -10,8 +10,8 @@ Controller::~Controller() {
 	view_ = nullptr;
 }
 
-void Controller::Init(std::string player_one_name, std::string player_two_name) {
-	model_->Init(player_one_name, player_two_name);
+void Controller::Init(std::string player_one_name, std::string player_two_name, bool hasFourPlayers) {
+	model_->Init(player_one_name, player_two_name, hasFourPlayers);
 }
 
 std::vector<Card> Controller::GetPlayerHand(Player* player) {
@@ -32,4 +32,19 @@ void Controller::RunFromTruco(Player* player) {
 
 int Controller::GetPlayerScore(Player* player) {
 	return player->GetScore();
+}
+
+int Controller::GetNumberOfPlayers()
+{
+	return model_->GetPlayer(3) == nullptr ? 2 : 4;
+}
+
+Player* Controller::GetPlayer(int position)
+{
+	return model_->GetPlayer(position);
+}
+
+Card* Controller::GetVira()
+{
+	return model_->GetVira();
 }

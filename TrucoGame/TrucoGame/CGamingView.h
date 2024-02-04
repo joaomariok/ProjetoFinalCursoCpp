@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include "Controller.h"
 #include "Controls/CTransparentImage.h"
 
 class CGamingView : public CDialog
@@ -7,8 +9,10 @@ class CGamingView : public CDialog
 	DECLARE_DYNAMIC(CGamingView)
 
 public:
-	CGamingView(CWnd* pParent = nullptr);   // standard constructor
+	CGamingView(CWnd* pParent = nullptr);
 	virtual ~CGamingView();
+
+	void SetController(int playerNumber, Controller *controller_);
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -21,6 +25,14 @@ private:
 		card_manilha, card_manilha_back, word_truco_p1, word_truco_p2, word_truco_p4, score_1_img, score_2_img, score_3_img;
 	CRect card1_rect, card2_rect, card3_rect;
 
+	int playerNumber;
+	Controller *controller;
+
+	void LoadCardAsset(CTransparentImage* cardComponent, Card* card);
+	void LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard);
+	CTransparentImage* GetViewComponent(int playerIndex, int numberOfPlayers, int cardIndex);
+	CStatic* GetViewComponent(int playerIndex, int numberOfPlayers);
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
@@ -31,6 +43,8 @@ protected:
 	afx_msg void OnCard1Clicked();
 	afx_msg void OnCard2Clicked();
 	afx_msg void OnCard3Clicked();
+	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
+	void SendMessageToParent();
 
 	DECLARE_MESSAGE_MAP()
 };

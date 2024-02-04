@@ -27,6 +27,10 @@ CMainWnd::CMainWnd() {
 	twoPlayersRBtn.SetCheck(BST_CHECKED);
 }
 
+CMainWnd::~CMainWnd()
+{
+}
+
 std::tuple<bool, bool> CMainWnd::checkIfPlayerNamesAreEmpty() {
 	CString playerOneName, playerTwoName;
 	playerOneEdit.GetWindowText(playerOneName);
@@ -48,31 +52,51 @@ void CMainWnd::OnButtonClicked() {
 	playerOneEdit.GetWindowText(playerOneName);
 	playerTwoEdit.GetWindowText(playerTwoName);
 
+	std::string playerOneString(CW2A(playerOneName.GetString()));
+	std::string playerTwoString(CW2A(playerTwoName.GetString()));
+
+	controller_ = std::make_unique<Controller>(this);
+	controller_->Init(playerOneString, playerTwoString, hasFourPlayers);
+
 	if (gamingView_1.GetSafeHwnd() == NULL) {
+		gamingView_1.SetController(1, controller_.get());
 		gamingView_1.Create(IDD_GAMINGVIEW, this);
 		gamingView_1.ShowWindow(SW_SHOW);
 	}
 	if (gamingView_2.GetSafeHwnd() == NULL) {
+		gamingView_2.SetController(2, controller_.get());
 		gamingView_2.Create(IDD_GAMINGVIEW, this);
 		gamingView_2.ShowWindow(SW_SHOW);
 	}
 
-	controller_ = std::make_unique<Controller>(this);
-	controller_->Init(std::string("Player 1"), std::string("Player 2"));
+	SendMessageToGamingView(&gamingView_1);
+	startButton.EnableWindow(FALSE);
 }
 
 void CMainWnd::OnTwoPlayersClicked()
 {
-
+	hasFourPlayers = false;
 }
 
 void CMainWnd::OnFourPlayersClicked()
 {
+	hasFourPlayers = true;
+}
 
+LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam) 
+{
+	//Message received
+	return 0;
+}
+
+void CMainWnd::SendMessageToGamingView(CGamingView *gamingView)
+{
+	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM("teste"), LPARAM(0));
 }
 
 BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)
 	ON_COMMAND(3, OnButtonClicked)
 	ON_BN_CLICKED(4, OnTwoPlayersClicked)
 	ON_BN_CLICKED(5, OnFourPlayersClicked)
+	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)
 END_MESSAGE_MAP()
