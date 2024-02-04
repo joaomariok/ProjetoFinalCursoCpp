@@ -1,9 +1,7 @@
-﻿#include "CMainWnd.h"
-#include "resource.h"
-
-BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)
-	ON_COMMAND(3, OnButtonClicked)
-END_MESSAGE_MAP()
+﻿#include "pch.h"
+#include "framework.h"
+#include <tuple>
+#include "CMainWnd.h"
 
 CMainWnd::CMainWnd() {
 	Create(NULL, _T("Truco Game"), WS_OVERLAPPEDWINDOW, CRect(100, 100, 1300, 800));
@@ -66,3 +64,7 @@ void CMainWnd::OnButtonClicked() {
 	controller_ = std::make_unique<Controller>(this);
 	controller_->Init(std::string("Player 1"), std::string("Player 2"));
 }
+
+BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)
+	ON_COMMAND(3, OnButtonClicked)
+END_MESSAGE_MAP()
