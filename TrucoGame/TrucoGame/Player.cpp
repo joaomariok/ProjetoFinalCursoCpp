@@ -6,6 +6,11 @@ Player::Player(std::string inputName)
 	score = 0;
 }
 
+Player::Player() {
+	name = "";
+	score = 0;
+}
+
 std::string Player::GetName() {
 	return name;
 }

@@ -10,6 +10,7 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 		player_two_ = std::make_unique<Player>(player_two_name);
 		player_three_ = std::make_unique<Player>("Bot player 1");
 		player_four_ = std::make_unique<Player>("Bot player 2");
+		has_four_players_ = true;
 
 		deck_ = std::make_unique<Deck>();
 
@@ -36,11 +37,13 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 
 		std::vector<Card> player_two_hand = deck_->DrawHand();
 		player_two_->SetHand(player_two_hand);
+
+		has_four_players_ = false;
 	}
 	vira_ = deck_->DrawCard();
 }
 
-Player* Model::GetPlayer(int position)
+Player* Model::GetPlayer(int position) const
 {
 	switch (position) {
 		case 1:
@@ -58,4 +61,29 @@ Player* Model::GetPlayer(int position)
 Card* Model::GetVira()
 {
 	return &vira_;
+}
+
+bool Model::GetHasFourPlayers() const{
+	return has_four_players_;
+}
+
+Deck Model::GetDeck() const {
+	return *deck_.get();
+}
+
+void Model::SetPlayer(int position, Player player) {
+	switch (position) {
+		case 1:
+			player_one_ = std::make_unique<Player>(player);
+		case 2:
+			player_two_ = std::make_unique<Player>(player);
+		case 3:
+			player_three_ = std::make_unique<Player>(player);
+		case 4:
+			player_four_ = std::make_unique<Player>(player);
+	}
+}
+
+void Model::SetDeck(Deck deck) {
+	deck_ = std::make_unique<Deck>(deck);
 }

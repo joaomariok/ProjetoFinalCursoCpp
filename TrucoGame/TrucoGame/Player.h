@@ -6,6 +6,7 @@
 class Player
 {
 public:
+	Player();
 	Player(std::string inputName);
 	std::string GetName();
 	int GetScore();

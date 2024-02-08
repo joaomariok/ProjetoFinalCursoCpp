@@ -13,14 +13,31 @@ class Player;
 class Model
 {
 public:
-	Model() = default;
-	~Model() = default;
+    //Default default constructor 
+    Model() = default;
+    //Default COPY constructor 
+    Model(const Model& other) = default;
+    //Default MOVE constructor 
+    Model(Model&& other) noexcept = default;
+    //Default copy assignment operator 
+    Model& operator=(const Model& other) = default;
+    //Default move assignment operator 
+    Model& operator=(Model&& other) noexcept = default;
+    //Default destructor 
+    ~Model() = default;
 
 	void Init(std::string player_one_name, std::string player_two_name, bool hasFourPlayers);
-	Player* GetPlayer(int position);
+	Player* GetPlayer(int position) const;
 	Card* GetVira();
+    bool GetHasFourPlayers() const;
+
+    Deck GetDeck() const;
+
+    void SetPlayer(int position, Player player);
+    void SetDeck(Deck deck);
 
 private:
+    bool has_four_players_ = false;
 	std::unique_ptr<Player> player_one_ = nullptr;
 	std::unique_ptr<Player> player_two_ = nullptr;
 	std::unique_ptr<Player> player_three_ = nullptr;

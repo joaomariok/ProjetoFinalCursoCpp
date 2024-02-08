@@ -6,6 +6,7 @@ class Deck
 {
 public:
 	Deck();
+	~Deck() = default;
 	void Shuffle();
 	Card DrawCard();
 	void AddCard(Card& card);
