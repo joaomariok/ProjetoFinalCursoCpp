@@ -16,7 +16,10 @@ CMainWnd::CMainWnd() {
 	playerTwoLabel.Create(_T("Jogador 2:"), WS_CHILD | WS_VISIBLE, CRect(350, 370, 420, 390), this);
 	playerTwoEdit.Create(WS_CHILD | WS_BORDER | WS_VISIBLE, CRect(450, 370, 590, 390), this, 2);
 
-	startButton.Create(_T("Jogar"), WS_CHILD | WS_VISIBLE, CRect(525, 470, 772, 500), this, 3);
+	startButton.Create(_T("Jogar"), WS_CHILD | WS_VISIBLE, CRect(375, 470, 622, 500), this, 3);
+
+	loadGameButton.Create(_T("Carregar Jogo"), WS_CHILD | WS_VISIBLE, CRect(665, 470, 912, 500), this, 6);
+	//loadGameButton.EnableWindow(FALSE);
 
 	twoPlayersRBtn.Create(_T("2 jogadores"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(725, 340, 972, 360), this, 4);
 	fourPlayerRBtn.Create(_T("4 jogadores"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(725, 370, 972, 390), this, 5);
@@ -70,6 +73,10 @@ void CMainWnd::OnButtonClicked() {
 	startButton.EnableWindow(FALSE);
 }
 
+void CMainWnd::OnLoadGameButtonClicked() {
+	//...
+}
+
 void CMainWnd::OnTwoPlayersClicked()
 {
 	hasFourPlayers = false;
@@ -92,7 +99,8 @@ void CMainWnd::SendMessageToGamingView(CGamingView *gamingView)
 }
 
 BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)
-	ON_COMMAND(3, OnButtonClicked)
+	ON_BN_CLICKED(3, OnButtonClicked)
+	ON_BN_CLICKED(6, OnLoadGameButtonClicked)
 	ON_BN_CLICKED(4, OnTwoPlayersClicked)
 	ON_BN_CLICKED(5, OnFourPlayersClicked)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)

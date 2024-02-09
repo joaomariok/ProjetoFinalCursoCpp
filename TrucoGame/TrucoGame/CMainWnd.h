@@ -8,7 +8,7 @@ class CMainWnd : public CFrameWnd {
 private:
 	CBitmap backgroundBmp;
 	CEdit playerOneEdit, playerTwoEdit;
-	CButton startButton, twoPlayersRBtn, fourPlayerRBtn;
+	CButton startButton, loadGameButton, twoPlayersRBtn, fourPlayerRBtn;
 	CStatic background, playerOneLabel, playerTwoLabel;
 	CGamingView gamingView_1, gamingView_2;
 
@@ -22,6 +22,7 @@ public:
 	std::tuple<bool, bool> checkIfPlayerNamesAreEmpty();
 
 	afx_msg void OnButtonClicked();
+	afx_msg void OnLoadGameButtonClicked();
 	afx_msg void OnTwoPlayersClicked();
 	afx_msg void OnFourPlayersClicked();
 	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
