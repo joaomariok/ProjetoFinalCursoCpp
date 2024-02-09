@@ -11,8 +11,8 @@ public:
 	Card();
 	~Card();
 
-	Suit GetSuit();
-	Rank GetRank();
+	Suit GetSuit() const;
+	Rank GetRank() const;
 
 private:
 	Suit suit_;

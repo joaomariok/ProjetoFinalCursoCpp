@@ -8,10 +8,10 @@ Card::Card() :
 
 Card::~Card() = default;
 
-Card::Suit Card::GetSuit() {
+Card::Suit Card::GetSuit() const {
 	return suit_;
 }
 
-Card::Rank Card::GetRank() {
+Card::Rank Card::GetRank() const {
 	return rank_;
 }

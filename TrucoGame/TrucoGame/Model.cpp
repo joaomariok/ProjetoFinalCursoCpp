@@ -50,6 +50,8 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 		players_.push_back(player_three_.get());
 		players_.push_back(player_four_.get());
 	}
+
+	InitHandRound();
 }
 
 void Model::InitHandRound() {
