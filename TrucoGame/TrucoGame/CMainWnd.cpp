@@ -10,9 +10,6 @@ CMainWnd::CMainWnd() {
 	backgroundBmp.LoadBitmap(IDB_BACKGROUNDMENU);
 	background.SetBitmap((HBITMAP)backgroundBmp.Detach());
 
-	CFont* titleFont = new CFont;
-	titleFont->CreatePointFont(400, _T("Arial"));
-
 	playerOneLabel.Create(_T("Jogador 1:"), WS_CHILD | WS_VISIBLE | SS_NOTIFY, CRect(350, 340, 420, 360), this);
 	playerOneEdit.Create(WS_CHILD | WS_BORDER | WS_VISIBLE, CRect(450, 340, 590, 360), this, 1);
 

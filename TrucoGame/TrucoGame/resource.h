@@ -46,6 +46,7 @@
 #define IDC_SCORE_1                     1035
 #define IDC_SCORE_2                     1036
 #define IDC_SCORE_3                     1037
+#define IDC_SAVE_BUTTON                 1038
 
 // Next default values for new objects
 // 
@@ -53,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        107
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1038
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

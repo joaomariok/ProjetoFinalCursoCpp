@@ -168,6 +168,11 @@ void CGamingView::OnBnClickedPassoBtn()
 	SendMessageToParent();
 }
 
+void CGamingView::OnBnClickedSaveGameBtn()
+{
+	//...
+}
+
 void CGamingView::OnCard1Clicked()
 {
 	card_1.ShowWindow(SW_HIDE);
@@ -336,5 +341,6 @@ BEGIN_MESSAGE_MAP(CGamingView, CDialog)
 	ON_BN_CLICKED(IDC_TRUCO_BTN, OnBnClickedTrucoBtn)
 	ON_BN_CLICKED(IDC_DESCE_BTN, OnBnClickedDesceBtn)
 	ON_BN_CLICKED(IDC_PASSO_BTN, OnBnClickedPassoBtn)
+	ON_BN_CLICKED(IDC_SAVE_BUTTON, OnBnClickedSaveGameBtn)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)
 END_MESSAGE_MAP()

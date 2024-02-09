@@ -40,6 +40,7 @@ protected:
 	afx_msg void OnBnClickedTrucoBtn();
 	afx_msg void OnBnClickedDesceBtn();
 	afx_msg void OnBnClickedPassoBtn();
+	afx_msg void OnBnClickedSaveGameBtn();
 	afx_msg void OnCard1Clicked();
 	afx_msg void OnCard2Clicked();
 	afx_msg void OnCard3Clicked();
