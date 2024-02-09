@@ -30,13 +30,7 @@ public:
 	Card* GetVira();
 
 private:
-	CMainWnd * view_;
+	CMainWnd* view_;
 	std::unique_ptr<Model> model_ = nullptr;
-	std::unique_ptr<Deck> deck_ = nullptr;
-	std::unique_ptr<Player> player_one_ = nullptr;
-	std::unique_ptr<Player> player_two_ = nullptr;
-	std::unique_ptr<Player> player_three_ = nullptr;
-	std::unique_ptr<Player> player_four_ = nullptr;
-	Card vira_;
 };
 

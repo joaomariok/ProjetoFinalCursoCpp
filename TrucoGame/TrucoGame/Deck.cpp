@@ -7,14 +7,15 @@
 #include <ctime>
 
 Deck::Deck() {
-	currentCardIndex = 0;
+	current_card_index_ = 0;
 	InitializeDeck();
+	Shuffle();
 }
 
 void Deck::InitializeDeck() {
 	for (int suit = Card::SPADES; suit <= Card::CLUBS; ++suit) {
 		for (int rank = Card::TWO; rank <= Card::ACE; ++rank) {
-			cards.emplace_back(static_cast<Card::Suit>(suit), static_cast<Card::Rank>(rank));
+			cards_.emplace_back(static_cast<Card::Suit>(suit), static_cast<Card::Rank>(rank));
 		}
 	}
 }
@@ -23,13 +24,13 @@ void Deck::Shuffle() {
 	std::srand(static_cast<unsigned int>(std::time(0)));
 	std::random_device rd;
 	std::mt19937 g(rd());
-	std::shuffle(cards.begin(), cards.end(), g);
-	currentCardIndex = 0;
+	std::shuffle(cards_.begin(), cards_.end(), g);
+	current_card_index_ = 0;
 }
 
 Card Deck::DrawCard() {
-	if (currentCardIndex < cards.size()) {
-		return cards[currentCardIndex++];
+	if (current_card_index_ < cards_.size()) {
+		return cards_[current_card_index_++];
 	}
 	// Handle out-of-cards situation (e.g., reshuffle or end of the game)
 	// For simplicity, this example does not implement reshuffling.
@@ -37,7 +38,7 @@ Card Deck::DrawCard() {
 }
 
 void Deck::AddCard(Card& card) {
-	cards.push_back(card);
+	cards_.push_back(card);
 }
 
 std::vector<Card> Deck::DrawHand() {

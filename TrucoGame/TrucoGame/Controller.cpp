@@ -36,7 +36,7 @@ int Controller::GetPlayerScore(Player* player) {
 
 int Controller::GetNumberOfPlayers()
 {
-	return model_->GetPlayer(3) == nullptr ? 2 : 4;
+	return model_->GetHasFourPlayers() ? 4 : 2;
 }
 
 Player* Controller::GetPlayer(int position)

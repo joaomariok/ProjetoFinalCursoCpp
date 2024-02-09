@@ -13,7 +13,7 @@ public:
 	std::vector<Card> DrawHand();
 
 private:
-	std::vector<Card> cards;
-	int currentCardIndex;
+	std::vector<Card> cards_;
+	int current_card_index_;
 	void InitializeDeck();
 };

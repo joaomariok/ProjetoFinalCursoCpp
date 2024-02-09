@@ -2,31 +2,39 @@
 
 Player::Player(std::string inputName)
 {
-	name = inputName;
-	score = 0;
+	name_ = inputName;
+	score_ = 0;
+	round_score_ = 0;
 }
 
 Player::Player() {
-	name = "";
-	score = 0;
+	name_ = "";
+	score_ = 0;
 }
 
 std::string Player::GetName() {
-	return name;
+	return name_;
 }
 
 int Player::GetScore() {
-	return score;
+	return score_;
 }
 
 void Player::IncreaseScore(int inputScore) {
-	score += inputScore;
+	score_ += inputScore;
 }
 
 std::vector<Card> Player::GetHand() {
-	return hand;
+	return hand_;
 }
 
 void Player::SetHand(std::vector<Card>& newHand) {
-	hand = newHand;
+	hand_ = newHand;
+}
+
+Card Player::PlayCard()
+{
+	Card card = hand_.back();
+	hand_.pop_back();
+	return card;
 }
