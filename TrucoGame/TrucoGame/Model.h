@@ -18,7 +18,7 @@ public:
 	public:
 		static constexpr int MAX_ROUNDS = 3;
 
-		Round(std::vector<Player*>& players);
+		Round(std::vector<Player*>& players, const Card& vira);
 
 		void PlayCard();
 		Player* GetWinner() { return current_winner_; }
@@ -27,12 +27,13 @@ public:
 		Player* current_player_ = nullptr;
 		Player* current_winner_ = nullptr;
 		std::vector<Card> discarded_cards_;
+		Card vira_;
 		int first_player_ = 0;
 	};
 
 	class HandRound {
 	public:
-		HandRound(std::vector<Player*>& players, Card vira);
+		HandRound(std::vector<Player*>& players, Deck* deck);
 
 		Card GetVira() const { return vira_; }
 	private:
@@ -55,7 +56,7 @@ public:
 	//Default destructor 
 	~Model() = default;
 
-	void Init(std::string player_one_name, std::string player_two_name, bool hasFourPlayers);
+	void Init(std::string player_one_name, std::string player_two_name, bool has_four_players);
 	Player* GetPlayer(int position) const;
 	Card* GetVira();
     bool GetHasFourPlayers() const;

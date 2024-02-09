@@ -4,8 +4,8 @@
 
 //////////////////////////////////////////
 /// ROUND
-Model::Round::Round(std::vector<Player*>& players) :
-	players_(players), discarded_cards_(std::vector<Card>()) {
+Model::Round::Round(std::vector<Player*>& players, const Card& vira) :
+	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()) {
 	first_player_ = 0;
 	current_player_ = players.at(first_player_);
 }
@@ -22,9 +22,13 @@ void Model::Round::PlayCard() {
 
 //////////////////////////////////////////
 /// HAND ROUND
-Model::HandRound::HandRound(std::vector<Player*>& players, Card vira) :
-	players_(players), vira_(vira) {
-	current_round_ = std::make_unique<Round>(players);
+Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck) :
+	players_(players), vira_(deck->DrawCard()) {
+	for (auto player : players) {
+		std::vector<Card> player_hand = deck->DrawHand();
+		player->SetHand(player_hand);
+	}
+	current_round_ = std::make_unique<Round>(players, vira_);
 }
 
 //////////////////////////////////////////
@@ -46,26 +50,11 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 		players_.push_back(player_three_.get());
 		players_.push_back(player_four_.get());
 	}
-
-	deck_ = std::make_unique<Deck>();
 }
 
 void Model::InitHandRound() {
-	std::vector<Card> player_one_hand = deck_->DrawHand();
-	player_one_->SetHand(player_one_hand);
-
-	std::vector<Card> player_two_hand = deck_->DrawHand();
-	player_two_->SetHand(player_two_hand);
-
-	if (has_four_players_) {
-		std::vector<Card> player_three_hand = deck_->DrawHand();
-		player_three_->SetHand(player_three_hand);
-
-		std::vector<Card> player_four_hand = deck_->DrawHand();
-		player_four_->SetHand(player_four_hand);
-	}
-
-	current_hand_round_ = std::make_unique<HandRound>(players_, deck_->DrawCard());
+	deck_ = std::make_unique<Deck>();
+	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get());
 	current_round_ = 0;
 }
 
