@@ -1,40 +1,37 @@
 #include "Model.h"
-
 #include "Card.h"
 #include "Deck.h"
 
 namespace player_utils {
-
-/*
-* Auxiliary function to get the next player in vector of players, knowing pointer to <current_player>.
-*/
-Player* GetNextPlayer(const std::vector<Player*>& players, const Player* current_player) {
-	for (size_t i = 0; i < players.size(); i++) {
-		if (players.at(i) == current_player) {
-			return players.at(i == players.size() - 1 ? 0 : i + 1);
+	/*
+	* Auxiliary function to get the next player in vector of players, knowing pointer to <current_player>.
+	*/
+	Player* GetNextPlayer(const std::vector<Player*>& players, const Player* current_player) {
+		for (size_t i = 0; i < players.size(); i++) {
+			if (players.at(i) == current_player) {
+				return players.at(i == players.size() - 1 ? 0 : i + 1);
+			}
 		}
-	}
 
-	return nullptr;
-}
-
-/*
-* Auxiliary function to get the player that is in the same group as <current_player>.
-*/
-Player* GetOtherGroupPlayer(const std::vector<Player*>& players, const Player* current_player) {
-	if (current_player->GetGroup() == Player::Group::NO_GROUP) {
 		return nullptr;
 	}
 
-	for (Player* player : players) {
-		if (player != current_player && player->GetGroup() == current_player->GetGroup()) {
-			return player;
+	/*
+	* Auxiliary function to get the player that is in the same group as <current_player>.
+	*/
+	Player* GetOtherGroupPlayer(const std::vector<Player*>& players, const Player* current_player) {
+		if (current_player->GetGroup() == Player::Group::NO_GROUP) {
+			return nullptr;
 		}
+
+		for (Player* player : players) {
+			if (player != current_player && player->GetGroup() == current_player->GetGroup()) {
+				return player;
+			}
+		}
+
+		return nullptr;
 	}
-
-	return nullptr;
-}
-
 }
 
 //////////////////////////////////////////
@@ -158,7 +155,6 @@ Player* Model::HandRound::MaybeGetWinner() const {
 
 //////////////////////////////////////////
 /// MODEL
-
 void Model::Init(std::string player_one_name, std::string player_two_name, bool has_four_players) {
 	player_one_ = std::make_unique<Player>(player_one_name);
 	player_two_ = std::make_unique<Player>(player_two_name);
@@ -171,8 +167,8 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 	if (has_four_players) {
 		player_one_->SetGroup(Player::Group::GROUP_1);
 		player_two_->SetGroup(Player::Group::GROUP_2);
-		player_three_ = std::make_unique<Player>("Bot player 1", Player::Group::GROUP_1);
-		player_four_ = std::make_unique<Player>("Bot player 2", Player::Group::GROUP_2);
+		player_three_ = std::make_unique<Bot>("Bot player 1", Player::Group::GROUP_1);
+		player_four_ = std::make_unique<Bot>("Bot player 2", Player::Group::GROUP_2);
 		players_.push_back(player_three_.get());
 		players_.push_back(player_four_.get());
 	}
@@ -203,14 +199,14 @@ void Model::PlayCard(int cardIndex) {
 
 Player* Model::GetPlayer(int position) const {
 	switch (position) {
-		case 1:
-			return player_one_.get();
-		case 2:
-			return player_two_.get();
-		case 3:
-			return player_three_.get();
-		case 4:
-			return player_four_.get();
+	case 1:
+		return player_one_.get();
+	case 2:
+		return player_two_.get();
+	case 3:
+		return player_three_.get();
+	case 4:
+		return player_four_.get();
 	}
 	return nullptr;
 }
@@ -225,14 +221,14 @@ Deck* Model::GetDeck() const {
 
 void Model::SetPlayer(int position, Player player) {
 	switch (position) {
-		case 1:
-			player_one_ = std::make_unique<Player>(player);
-		case 2:
-			player_two_ = std::make_unique<Player>(player);
-		case 3:
-			player_three_ = std::make_unique<Player>(player);
-		case 4:
-			player_four_ = std::make_unique<Player>(player);
+	case 1:
+		player_one_ = std::make_unique<Player>(player);
+	case 2:
+		player_two_ = std::make_unique<Player>(player);
+	case 3:
+		player_three_ = std::make_unique<Bot>(player);
+	case 4:
+		player_four_ = std::make_unique<Bot>(player);
 	}
 }
 
