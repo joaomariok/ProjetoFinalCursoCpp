@@ -13,8 +13,8 @@ Deck::Deck() {
 }
 
 void Deck::InitializeDeck() {
-	for (int suit = Card::SPADES; suit <= Card::CLUBS; ++suit) {
-		for (int rank = Card::TWO; rank <= Card::ACE; ++rank) {
+	for (int suit = Card::DIAMONDS; suit <= Card::CLUBS; ++suit) {
+		for (int rank = Card::FOUR; rank <= Card::THREE; ++rank) {
 			cards_.emplace_back(static_cast<Card::Suit>(suit), static_cast<Card::Rank>(rank));
 		}
 	}
@@ -34,7 +34,7 @@ Card Deck::DrawCard() {
 	}
 	// Handle out-of-cards situation (e.g., reshuffle or end of the game)
 	// For simplicity, this example does not implement reshuffling.
-	return Card(Card::Suit::SPADES, Card::Rank::TWO);
+	return Card(Card::Suit::DIAMONDS, Card::Rank::FOUR);
 }
 
 void Deck::AddCard(Card& card) {
