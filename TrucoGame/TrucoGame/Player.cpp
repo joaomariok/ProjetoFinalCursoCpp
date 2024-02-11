@@ -39,3 +39,7 @@ Card Player::PlayCard(int cardIndex) {
 void Player::SetGroup(Group group) {
 	group_ = group;
 }
+
+void Player::IncreaseRoundScore() {
+	round_score_++;
+}

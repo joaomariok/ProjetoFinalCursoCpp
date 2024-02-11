@@ -3,8 +3,10 @@
 #include "Card.h"
 #include "Deck.h"
 
+namespace player_utils {
+
 /*
-* Auxiliary function to get the next player in vector of players, knowing pointer to current player.
+* Auxiliary function to get the next player in vector of players, knowing pointer to <current_player>.
 */
 Player* GetNextPlayer(const std::vector<Player*>& players, const Player* current_player) {
 	for (size_t i = 0; i < players.size(); i++) {
@@ -14,6 +16,25 @@ Player* GetNextPlayer(const std::vector<Player*>& players, const Player* current
 	}
 
 	return nullptr;
+}
+
+/*
+* Auxiliary function to get the player that is in the same group as <current_player>.
+*/
+Player* GetOtherGroupPlayer(const std::vector<Player*>& players, const Player* current_player) {
+	if (current_player->GetGroup() == Player::Group::NO_GROUP) {
+		return nullptr;
+	}
+
+	for (Player* player : players) {
+		if (player != current_player && player->GetGroup() == current_player->GetGroup()) {
+			return player;
+		}
+	}
+
+	return nullptr;
+}
+
 }
 
 //////////////////////////////////////////
@@ -29,26 +50,33 @@ void Model::Round::PlayCard(int cardIndex) {
 	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
 		current_winner_ = current_player_;
 	}
-	current_player_ = GetNextPlayer(players_, current_player_);
+	current_player_ = player_utils::GetNextPlayer(players_, current_player_);
+	if (current_player_ == first_player_) {
+		// Acabou a rodada
+		current_winner_->IncreaseRoundScore();
+		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, current_winner_)) {
+			other_player->IncreaseRoundScore();
+		}
+	}
 }
 
-void Model::Round::Truco()
-{
+void Model::Round::Truco() {
 	// TODO
 }
 
-void Model::Round::AcceptTruco()
-{
+void Model::Round::AcceptTruco() {
 	// TODO
 }
 
-void Model::Round::RunFromTruco()
-{
+void Model::Round::RunFromTruco() {
 	current_winner_ = current_player_;
 }
 
-bool Model::Round::WasLastPlayer() const
-{
+bool Model::Round::HasWinner() const {
+	return WasLastPlayer() || DidSomebodyWin();
+}
+
+bool Model::Round::WasLastPlayer() const {
 	for (Player* player : players_) {
 		if (player->GetHand().size() != 0) {
 			return false;
@@ -57,8 +85,16 @@ bool Model::Round::WasLastPlayer() const
 	return true;
 }
 
-bool Model::Round::IsBiggestCard(Card current_card)
-{
+bool Model::Round::DidSomebodyWin() const {
+	for (Player* player : players_) {
+		if (player->GetRoundScore() >= 2) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Model::Round::IsBiggestCard(Card current_card) const {
 	for (Card card : discarded_cards_) {
 		if (card.IsBiggerThan(current_card)) {
 			return false;
@@ -71,7 +107,7 @@ bool Model::Round::IsBiggestCard(Card current_card)
 /// HAND ROUND
 Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player) :
 	players_(players), first_player_(first_player) {
-	for (auto player : players) {
+	for (Player* player : players) {
 		std::vector<Card> player_hand = deck->DrawHand();
 		player->SetHand(player_hand);
 	}
@@ -86,32 +122,32 @@ Model::HandRound::~HandRound() {
 
 void Model::HandRound::InitRound() {
 	Player* previous_winner = current_round_ ? current_round_->GetWinner() : players_.back();
-	current_round_ = std::make_unique<Round>(players_, vira_, GetNextPlayer(players_, previous_winner));
+	current_round_ = std::make_unique<Round>(players_, vira_, player_utils::GetNextPlayer(players_, previous_winner));
 	current_round_number_++;
 }
 
-void Model::HandRound::PlayCard(int cardIndex)
-{
+void Model::HandRound::PlayCard(int cardIndex) {
 	current_round_->PlayCard(cardIndex);
-	if (current_round_->WasLastPlayer()) {
-		current_round_->GetWinner()->IncreaseScore(current_hand_value_);
+	if (current_round_->HasWinner()) {
+		Player* winner = current_round_->GetWinner();
+		winner->IncreaseScore(current_hand_value_);
+		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
+			other_player->IncreaseScore(current_hand_value_);
+		}
 	}
 }
 
-void Model::HandRound::AcceptTruco()
-{
+void Model::HandRound::AcceptTruco() {
 	current_hand_value_ = 3;
 	current_round_->AcceptTruco();
 }
 
-void Model::HandRound::RunFromTruco()
-{
+void Model::HandRound::RunFromTruco() {
 	current_hand_value_ = 1;
 	current_round_->RunFromTruco();
 }
 
-Player* Model::HandRound::MaybeGetWinner() const
-{
+Player* Model::HandRound::MaybeGetWinner() const {
 	for (Player* player : players_) {
 		if (player->GetScore() >= WIN_POINTS) {
 			return player;
@@ -123,8 +159,7 @@ Player* Model::HandRound::MaybeGetWinner() const
 //////////////////////////////////////////
 /// MODEL
 
-void Model::Init(std::string player_one_name, std::string player_two_name, bool has_four_players)
-{
+void Model::Init(std::string player_one_name, std::string player_two_name, bool has_four_players) {
 	player_one_ = std::make_unique<Player>(player_one_name);
 	player_two_ = std::make_unique<Player>(player_two_name);
 	has_four_players_ = has_four_players;
@@ -148,19 +183,17 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 void Model::InitHandRound() {
 	deck_ = std::make_unique<Deck>();
 	Player* previous_first_player = current_hand_round_ ? current_hand_round_->GetFirstPlayer() : players_.back();
-	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), GetNextPlayer(players_, previous_first_player));
+	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), player_utils::GetNextPlayer(players_, previous_first_player));
 	current_hand_round_number_++;
 }
 
-void Model::ResetGame()
-{
+void Model::ResetGame() {
 	current_hand_round_number_ = 0;
 	current_hand_round_ = nullptr;
 	InitHandRound();
 }
 
-void Model::PlayCard(int cardIndex)
-{
+void Model::PlayCard(int cardIndex) {
 	current_hand_round_->PlayCard(cardIndex);
 	Player* winner = current_hand_round_->MaybeGetWinner();
 	if (winner) {
@@ -168,8 +201,7 @@ void Model::PlayCard(int cardIndex)
 	}
 }
 
-Player* Model::GetPlayer(int position) const
-{
+Player* Model::GetPlayer(int position) const {
 	switch (position) {
 		case 1:
 			return player_one_.get();

@@ -18,6 +18,8 @@ public:
 	Card PlayCard(int cardIndex);
 	void SetGroup(Group group);
 	Group GetGroup() const { return group_; }
+	void IncreaseRoundScore();
+	int GetRoundScore() const { return round_score_; }
 
 	/*void PrintHand();
 	void Truco();*/
