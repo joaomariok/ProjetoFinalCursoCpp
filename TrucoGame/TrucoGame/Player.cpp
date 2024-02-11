@@ -1,16 +1,14 @@
 #include "Player.h"
 
-Player::Player(std::string inputName)
+Player::Player(std::string inputName, Group group)
 {
 	name_ = inputName;
 	score_ = 0;
 	round_score_ = 0;
+	group_ = group;
 }
 
-Player::Player() {
-	name_ = "";
-	score_ = 0;
-}
+Player::Player() : Player("") {}
 
 std::string Player::GetName() {
 	return name_;
@@ -32,9 +30,12 @@ void Player::SetHand(std::vector<Card>& newHand) {
 	hand_ = newHand;
 }
 
-Card Player::PlayCard()
-{
+Card Player::PlayCard() {
 	Card card = hand_.back();
 	hand_.pop_back();
 	return card;
+}
+
+void Player::SetGroup(Group group) {
+	group_ = group;
 }

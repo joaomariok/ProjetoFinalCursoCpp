@@ -23,7 +23,7 @@ bool Save::SaveGame(const Model& inputModel) {
 		player_three = *inputModel.GetPlayer(3);
 		player_four = *inputModel.GetPlayer(4);
 	}
-	Deck deck = inputModel.GetDeck();
+	Deck deck = *inputModel.GetDeck();
 
 	outFile.write(reinterpret_cast<const char*>(&player_one),
 		sizeof(Player));

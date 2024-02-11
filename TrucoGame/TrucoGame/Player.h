@@ -6,14 +6,18 @@
 class Player
 {
 public:
+	enum Group { NO_GROUP, GROUP_1, GROUP_2 };
+
 	Player();
-	Player(std::string inputName);
+	Player(std::string inputName, Group group = Group::NO_GROUP);
 	std::string GetName();
 	int GetScore();
 	void IncreaseScore(int inputScore);
 	std::vector<Card> GetHand();
 	void SetHand(std::vector<Card>& newHand);
 	Card PlayCard();
+	void SetGroup(Group group);
+	Group GetGroup() const { return group_; }
 
 	/*void PrintHand();
 	void Truco();*/
@@ -23,4 +27,5 @@ private:
 	int score_;
 	int round_score_;
 	std::vector<Card> hand_;
+	Group group_;
 };

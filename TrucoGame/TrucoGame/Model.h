@@ -25,9 +25,14 @@ public:
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
+		bool WasLastPlayer() const;
+
 		Player* GetWinner() { return current_winner_; }
 		Player* GetCurrentPlayer() { return current_player_; }
+
 	private:
+		bool IsBiggestCard(Card card);
+
 		std::vector<Player*> players_;
 		Player* current_player_ = nullptr;
 		Player* current_winner_ = nullptr;
@@ -41,12 +46,16 @@ public:
 		HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player);
 		~HandRound();
 
-		Card* GetVira() const { return vira_; }
-		Player* GetFirstPlayer() const { return first_player_; }
 		void InitRound();
 
+		void PlayCard();
 		void AcceptTruco();
 		void RunFromTruco();
+		Player* MaybeGetWinner() const;
+
+		Card* GetVira() const { return vira_; }
+		Player* GetFirstPlayer() const { return first_player_; }
+
 	private:
 		std::unique_ptr<Round> current_round_ = nullptr;
 		std::vector<Player*> players_;
@@ -70,18 +79,21 @@ public:
 	~Model() = default;
 
 	void Init(std::string player_one_name, std::string player_two_name, bool has_four_players);
-	Player* GetPlayer(int position) const;
-	Card* GetVira();
-    bool GetHasFourPlayers() const;
-
-    Deck GetDeck() const;
-
-    void SetPlayer(int position, Player player);
-    void SetDeck(Deck deck);
-
-	int GetCurrentRound() { return current_hand_round_number_; }
 
 	void InitHandRound();
+	void ResetGame();
+
+	void PlayCard();
+
+    void SetPlayer(int position, Player player);
+	Player* GetPlayer(int position) const;
+
+    void SetDeck(Deck deck);
+    Deck* GetDeck() const;
+
+	Card* GetVira() const;
+	bool GetHasFourPlayers() const { return has_four_players_; }
+	int GetCurrentRound() const { return current_hand_round_number_; }
 
 private:
     bool has_four_players_ = false;

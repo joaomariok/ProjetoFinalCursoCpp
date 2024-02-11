@@ -19,6 +19,7 @@ public:
 	Rank GetRank() const;
 	void SetIsManilha();
 	bool IsManilha() const;
+	bool IsBiggerThan(Card card) const;
 
 private:
 	Suit suit_;
