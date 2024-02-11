@@ -3,6 +3,7 @@
 #include <memory>
 #include "Controller.h"
 #include "Controls/CTransparentImage.h"
+#include "Controls/CTransparentStatic.h"
 
 class CGamingView : public CDialog
 {

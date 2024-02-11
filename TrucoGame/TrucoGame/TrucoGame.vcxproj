@@ -134,6 +134,7 @@
     <ClCompile Include="CMainWnd.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Controls\CTransparentImage.cpp" />
+    <ClCompile Include="Controls\CTransparentStatic.cpp" />
     <ClCompile Include="Deck.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="pch.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="CMainWnd.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Controls\CTransparentImage.h" />
+    <ClInclude Include="Controls\CTransparentStatic.h" />
     <ClInclude Include="Deck.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Model.h" />

@@ -42,7 +42,6 @@ void CGamingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CARD_P3_2, card_p3_2);
 	DDX_Control(pDX, IDC_CARD_P3_3, card_p3_3);
 	DDX_Control(pDX, IDC_P3_CARD_ROUND, card_p3_round);
-
 	/*PLAYER 4 ELEMENTS*/
 	DDX_Control(pDX, IDC_CARD_P4_1, card_p4_1);
 	DDX_Control(pDX, IDC_CARD_P4_2, card_p4_2);

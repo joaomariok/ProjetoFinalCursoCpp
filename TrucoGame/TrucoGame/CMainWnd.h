@@ -9,7 +9,8 @@ private:
 	CBitmap backgroundBmp;
 	CEdit playerOneEdit, playerTwoEdit;
 	CButton startButton, loadGameButton, twoPlayersRBtn, fourPlayerRBtn;
-	CStatic background, playerOneLabel, playerTwoLabel;
+	CStatic background;
+	CTransparentStatic playerOneLabel, playerTwoLabel;
 	CGamingView gamingView_1, gamingView_2;
 
 	bool hasFourPlayers;
