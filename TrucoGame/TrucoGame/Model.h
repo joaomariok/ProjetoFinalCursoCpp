@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Card.h"
-#include "Player.h"
+#include "Bot.h"
 
 class Deck;
 
