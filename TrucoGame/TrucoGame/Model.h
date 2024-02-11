@@ -25,18 +25,21 @@ public:
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
-		bool WasLastPlayer() const;
+		bool HasWinner() const;
 
 		Player* GetWinner() { return current_winner_; }
 		Player* GetCurrentPlayer() { return current_player_; }
 
 	private:
-		bool IsBiggestCard(Card card);
+		bool WasLastPlayer() const;
+		bool DidSomebodyWin() const;
+		bool IsBiggestCard(Card card) const;
 
 		std::vector<Player*> players_;
+		std::vector<Card> discarded_cards_;
+
 		Player* current_player_ = nullptr;
 		Player* current_winner_ = nullptr;
-		std::vector<Card> discarded_cards_;
 		Card* vira_;
 		Player* first_player_;
 	};
@@ -58,9 +61,12 @@ public:
 
 	private:
 		std::unique_ptr<Round> current_round_ = nullptr;
+
 		std::vector<Player*> players_;
+
 		Player* first_player_;
 		Card* vira_;
+
 		int current_hand_value_ = 1;
 		int current_round_number_ = 0;
 	};
@@ -96,14 +102,16 @@ public:
 	int GetCurrentRound() const { return current_hand_round_number_; }
 
 private:
-    bool has_four_players_ = false;
 	std::unique_ptr<HandRound> current_hand_round_ = nullptr;
 	std::unique_ptr<Player> player_one_ = nullptr;
 	std::unique_ptr<Player> player_two_ = nullptr;
 	std::unique_ptr<Player> player_three_ = nullptr;
 	std::unique_ptr<Player> player_four_ = nullptr;
-	std::vector<Player*> players_;
 	std::unique_ptr<Deck> deck_ = nullptr;
+
+	std::vector<Player*> players_;
+
 	int current_hand_round_number_ = 0;
+    bool has_four_players_ = false;
 };
 
