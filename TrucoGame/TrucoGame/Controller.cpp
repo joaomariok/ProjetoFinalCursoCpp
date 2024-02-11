@@ -18,7 +18,8 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 	return player->GetHand();
 }
 
-void Controller::PlayCard(Player* player, int cardIndex, bool visible) {
+void Controller::PlayCard(int cardIndex) {
+	model_->PlayCard(cardIndex);
 }
 
 void Controller::Trucar(Player* player, int value) {
@@ -47,4 +48,12 @@ Player* Controller::GetPlayer(int position)
 Card* Controller::GetVira()
 {
 	return model_->GetVira();
+}
+
+std::vector<Card> Controller::GetDiscardedCards()
+{
+	Model::Round* current_round = model_->GetCurrentRound();
+	if (current_round != nullptr)
+		return current_round->GetDiscardedCards();
+	return std::vector<Card>();
 }

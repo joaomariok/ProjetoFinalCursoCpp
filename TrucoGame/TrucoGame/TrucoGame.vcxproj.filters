@@ -104,6 +104,9 @@
     <ClInclude Include="Controls\CTransparentStatic.h">
       <Filter>Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrucoGame.rc">

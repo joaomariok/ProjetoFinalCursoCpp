@@ -68,8 +68,6 @@ void CMainWnd::OnButtonClicked() {
 		gamingView_2.Create(IDD_GAMINGVIEW, this);
 		gamingView_2.ShowWindow(SW_SHOW);
 	}
-
-	SendMessageToGamingView(&gamingView_1);
 	startButton.EnableWindow(FALSE);
 }
 
@@ -90,12 +88,35 @@ void CMainWnd::OnFourPlayersClicked()
 LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam) 
 {
 	//Message received
+	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+	switch (gameEvent) {
+		case CARD1_PICKED:
+			controller_->PlayCard(1);
+			break;
+		case CARD2_PICKED:
+			controller_->PlayCard(2);
+			break;
+		case CARD3_PICKED:
+			controller_->PlayCard(3);
+			break;
+		case TRUCO:
+			break;
+		case CONTINUE:
+			break;
+		case QUIT:
+			break;
+		default:
+			break;
+	}
+	//Send message to update the views
+	SendMessageToGamingView(&gamingView_1);
+	SendMessageToGamingView(&gamingView_2);
 	return 0;
 }
 
 void CMainWnd::SendMessageToGamingView(CGamingView *gamingView)
 {
-	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM("teste"), LPARAM(0));
+	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(""), LPARAM(0));
 }
 
 BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)

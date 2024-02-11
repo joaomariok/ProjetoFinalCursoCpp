@@ -19,7 +19,7 @@ public:
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(Player* player, int cardIndex, bool visible);
+	void PlayCard(int cardIndex);
 
 	void Trucar(Player* player, int value);
 	void AcceptTruco(Player* player);
@@ -28,6 +28,7 @@ public:
 	int GetNumberOfPlayers();
 	Player* GetPlayer(int position);
 	Card* GetVira();
+	std::vector<Card> GetDiscardedCards();
 
 private:
 	CMainWnd* view_;
