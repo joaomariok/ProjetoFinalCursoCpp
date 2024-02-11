@@ -16,12 +16,12 @@ bool Save::SaveGame(const Model& inputModel) {
 
 	Player player_one = *inputModel.GetPlayer(1);
 	Player player_two = *inputModel.GetPlayer(2);
-	Player player_three;
-	Player player_four;
+	Bot player_three;
+	Bot player_four;
 
 	if (inputModel.GetHasFourPlayers()) {
-		player_three = *inputModel.GetPlayer(3);
-		player_four = *inputModel.GetPlayer(4);
+		player_three = *static_cast<Bot*>(inputModel.GetPlayer(3));
+		player_four = *static_cast<Bot*>(inputModel.GetPlayer(4));
 	}
 	Deck deck = *inputModel.GetDeck();
 
@@ -52,8 +52,8 @@ bool Save::LoadGame(Model& inputModel) {
 
 	Player player_one;
 	Player player_two;
-	Player player_three;
-	Player player_four;
+	Bot player_three;
+	Bot player_four;
 
 	inFile.read(reinterpret_cast<char*>(&player_one),
 		sizeof(Player));
@@ -62,19 +62,19 @@ bool Save::LoadGame(Model& inputModel) {
 
 	if (inputModel.GetHasFourPlayers()) {
 		inFile.read(reinterpret_cast<char*>(&player_three),
-			sizeof(Player));
+			sizeof(Bot));
 		inFile.read(reinterpret_cast<char*>(&player_four),
-			sizeof(Player));
+			sizeof(Bot));
 	}
 
 	Deck deck;
 	inFile.read(reinterpret_cast<char*>(&deck), sizeof(Deck));
 
-	inputModel.SetPlayer(1, player_one);
-	inputModel.SetPlayer(2, player_two);
+	inputModel.SetPlayer(1, &player_one);
+	inputModel.SetPlayer(2, &player_two);
 	if (inputModel.GetHasFourPlayers()) {
-		inputModel.SetPlayer(3, player_three);
-		inputModel.SetPlayer(4, player_four);
+		inputModel.SetPlayer(3, &player_three);
+		inputModel.SetPlayer(4, &player_four);
 	}
 	inputModel.SetDeck(deck);
 

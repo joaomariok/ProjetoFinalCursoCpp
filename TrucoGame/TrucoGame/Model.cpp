@@ -169,8 +169,8 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 		player_two_->SetGroup(Player::Group::GROUP_2);
 		player_three_ = std::make_unique<Bot>("Bot player 1", Player::Group::GROUP_1);
 		player_four_ = std::make_unique<Bot>("Bot player 2", Player::Group::GROUP_2);
-		players_.push_back(player_three_.get());
-		players_.push_back(player_four_.get());
+		players_.push_back(static_cast<Player*>(player_three_.get()));
+		players_.push_back(static_cast<Player*>(player_four_.get()));
 	}
 
 	ResetGame();
@@ -204,9 +204,9 @@ Player* Model::GetPlayer(int position) const {
 	case 2:
 		return player_two_.get();
 	case 3:
-		return player_three_.get();
+		return static_cast<Player*>(player_three_.get());
 	case 4:
-		return player_four_.get();
+		return static_cast<Player*>(player_four_.get());
 	}
 	return nullptr;
 }
@@ -219,16 +219,16 @@ Deck* Model::GetDeck() const {
 	return deck_.get();
 }
 
-void Model::SetPlayer(int position, Player player) {
+void Model::SetPlayer(int position, Player* player) {
 	switch (position) {
 	case 1:
-		player_one_ = std::make_unique<Player>(player);
+		player_one_ = std::make_unique<Player>(*player);
 	case 2:
-		player_two_ = std::make_unique<Player>(player);
+		player_two_ = std::make_unique<Player>(*player);
 	case 3:
-		player_three_ = std::make_unique<Bot>(player);
+		player_three_ = std::make_unique<Bot>(*static_cast<Bot*>(player));
 	case 4:
-		player_four_ = std::make_unique<Bot>(player);
+		player_four_ = std::make_unique<Bot>(*static_cast<Bot*>(player));
 	}
 }
 

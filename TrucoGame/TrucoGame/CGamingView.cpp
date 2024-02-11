@@ -175,18 +175,34 @@ void CGamingView::OnBnClickedSaveGameBtn()
 void CGamingView::OnCard1Clicked()
 {
 	card_1.ShowWindow(SW_HIDE);
-	card_round.LoadImage(_T("Assets/Diamond07.png"));
-	card_round.Invalidate();
+	Player* player = controller->GetPlayer(playerNumber);
+	if (player != nullptr) {
+		std::vector<Card> cards = player->GetHand();
+		LoadCardAsset(&card_round, cards.size() > 0 ? &cards[0] : nullptr);
+		card_round.Invalidate();
+	}
 }
 
 void CGamingView::OnCard2Clicked()
 {
 	card_2.ShowWindow(SW_HIDE);
+	Player* player = controller->GetPlayer(playerNumber);
+	if (player != nullptr) {
+		std::vector<Card> cards = player->GetHand();
+		LoadCardAsset(&card_round, cards.size() > 0 ? &cards[1] : nullptr);
+		card_round.Invalidate();
+	}
 }
 
 void CGamingView::OnCard3Clicked()
 {
 	card_3.ShowWindow(SW_HIDE);
+	Player* player = controller->GetPlayer(playerNumber);
+	if (player != nullptr) {
+		std::vector<Card> cards = player->GetHand();
+		LoadCardAsset(&card_round, cards.size() > 0 ? &cards[2] : nullptr);
+		card_round.Invalidate();
+	}
 }
 
 LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
