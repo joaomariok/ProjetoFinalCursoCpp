@@ -15,7 +15,7 @@ public:
 	void IncreaseScore(int inputScore);
 	std::vector<Card> GetHand();
 	void SetHand(std::vector<Card>& newHand);
-	Card PlayCard();
+	Card PlayCard(int cardIndex);
 	void SetGroup(Group group);
 	Group GetGroup() const { return group_; }
 	void IncreaseRoundScore();

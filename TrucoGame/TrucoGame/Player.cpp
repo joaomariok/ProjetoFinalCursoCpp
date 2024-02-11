@@ -30,9 +30,9 @@ void Player::SetHand(std::vector<Card>& newHand) {
 	hand_ = newHand;
 }
 
-Card Player::PlayCard() {
-	Card card = hand_.back();
-	hand_.pop_back();
+Card Player::PlayCard(int cardIndex) {
+	Card card = hand_.at(cardIndex);
+	hand_.erase(hand_.begin() + cardIndex);
 	return card;
 }
 

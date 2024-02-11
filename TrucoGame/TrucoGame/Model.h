@@ -21,7 +21,7 @@ public:
 		Round(std::vector<Player*>& players, Card* vira, Player* first_player);
 		~Round() = default;
 
-		void PlayCard();
+		void PlayCard(int cardIndex);
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
@@ -51,7 +51,7 @@ public:
 
 		void InitRound();
 
-		void PlayCard();
+		void PlayCard(int cardIndex);
 		void AcceptTruco();
 		void RunFromTruco();
 		Player* MaybeGetWinner() const;
@@ -89,7 +89,7 @@ public:
 	void InitHandRound();
 	void ResetGame();
 
-	void PlayCard();
+	void PlayCard(int cardIndex);
 
     void SetPlayer(int position, Player player);
 	Player* GetPlayer(int position) const;
