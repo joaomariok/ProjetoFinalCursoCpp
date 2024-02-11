@@ -29,11 +29,17 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck) :
 		player->SetHand(player_hand);
 	}
 	vira_ = new Card(deck->DrawCard());
-	current_round_ = std::make_unique<Round>(players, vira_);
+	current_round_number_ = 0;
+	InitRound();
 }
 
 Model::HandRound::~HandRound() {
 	delete vira_;
+}
+
+void Model::HandRound::InitRound() {
+	current_round_ = std::make_unique<Round>(players_, vira_);
+	current_round_number_++;
 }
 
 //////////////////////////////////////////
@@ -56,13 +62,14 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 		players_.push_back(player_four_.get());
 	}
 
+	current_hand_round_number_ = 0;
 	InitHandRound();
 }
 
 void Model::InitHandRound() {
 	deck_ = std::make_unique<Deck>();
 	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get());
-	current_round_ = 0;
+	current_hand_round_number_++;
 }
 
 Player* Model::GetPlayer(int position) const
