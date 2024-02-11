@@ -4,7 +4,7 @@
 
 //////////////////////////////////////////
 /// ROUND
-Model::Round::Round(std::vector<Player*>& players, const Card& vira) :
+Model::Round::Round(std::vector<Player*>& players, Card* vira) :
 	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()) {
 	first_player_ = 0;
 	current_player_ = players.at(first_player_);
@@ -23,12 +23,17 @@ void Model::Round::PlayCard() {
 //////////////////////////////////////////
 /// HAND ROUND
 Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck) :
-	players_(players), vira_(deck->DrawCard()) {
+	players_(players) {
 	for (auto player : players) {
 		std::vector<Card> player_hand = deck->DrawHand();
 		player->SetHand(player_hand);
 	}
+	vira_ = new Card(deck->DrawCard());
 	current_round_ = std::make_unique<Round>(players, vira_);
+}
+
+Model::HandRound::~HandRound() {
+	delete vira_;
 }
 
 //////////////////////////////////////////
@@ -76,8 +81,7 @@ Player* Model::GetPlayer(int position) const
 }
 
 Card* Model::GetVira() {
-	Card vira = current_hand_round_->GetVira();
-	return std::move(&vira);
+	return current_hand_round_->GetVira();
 }
 
 bool Model::GetHasFourPlayers() const {
