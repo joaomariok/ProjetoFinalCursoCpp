@@ -91,13 +91,13 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
 	switch (gameEvent) {
 		case CARD1_PICKED:
-			controller_->PlayCard(1);
+			controller_->PlayCard(0);
 			break;
 		case CARD2_PICKED:
-			controller_->PlayCard(2);
+			controller_->PlayCard(1);
 			break;
 		case CARD3_PICKED:
-			controller_->PlayCard(3);
+			controller_->PlayCard(2);
 			break;
 		case TRUCO:
 			break;

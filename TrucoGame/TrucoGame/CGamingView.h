@@ -34,8 +34,9 @@ private:
 
 	void LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist = true);
 	void LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard);
-	CTransparentImage* GetViewComponent(int playerIndex, int numberOfPlayers, int cardIndex);
-	CStatic* GetViewComponent(int playerIndex, int numberOfPlayers);
+	CTransparentImage* GetCardComponent(int playerIndex, int numberOfPlayers, int cardIndex);
+	CTransparentImage* GetRoundCardComponent(int playerIndex, int numberOfPlayers);
+	CStatic* GetStaticComponent(int playerIndex, int numberOfPlayers);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

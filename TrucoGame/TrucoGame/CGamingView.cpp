@@ -103,7 +103,7 @@ BOOL CGamingView::OnInitDialog()
 		for (int i = 1; i <= numberOfPlayers; ++i) {
 			Player* player = controller->GetPlayer(i);
 			if (player != nullptr) {
-				CStatic* textComponent = GetViewComponent(i, numberOfPlayers);
+				CStatic* textComponent = GetStaticComponent(i, numberOfPlayers);
 				if (textComponent != nullptr)
 					textComponent->SetWindowText(CStringW(player->GetName().c_str()));
 			}
@@ -147,24 +147,20 @@ void CGamingView::OnPaint()
 				LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
 			}
 			else {
-				LoadCardBackAsset(GetViewComponent(i, numberOfPlayers, 0), cards.size() > 0 ? &cards[0] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
-				LoadCardBackAsset(GetViewComponent(i, numberOfPlayers, 1), cards.size() > 1 ? &cards[1] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
-				LoadCardBackAsset(GetViewComponent(i, numberOfPlayers, 2), cards.size() > 2 ? &cards[2] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 0), cards.size() > 0 ? &cards[0] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 1), cards.size() > 1 ? &cards[1] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 2), cards.size() > 2 ? &cards[2] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
 			}
 		}
 	}
 	/*PAINT ROUND CARDS*/
 	std::vector<Card> discardedCards = controller->GetDiscardedCards();
 	if (discardedCards.size() > 0) {
-		if (numberOfPlayers == 2) {
-			LoadCardAsset(&card_round, discardedCards.size() > 0 ? &discardedCards[0] : nullptr, false);
-			LoadCardAsset(&card_p3_round, discardedCards.size() > 1 ? &discardedCards[1] : nullptr, false);
-		}
-		else {
-			LoadCardAsset(&card_round, discardedCards.size() > 0 ? &discardedCards[0] : nullptr, false);
-			LoadCardAsset(&card_p2_round, discardedCards.size() > 1 ? &discardedCards[1] : nullptr, false);
-			LoadCardAsset(&card_p3_round, discardedCards.size() > 2 ? &discardedCards[2] : nullptr, false);
-			LoadCardAsset(&card_p4_round, discardedCards.size() > 3 ? &discardedCards[3] : nullptr, false);
+		LoadCardAsset(GetRoundCardComponent(1, numberOfPlayers), discardedCards.size() > 0 ? &discardedCards[0] : nullptr, false);
+		LoadCardAsset(GetRoundCardComponent(2, numberOfPlayers), discardedCards.size() > 1 ? &discardedCards[1] : nullptr, false);
+		if (numberOfPlayers > 2) {
+			LoadCardAsset(GetRoundCardComponent(3, numberOfPlayers), discardedCards.size() > 2 ? &discardedCards[2] : nullptr, false);
+			LoadCardAsset(GetRoundCardComponent(4, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, false);
 		}
 	}
 }
@@ -211,7 +207,7 @@ void CGamingView::OnCard3Clicked()
 LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
-	UpdateWindow();
+	Invalidate();
 	return 0;
 }
 
@@ -220,7 +216,7 @@ void CGamingView::SendMessageToParent(GameEvents gameEvent)
 	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(playerNumber));
 }
 
-CStatic* CGamingView::GetViewComponent(int playerIndex, int numberOfPlayers)
+CStatic* CGamingView::GetStaticComponent(int playerIndex, int numberOfPlayers)
 {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return playerNumber == playerIndex ? &player1_name : &player3_name;
@@ -248,7 +244,7 @@ CStatic* CGamingView::GetViewComponent(int playerIndex, int numberOfPlayers)
 	return nullptr;
 }
 
-CTransparentImage* CGamingView::GetViewComponent(int playerIndex, int numberOfPlayers, int cardIndex)
+CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPlayers, int cardIndex)
 {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
@@ -269,6 +265,34 @@ CTransparentImage* CGamingView::GetViewComponent(int playerIndex, int numberOfPl
 				return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
 			else if (playerIndex == 1)
 				return cardIndex == 0 ? &card_p4_1 : cardIndex == 1 ? &card_p4_2 : &card_p4_3;
+		}
+	}
+	return nullptr;
+}
+
+CTransparentImage* CGamingView::GetRoundCardComponent(int playerIndex, int numberOfPlayers)
+{
+	if (numberOfPlayers == 2) //The position of player 2 is on top
+		return playerNumber == playerIndex ? &card_round : &card_p3_round;
+
+	if (numberOfPlayers == 4) { //The position of players respect its index
+		if (playerNumber == playerIndex)
+			return &card_round;
+		if (playerNumber == 1) {
+			if (playerIndex == 2)
+				return &card_p2_round;
+			else if (playerIndex == 3)
+				return &card_p3_round;
+			else if (playerIndex == 4)
+				return &card_p4_round;
+		}
+		if (playerNumber == 2) {
+			if (playerIndex == 3)
+				return &card_p2_round;
+			else if (playerIndex == 4)
+				return &card_p3_round;
+			else if (playerIndex == 1)
+				return &card_p4_round;
 		}
 	}
 	return nullptr;
