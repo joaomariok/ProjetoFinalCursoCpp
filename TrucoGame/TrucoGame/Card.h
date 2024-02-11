@@ -4,8 +4,8 @@
 class Card
 {
 public:
-	enum Suit { SPADES, HEARTS, DIAMONDS, CLUBS };
-	enum Rank { TWO, THREE, FOUR, FIVE, SIX, SEVEN, JACK, QUEEN, KING, ACE };
+	enum Suit { DIAMONDS, SPADES, HEARTS, CLUBS };
+	enum Rank { FOUR, FIVE, SIX, SEVEN, QUEEN, JACK, KING, ACE, TWO, THREE };
 
 	Card(Suit inputSuit, Rank inputRank);
 	Card();
@@ -17,8 +17,11 @@ public:
 
 	Suit GetSuit() const;
 	Rank GetRank() const;
+	void SetIsManilha();
+	bool IsManilha() const;
 
 private:
 	Suit suit_;
 	Rank rank_;
+	bool is_manilha_;
 };
