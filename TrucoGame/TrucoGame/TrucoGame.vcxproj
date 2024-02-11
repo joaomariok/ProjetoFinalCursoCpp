@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bot.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CGamingView.cpp" />
     <ClCompile Include="CMainWnd.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bot.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CGamingView.h" />
     <ClInclude Include="CMainWnd.h" />
