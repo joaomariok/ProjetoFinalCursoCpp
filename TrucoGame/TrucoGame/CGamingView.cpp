@@ -180,6 +180,8 @@ void CGamingView::OnCard1Clicked()
 		std::vector<Card> cards = player->GetHand();
 		LoadCardAsset(&card_round, cards.size() > 0 ? &cards[0] : nullptr);
 		card_round.Invalidate();
+
+		controller->PlayCard(playerNumber, 0, true);
 	}
 }
 
