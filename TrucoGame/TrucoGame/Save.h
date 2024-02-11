@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include "Model.h"
-#include "Player.h"
+#include "Bot.h"
 #include "Deck.h"
 
 class Save

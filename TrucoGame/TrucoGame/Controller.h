@@ -19,7 +19,7 @@ public:
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(Player* player, Card card, bool visible);
+	void PlayCard(Player* player, int cardIndex, bool visible);
 
 	void Trucar(Player* player, int value);
 	void AcceptTruco(Player* player);

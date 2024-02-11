@@ -18,7 +18,7 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 	return player->GetHand();
 }
 
-void Controller::PlayCard(Player* player, Card card, bool visible) {
+void Controller::PlayCard(Player* player, int cardIndex, bool visible) {
 }
 
 void Controller::Trucar(Player* player, int value) {

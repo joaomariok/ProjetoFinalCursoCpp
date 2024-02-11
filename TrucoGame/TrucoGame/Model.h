@@ -91,7 +91,7 @@ public:
 
 	void PlayCard(int cardIndex);
 
-    void SetPlayer(int position, Player player);
+    void SetPlayer(int position, Player* player);
 	Player* GetPlayer(int position) const;
 
     void SetDeck(Deck deck);
@@ -105,8 +105,8 @@ private:
 	std::unique_ptr<HandRound> current_hand_round_ = nullptr;
 	std::unique_ptr<Player> player_one_ = nullptr;
 	std::unique_ptr<Player> player_two_ = nullptr;
-	std::unique_ptr<Player> player_three_ = nullptr;
-	std::unique_ptr<Player> player_four_ = nullptr;
+	std::unique_ptr<Bot> player_three_ = nullptr;
+	std::unique_ptr<Bot> player_four_ = nullptr;
 	std::unique_ptr<Deck> deck_ = nullptr;
 
 	std::vector<Player*> players_;

@@ -1,5 +1,5 @@
 #include "Bot.h"
 
-Bot::Bot() : Bot("") { }
+Bot::Bot() : Bot("", Group::NO_GROUP) { }
 
-Bot::Bot(std::string inputName, Group group = Group::NO_GROUP) : Player(inputName, group) { }
+Bot::Bot(std::string inputName, Group group) : Player(inputName, group) { }
