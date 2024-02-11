@@ -23,8 +23,8 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 	current_player_ = first_player;
 }
 
-void Model::Round::PlayCard() {
-	Card played_card = current_player_->PlayCard();
+void Model::Round::PlayCard(int cardIndex) {
+	Card played_card = current_player_->PlayCard(cardIndex);
 	discarded_cards_.push_back(played_card);
 	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
 		current_winner_ = current_player_;
@@ -90,9 +90,9 @@ void Model::HandRound::InitRound() {
 	current_round_number_++;
 }
 
-void Model::HandRound::PlayCard()
+void Model::HandRound::PlayCard(int cardIndex)
 {
-	current_round_->PlayCard();
+	current_round_->PlayCard(cardIndex);
 	if (current_round_->WasLastPlayer()) {
 		current_round_->GetWinner()->IncreaseScore(current_hand_value_);
 	}
@@ -159,9 +159,9 @@ void Model::ResetGame()
 	InitHandRound();
 }
 
-void Model::PlayCard()
+void Model::PlayCard(int cardIndex)
 {
-	current_hand_round_->PlayCard();
+	current_hand_round_->PlayCard(cardIndex);
 	Player* winner = current_hand_round_->MaybeGetWinner();
 	if (winner) {
 		// Game finished
