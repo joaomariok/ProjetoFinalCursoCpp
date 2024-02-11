@@ -18,30 +18,39 @@ public:
 	public:
 		static constexpr int MAX_ROUNDS = 3;
 
-		Round(std::vector<Player*>& players, Card* vira);
+		Round(std::vector<Player*>& players, Card* vira, Player* first_player);
 		~Round() = default;
 
 		void PlayCard();
+		void Truco();
+		void AcceptTruco();
+		void RunFromTruco();
 		Player* GetWinner() { return current_winner_; }
+		Player* GetCurrentPlayer() { return current_player_; }
 	private:
 		std::vector<Player*> players_;
 		Player* current_player_ = nullptr;
 		Player* current_winner_ = nullptr;
 		std::vector<Card> discarded_cards_;
 		Card* vira_;
-		int first_player_ = 0;
+		Player* first_player_;
 	};
 
 	class HandRound {
 	public:
-		HandRound(std::vector<Player*>& players, Deck* deck);
+		HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player);
 		~HandRound();
 
 		Card* GetVira() const { return vira_; }
+		Player* GetFirstPlayer() const { return first_player_; }
 		void InitRound();
+
+		void AcceptTruco();
+		void RunFromTruco();
 	private:
 		std::unique_ptr<Round> current_round_ = nullptr;
 		std::vector<Player*> players_;
+		Player* first_player_;
 		Card* vira_;
 		int current_hand_value_ = 1;
 		int current_round_number_ = 0;

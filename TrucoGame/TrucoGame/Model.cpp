@@ -2,12 +2,24 @@
 #include "Card.h"
 #include "Deck.h"
 
+/*
+* Auxiliary function to get the next player in vector of players, knowing pointer to current player.
+*/
+Player* GetNextPlayer(const std::vector<Player*>& players, const Player* current_player) {
+	for (size_t i = 0; i < players.size(); i++) {
+		if (players.at(i) == current_player) {
+			return players.at(i == players.size() - 1 ? 0 : i + 1);
+		}
+	}
+
+	return nullptr;
+}
+
 //////////////////////////////////////////
 /// ROUND
-Model::Round::Round(std::vector<Player*>& players, Card* vira) :
-	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()) {
-	first_player_ = 0;
-	current_player_ = players.at(first_player_);
+Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_player) :
+	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()), first_player_(first_player) {
+	current_player_ = first_player;
 }
 
 void Model::Round::PlayCard() {
@@ -16,14 +28,28 @@ void Model::Round::PlayCard() {
 	if (discarded_cards_.size() == 0/* || <É a maior carta do descarte>*/) {
 		current_winner_ = current_player_;
 	}
-	int next_player = (first_player_ % players_.size()) + 1;
-	current_player_ = players_.at(next_player);
+	current_player_ = GetNextPlayer(players_, current_player_);
+}
+
+void Model::Round::Truco()
+{
+	// TODO
+}
+
+void Model::Round::AcceptTruco()
+{
+	// TODO
+}
+
+void Model::Round::RunFromTruco()
+{
+	current_winner_ = current_player_;
 }
 
 //////////////////////////////////////////
 /// HAND ROUND
-Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck) :
-	players_(players) {
+Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player) :
+	players_(players), first_player_(first_player) {
 	for (auto player : players) {
 		std::vector<Card> player_hand = deck->DrawHand();
 		player->SetHand(player_hand);
@@ -38,8 +64,21 @@ Model::HandRound::~HandRound() {
 }
 
 void Model::HandRound::InitRound() {
-	current_round_ = std::make_unique<Round>(players_, vira_);
+	Player* previous_winner = current_round_ ? current_round_->GetWinner() : players_.back();
+	current_round_ = std::make_unique<Round>(players_, vira_, GetNextPlayer(players_, previous_winner));
 	current_round_number_++;
+}
+
+void Model::HandRound::AcceptTruco()
+{
+	current_hand_value_ = 3;
+	current_round_->AcceptTruco();
+}
+
+void Model::HandRound::RunFromTruco()
+{
+	current_hand_value_ = 1;
+	current_round_->RunFromTruco();
 }
 
 //////////////////////////////////////////
@@ -68,7 +107,8 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 
 void Model::InitHandRound() {
 	deck_ = std::make_unique<Deck>();
-	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get());
+	Player* previous_first_player = current_hand_round_ ? current_hand_round_->GetFirstPlayer() : players_.back();
+	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), GetNextPlayer(players_, previous_first_player));
 	current_hand_round_number_++;
 }
 
