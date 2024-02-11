@@ -25,5 +25,13 @@ bool Card::IsManilha() const {
 }
 
 bool Card::IsBiggerThan(Card card) const {
-	return GetRank() > card.GetRank()/* || <Checar manilha>*/;
+	// The two compared cards are "Manilha"
+	if (IsManilha() && card.IsManilha())
+		return GetSuit() > card.GetSuit();
+
+	// Only one card is "Manilha"
+	if (IsManilha() || card.IsManilha())
+		return IsManilha();
+
+	return GetRank() > card.GetRank();
 }
