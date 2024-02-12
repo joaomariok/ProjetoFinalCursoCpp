@@ -43,3 +43,5 @@ void Player::SetGroup(Group group) {
 void Player::IncreaseRoundScore() {
 	round_score_++;
 }
+
+Player::~Player() = default;

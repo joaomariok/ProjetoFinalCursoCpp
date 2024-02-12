@@ -127,6 +127,23 @@ BOOL CGamingView::OnInitDialog()
 	LoadCardAsset(&card_manilha, controller->GetVira());
 	card_manilha_back.LoadImage(_T("Assets/CardBackRotated.png"));
 
+	/*CUSTOMIZE BUTTON FONT*/
+	CFont font;
+	font.CreateFontW(10, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+
+	CButton* viewButton = static_cast<CButton*>(GetDlgItem(IDC_TRUCO_BTN));
+	if (viewButton != nullptr)
+		viewButton->SetFont(&font);
+	viewButton = static_cast<CButton*>(GetDlgItem(IDC_DESCE_BTN));
+	if (viewButton != nullptr)
+		viewButton->SetFont(&font);
+	viewButton = static_cast<CButton*>(GetDlgItem(IDC_PASSO_BTN));
+	if (viewButton != nullptr)
+		viewButton->SetFont(&font);
+	viewButton = static_cast<CButton*>(GetDlgItem(IDC_SAVE_BUTTON));
+	if (viewButton != nullptr)
+		viewButton->SetFont(&font);
+
 	return TRUE;
 }
 
@@ -191,20 +208,35 @@ void CGamingView::OnBnClickedSaveGameBtn()
 
 void CGamingView::OnCard1Clicked()
 {
-	card_1.ShowWindow(SW_HIDE);
-	SendMessageToParent(CARD1_PICKED);
+	if (controller->IsPlayerTurn(controller->GetPlayer(playerNumber)))
+	{
+		card_1.ShowWindow(SW_HIDE);
+		SendMessageToParent(CARD1_PICKED);
+	}
+	else
+		AfxMessageBox(L"Espere sua vez");
 }
 
 void CGamingView::OnCard2Clicked()
 {
-	card_2.ShowWindow(SW_HIDE);
-	SendMessageToParent(CARD2_PICKED);
+	if (controller->IsPlayerTurn(controller->GetPlayer(playerNumber)))
+	{
+		card_2.ShowWindow(SW_HIDE);
+		SendMessageToParent(CARD2_PICKED);
+	}
+	else
+		AfxMessageBox(L"Espere sua vez");
 }
 
 void CGamingView::OnCard3Clicked()
 {
-	card_3.ShowWindow(SW_HIDE);
-	SendMessageToParent(CARD3_PICKED);
+	if (controller->IsPlayerTurn(controller->GetPlayer(playerNumber)))
+	{
+		card_3.ShowWindow(SW_HIDE);
+		SendMessageToParent(CARD3_PICKED);
+	}
+	else
+		AfxMessageBox(L"Espere sua vez");
 }
 
 LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)

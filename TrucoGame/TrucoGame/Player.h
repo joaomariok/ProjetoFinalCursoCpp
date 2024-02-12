@@ -21,6 +21,7 @@ public:
 	void IncreaseRoundScore();
 	int GetRoundScore() const { return round_score_; }
 
+	virtual ~Player();
 	/*void PrintHand();
 	void Truco();*/
 

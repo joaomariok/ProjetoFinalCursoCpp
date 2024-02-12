@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "Card.h"
 #include "Deck.h"
 #include "Player.h"
@@ -20,7 +18,8 @@ public:
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(int cardIndex);
+	void PlayCard(int playerNumber, int cardIndex, bool visible);
+	void BotPlayCard(int challengingplayerNumber, Card challengingCard, bool ischallengingCardVisible);
 
 	void Trucar(Player* player, int value);
 	void AcceptTruco(Player* player);
@@ -32,6 +31,7 @@ public:
 	Player* GetPlayer(int position);
 	Card* GetVira();
 	std::vector<Card> GetDiscardedCards();
+	BOOL IsPlayerTurn(Player* player);
 
 private:
 	CMainWnd* view_;
