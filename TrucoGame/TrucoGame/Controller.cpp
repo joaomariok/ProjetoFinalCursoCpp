@@ -32,7 +32,22 @@ void Controller::BotPlayCard(int challengingplayerNumber, Card challengingCard, 
 	Bot* botPlayer = dynamic_cast<Bot*>(nextPlayer);
 
 	if (botPlayer != nullptr) {
-		//...
+		// Bot cards are sorted from weakest to strongest
+		botPlayer->SortCards();
+		std::vector<Card> botCards = botPlayer->GetHand();
+
+		for (int i = 0; i < botCards.size(); i++) {
+			// Plays the first cars that is bigger than challengingCard
+			if (botCards[i].IsBiggerThan(challengingCard)) {
+				model_->PlayCard(i);
+				break;
+			}
+			// If no card is bigger than challengingCard, just plays the weakest one
+			else if (i == botCards.size() - 1) {
+				model_->PlayCard(0);
+				break;
+			}
+		}
 	}
 }
 
