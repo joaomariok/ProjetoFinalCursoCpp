@@ -19,6 +19,13 @@ BOOL CMyApp::InitInstance() {
 	wndClass.lpszClassName = _T("CTransparentImage");
 	AfxRegisterClass(&wndClass);
 
+	WNDCLASS wndStaticClass;
+	memset(&wndStaticClass, 0, sizeof(WNDCLASS));
+	wndStaticClass.lpfnWndProc = ::DefWindowProc;
+	wndStaticClass.hInstance = AfxGetInstanceHandle();
+	wndStaticClass.lpszClassName = _T("CTransparentStatic");
+	AfxRegisterClass(&wndStaticClass);
+
 	m_pMainWnd = new CMainWnd();
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();

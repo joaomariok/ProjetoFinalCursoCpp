@@ -81,20 +81,20 @@ BOOL CGamingView::OnInitDialog()
 	SetWindowText(title);
 
 	/* BACKGROUND AND PLAYERS INFO*/
+	/*GROUP1: RED, GROUP2: BLUE*/
 	int numberOfPlayers = controller->GetNumberOfPlayers();
 	CBitmap backgroundBmp;
 	if (numberOfPlayers == 2) {
 		backgroundBmp.LoadBitmap(IDB_BACKGROUND_2PLAYERS);
 		player2_name.ShowWindow(SW_HIDE);
 		player4_name.ShowWindow(SW_HIDE);
-
 		for (int i = 1; i <= numberOfPlayers; ++i) {
 			Player* player = controller->GetPlayer(i);
 			if (player != nullptr) {
 				if (i == playerNumber)
-					player1_name.SetWindowText(CStringW(player->GetName().c_str()));
+					player1_name.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
 				else
-					player3_name.SetWindowText(CStringW(player->GetName().c_str()));
+					player3_name.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
 			}
 		}
 	}
@@ -103,9 +103,9 @@ BOOL CGamingView::OnInitDialog()
 		for (int i = 1; i <= numberOfPlayers; ++i) {
 			Player* player = controller->GetPlayer(i);
 			if (player != nullptr) {
-				CStatic* textComponent = GetStaticComponent(i, numberOfPlayers);
+				CTransparentStatic* textComponent = GetStaticComponent(i, numberOfPlayers);
 				if (textComponent != nullptr)
-					textComponent->SetWindowText(CStringW(player->GetName().c_str()));
+					textComponent->SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
 			}
 		}
 	}
@@ -216,7 +216,7 @@ void CGamingView::SendMessageToParent(GameEvents gameEvent)
 	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(playerNumber));
 }
 
-CStatic* CGamingView::GetStaticComponent(int playerIndex, int numberOfPlayers)
+CTransparentStatic* CGamingView::GetStaticComponent(int playerIndex, int numberOfPlayers)
 {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return playerNumber == playerIndex ? &player1_name : &player3_name;
