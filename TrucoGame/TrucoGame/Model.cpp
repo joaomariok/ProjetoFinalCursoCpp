@@ -164,9 +164,10 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 	players_.push_back(player_one_.get());
 	players_.push_back(player_two_.get());
 
+	player_one_->SetGroup(Player::Group::GROUP_1);
+	player_two_->SetGroup(Player::Group::GROUP_2);
+
 	if (has_four_players) {
-		player_one_->SetGroup(Player::Group::GROUP_1);
-		player_two_->SetGroup(Player::Group::GROUP_2);
 		player_three_ = std::make_unique<Bot>("Bot player 1", Player::Group::GROUP_1);
 		player_four_ = std::make_unique<Bot>("Bot player 2", Player::Group::GROUP_2);
 		players_.push_back(static_cast<Player*>(player_three_.get()));

@@ -73,7 +73,7 @@ void CTransparentStatic::OnPaint()
 
     CString m_string;
     GetWindowText(m_string);
-    dc.DrawText(m_strText != "" ? m_strText : m_string, &rcClient, (alignCenter ? DT_CENTER : DT_LEFT) | DT_TOP | DT_VCENTER | DT_SINGLELINE);
+    dc.DrawText(m_strText != "" ? m_strText : m_string, &rcClient, (alignCenter ? DT_CENTER : DT_LEFT) | DT_VCENTER | DT_SINGLELINE);
 
     CStatic::OnPaint();
 }
