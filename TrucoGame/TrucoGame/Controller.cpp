@@ -20,7 +20,7 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 
 void Controller::PlayCard(int playerNumber, int cardIndex, bool visible) {
 	model_->PlayCard(cardIndex);
-	Card playedCard = model_->GetLastDiscardedCard();
+	Card playedCard = GetDiscardedCards().back();
 
 	if (model_->GetHasFourPlayers())
 		BotPlayCard(playerNumber, playedCard, visible);
@@ -29,7 +29,6 @@ void Controller::PlayCard(int playerNumber, int cardIndex, bool visible) {
 void Controller::BotPlayCard(int challengingplayerNumber, Card challengingCard, bool ischallengingCardVisible) {
 	int nextIndex = challengingplayerNumber < 4 ? challengingplayerNumber + 1 : 0;
 	Player* nextPlayer = model_->GetPlayer(nextIndex);
-
 	Bot* botPlayer = dynamic_cast<Bot*>(nextPlayer);
 
 	if (botPlayer != nullptr) {
@@ -63,4 +62,12 @@ Player* Controller::GetPlayer(int position)
 Card* Controller::GetVira()
 {
 	return model_->GetVira();
+}
+
+std::vector<Card> Controller::GetDiscardedCards()
+{
+	Model::Round* current_round = model_->GetCurrentRound();
+	if (current_round != nullptr)
+		return current_round->GetDiscardedCards();
+	return std::vector<Card>();
 }

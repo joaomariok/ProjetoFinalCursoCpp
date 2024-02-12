@@ -27,9 +27,9 @@ public:
 		void RunFromTruco();
 		bool HasWinner() const;
 
-		Player* GetWinner() const { return current_winner_; }
-		Player* GetCurrentPlayer() const { return current_player_; }
-		Card GetLastDiscardedCard() const { return discarded_cards_.back(); }
+		Player* GetWinner() { return current_winner_; }
+		Player* GetCurrentPlayer() { return current_player_; }
+		std::vector<Card> GetDiscardedCards() { return discarded_cards_; }
 
 	private:
 		bool WasLastPlayer() const;
@@ -59,8 +59,7 @@ public:
 
 		Card* GetVira() const { return vira_; }
 		Player* GetFirstPlayer() const { return first_player_; }
-		Round* GetCurrentRound() const { return current_round_.get(); }
-		Card GetLastDiscardedCard() const { return current_round_->GetLastDiscardedCard(); };
+		Round* GetCurrentRound() { return current_round_.get(); }
 
 	private:
 		std::unique_ptr<Round> current_round_ = nullptr;
@@ -102,10 +101,8 @@ public:
 
 	Card* GetVira() const;
 	bool GetHasFourPlayers() const { return has_four_players_; }
-
 	int GetCurrentRoundNumber() const { return current_hand_round_number_; }
-	HandRound* GetCurrentHandRound() const { return current_hand_round_.get(); }
-	Card GetLastDiscardedCard() const { return current_hand_round_->GetLastDiscardedCard(); };
+	Model::Round* GetCurrentRound() { return (current_hand_round_.get())->GetCurrentRound(); }
 
 private:
 	std::unique_ptr<HandRound> current_hand_round_ = nullptr;

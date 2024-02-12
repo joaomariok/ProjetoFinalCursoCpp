@@ -29,6 +29,7 @@ public:
 	int GetNumberOfPlayers();
 	Player* GetPlayer(int position);
 	Card* GetVira();
+	std::vector<Card> GetDiscardedCards();
 
 private:
 	CMainWnd* view_;
