@@ -39,15 +39,17 @@ void Controller::BotPlayCard(int challengingplayerNumber, Card challengingCard, 
 		for (int i = 0; i < botCards.size(); i++) {
 			// Plays the first cars that is bigger than challengingCard
 			if (botCards[i].IsBiggerThan(challengingCard)) {
-				model_->PlayCard(i);
+				PlayCard(nextIndex, i, true);
 				break;
 			}
 			// If no card is bigger than challengingCard, just plays the weakest one
 			else if (i == botCards.size() - 1) {
-				model_->PlayCard(0);
+				PlayCard(nextIndex, 0, true);
 				break;
 			}
 		}
+
+		//::PostMessage(view_->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(""), LPARAM(0));
 	}
 }
 
