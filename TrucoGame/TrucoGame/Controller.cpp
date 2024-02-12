@@ -18,8 +18,37 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 	return player->GetHand();
 }
 
-void Controller::PlayCard(int cardIndex) {
+void Controller::PlayCard(int playerNumber, int cardIndex, bool visible) {
 	model_->PlayCard(cardIndex);
+	Card playedCard = GetDiscardedCards().back();
+
+	if (model_->GetHasFourPlayers())
+		BotPlayCard(playerNumber, playedCard, visible);
+}
+
+void Controller::BotPlayCard(int challengingplayerNumber, Card challengingCard, bool ischallengingCardVisible) {
+	int nextIndex = challengingplayerNumber < 4 ? challengingplayerNumber + 1 : 0;
+	Player* nextPlayer = model_->GetPlayer(nextIndex);
+	Bot* botPlayer = dynamic_cast<Bot*>(nextPlayer);
+
+	if (botPlayer != nullptr) {
+		// Bot cards are sorted from weakest to strongest
+		botPlayer->SortCards();
+		std::vector<Card> botCards = botPlayer->GetHand();
+
+		for (int i = 0; i < botCards.size(); i++) {
+			// Plays the first cars that is bigger than challengingCard
+			if (botCards[i].IsBiggerThan(challengingCard)) {
+				model_->PlayCard(i);
+				break;
+			}
+			// If no card is bigger than challengingCard, just plays the weakest one
+			else if (i == botCards.size() - 1) {
+				model_->PlayCard(0);
+				break;
+			}
+		}
+	}
 }
 
 void Controller::Trucar(Player* player, int value) {

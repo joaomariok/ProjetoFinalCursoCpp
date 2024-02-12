@@ -89,15 +89,17 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+	int playerNumber = static_cast<int>(lParam);
+
 	switch (gameEvent) {
 		case CARD1_PICKED:
-			controller_->PlayCard(0);
+			controller_->PlayCard(playerNumber, 0, true);
 			break;
 		case CARD2_PICKED:
-			controller_->PlayCard(1);
+			controller_->PlayCard(playerNumber, 1, true);
 			break;
 		case CARD3_PICKED:
-			controller_->PlayCard(2);
+			controller_->PlayCard(playerNumber, 2, true);
 			break;
 		case TRUCO:
 			break;
@@ -108,6 +110,7 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 		default:
 			break;
 	}
+
 	//Send message to update the views
 	SendMessageToGamingView(&gamingView_1);
 	SendMessageToGamingView(&gamingView_2);
