@@ -216,6 +216,10 @@ Card* Model::GetVira() const {
 	return current_hand_round_->GetVira();
 }
 
+void Model::SetHasFourPlayers(bool value) {
+	has_four_players_ = value;
+}
+
 Deck* Model::GetDeck() const {
 	return deck_.get();
 }
@@ -223,16 +227,20 @@ Deck* Model::GetDeck() const {
 void Model::SetPlayer(int position, Player* player) {
 	switch (position) {
 	case 1:
-		player_one_ = std::make_unique<Player>(*player);
+		player_one_.reset(player);
+		break;
 	case 2:
-		player_two_ = std::make_unique<Player>(*player);
+		player_two_.reset(player);
+		break;
 	case 3:
-		player_three_ = std::make_unique<Bot>(*static_cast<Bot*>(player));
+		player_three_.reset(static_cast<Bot*>(player));
+		break;
 	case 4:
-		player_four_ = std::make_unique<Bot>(*static_cast<Bot*>(player));
+		player_four_.reset(static_cast<Bot*>(player));
+		break;
 	}
 }
 
-void Model::SetDeck(Deck deck) {
-	deck_ = std::make_unique<Deck>(deck);
+void Model::SetDeck(Deck* deck) {
+	deck_.reset(deck);
 }

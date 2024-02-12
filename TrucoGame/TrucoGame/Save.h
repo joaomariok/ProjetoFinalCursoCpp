@@ -11,7 +11,7 @@
 class Save
 {
 public:
-	Save(std::string inputDirectory);
+	Save();
 	~Save();
 	bool SaveGame(const Model &inputModel);
 	bool LoadGame(Model& inputModel);

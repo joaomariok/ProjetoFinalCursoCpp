@@ -3,7 +3,8 @@
 
 Controller::Controller(CMainWnd* view) :
 	view_(view),
-	model_(std::make_unique<Model>()) {
+	model_(std::make_unique<Model>()),
+	save_(std::make_unique<Save>()) {
 }
 
 Controller::~Controller() {
@@ -20,6 +21,18 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 
 void Controller::PlayCard(int cardIndex) {
 	model_->PlayCard(cardIndex);
+}
+
+bool Controller::LoadGame() {
+	bool response = save_->LoadGame(*model_);
+	if (response) {
+		model_->Init(model_->GetPlayer(1)->GetName(), model_->GetPlayer(2)->GetName(), model_->GetHasFourPlayers());
+	}
+	return response;
+}
+
+bool Controller::SaveGame() {
+	return save_->SaveGame(*model_);
 }
 
 void Controller::Trucar(Player* player, int value) {

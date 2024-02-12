@@ -72,7 +72,8 @@ void CMainWnd::OnButtonClicked() {
 }
 
 void CMainWnd::OnLoadGameButtonClicked() {
-	//...
+	controller_ = std::make_unique<Controller>(this);
+	bool response = controller_->LoadGame();
 }
 
 void CMainWnd::OnTwoPlayersClicked()

@@ -96,11 +96,12 @@ public:
     void SetPlayer(int position, Player* player);
 	Player* GetPlayer(int position) const;
 
-    void SetDeck(Deck deck);
+    void SetDeck(Deck* deck);
     Deck* GetDeck() const;
 
 	Card* GetVira() const;
 	bool GetHasFourPlayers() const { return has_four_players_; }
+	void SetHasFourPlayers(bool value);
 	int GetCurrentRoundNumber() const { return current_hand_round_number_; }
 	Model::Round* GetCurrentRound() { return (current_hand_round_.get())->GetCurrentRound(); }
 

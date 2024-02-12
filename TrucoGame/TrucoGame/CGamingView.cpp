@@ -183,7 +183,10 @@ void CGamingView::OnBnClickedPassoBtn()
 
 void CGamingView::OnBnClickedSaveGameBtn()
 {
-	//...
+	bool response = controller->SaveGame();
+	if (!response) {
+		//Call dialog error
+	}
 }
 
 void CGamingView::OnCard1Clicked()

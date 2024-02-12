@@ -6,6 +6,7 @@
 #include "Deck.h"
 #include "Player.h"
 #include "Model.h"
+#include "Save.h"
 
 class CMainWnd;
 
@@ -24,6 +25,8 @@ public:
 	void Trucar(Player* player, int value);
 	void AcceptTruco(Player* player);
 	void RunFromTruco(Player* player);
+	bool LoadGame();
+	bool SaveGame();
 	int GetPlayerScore(Player* player);
 	int GetNumberOfPlayers();
 	Player* GetPlayer(int position);
@@ -33,5 +36,6 @@ public:
 private:
 	CMainWnd* view_;
 	std::unique_ptr<Model> model_ = nullptr;
+	std::unique_ptr<Save> save_ = nullptr;
 };
 
