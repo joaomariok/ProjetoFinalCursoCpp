@@ -30,6 +30,7 @@ public:
 	Player* GetPlayer(int position);
 	Card* GetVira();
 	std::vector<Card> GetDiscardedCards();
+	BOOL IsPlayerTurn(Player* player);
 
 private:
 	CMainWnd* view_;

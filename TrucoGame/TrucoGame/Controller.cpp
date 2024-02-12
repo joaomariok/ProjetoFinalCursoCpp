@@ -86,3 +86,13 @@ std::vector<Card> Controller::GetDiscardedCards()
 		return current_round->GetDiscardedCards();
 	return std::vector<Card>();
 }
+
+BOOL Controller::IsPlayerTurn(Player* player)
+{
+	Model::Round* current_round = model_->GetCurrentRound();
+	if (current_round != nullptr)
+	{
+		return current_round->GetCurrentPlayer() == player;
+	}
+	return false;
+}
