@@ -123,7 +123,6 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* f
 		player->SetHand(player_hand);
 	}
 	vira_ = new Card(deck->DrawCard());
-	UpdateHandState();
 	current_round_number_ = 0;
 	winners_.clear();
 	InitRound();
@@ -191,7 +190,7 @@ void Model::HandRound::ClearHandRound(Deck* deck, Player* first)
 	first_player_ = first;
 	vira_ = new Card(deck->DrawCard());
 	current_round_number_ = 0;
-	current_hand_value_ = 1;
+	UpdateHandState();
 	winners_.clear();
 	InitRound();
 }

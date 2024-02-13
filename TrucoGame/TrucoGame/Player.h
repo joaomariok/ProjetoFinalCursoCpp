@@ -11,14 +11,15 @@ public:
 	Player();
 	Player(std::string inputName, Group group = Group::NO_GROUP, int playerNumber = 0);
 
-	Card PlayCard(int cardIndex);
+	virtual Card PlayCard(int cardIndex);
 
 	std::string GetName() const { return name_; }
+	int GetPlayerNumber() const { return playerNumber; }
 
 	void IncreaseScore(int inputScore);
 	int GetScore() const { return score_; }
 
-	void SetHand(std::vector<Card>& newHand);
+	virtual void SetHand(std::vector<Card>& newHand);
 	std::vector<Card> GetHand() const { return hand_; }
 
 	void SetGroup(Group group);
