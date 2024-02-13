@@ -11,16 +11,16 @@ Controller::~Controller() {
 	view_ = nullptr;
 }
 
-void Controller::Init(std::string player_one_name, std::string player_two_name, bool hasFourPlayers) {
-	model_->Init(player_one_name, player_two_name, hasFourPlayers);
+void Controller::Init(std::string player_one_name, std::string player_two_name, bool has_four_players) {
+	model_->Init(player_one_name, player_two_name, has_four_players);
 }
 
 std::vector<Card> Controller::GetPlayerHand(Player* player) {
 	return player->GetHand();
 }
 
-void Controller::PlayCard(int cardIndex) {
-	model_->PlayCard(cardIndex);
+void Controller::PlayCard(int card_index) {
+	model_->PlayCard(card_index);
 }
 
 bool Controller::LoadGame() {

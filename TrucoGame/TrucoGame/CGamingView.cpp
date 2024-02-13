@@ -13,18 +13,18 @@ IMPLEMENT_DYNAMIC(CGamingView, CDialog)
 CGamingView::CGamingView(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_GAMINGVIEW, pParent)
 {
-	playerNumber = 0;
-	controller = nullptr;
+	player_number_ = 0;
+	controller_ = nullptr;
 }
 
 CGamingView::~CGamingView()
 {
 }
 
-void CGamingView::SetController(int playerNumber_, Controller *controller_)
+void CGamingView::SetController(int playerNumber, Controller *controller)
 {
-	playerNumber = playerNumber_;
-	controller = controller_;
+	player_number_ = playerNumber;
+	controller_ = controller;
 }
 
 void CGamingView::DoDataExchange(CDataExchange* pDX)
@@ -78,24 +78,24 @@ BOOL CGamingView::OnInitDialog()
 
 	/* DIALOG TITLE */
 	CString title;
-	title.Format(_T("Jogador %d"), playerNumber);
+	title.Format(_T("Jogador %d"), player_number_);
 	SetWindowText(title);
 
 	/* BACKGROUND AND PLAYERS INFO*/
 	/*GROUP1: RED, GROUP2: BLUE*/
-	int numberOfPlayers = controller->GetNumberOfPlayers();
+	int numberOfPlayers = controller_->GetNumberOfPlayers();
 	CBitmap backgroundBmp;
 	if (numberOfPlayers == 2) {
 		backgroundBmp.LoadBitmap(IDB_BACKGROUND_2PLAYERS);
 		player2_name.ShowWindow(SW_HIDE);
 		player4_name.ShowWindow(SW_HIDE);
 		for (int i = 1; i <= numberOfPlayers; ++i) {
-			Player* player = controller->GetPlayer(i);
+			Player* player = controller_->GetPlayer(i);
 			if (player) {
 				if (i == 1) player1_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
 				if (i == 2) player2_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
 
-				if (i == playerNumber)
+				if (i == player_number_)
 					player1_name.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
 				else
 					player3_name.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
@@ -105,7 +105,7 @@ BOOL CGamingView::OnInitDialog()
 	else {
 		backgroundBmp.LoadBitmap(IDB_BACKGROUND_4PLAYERS);
 		for (int i = 1; i <= numberOfPlayers; ++i) {
-			Player* player = controller->GetPlayer(i);
+			Player* player = controller_->GetPlayer(i);
 			if (player) {
 				if (i == 1) player1_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
 				if (i == 2) player2_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
@@ -127,7 +127,7 @@ BOOL CGamingView::OnInitDialog()
 	word_truco_p2.LoadImage(_T("Assets/Truco.png"));
 	word_truco_p4.LoadImage(_T("Assets/Truco.png"));
 
-	LoadCardAsset(&card_vira, controller->GetVira());
+	LoadCardAsset(&card_vira, controller_->GetVira());
 	card_vira_back.LoadImage(_T("Assets/CardBackRotated.png"));
 
 	/*CUSTOMIZE BUTTON FONT*/
@@ -155,10 +155,10 @@ void CGamingView::OnPaint()
 	CPaintDC dc(this);
 
 	/* PAINT ALL PLAYER CARDS */
-	int numberOfPlayers = controller->GetNumberOfPlayers();
+	int numberOfPlayers = controller_->GetNumberOfPlayers();
 	for (int i = 1; i <= numberOfPlayers; ++i)
 	{
-		Player* player = controller->GetPlayer(i);
+		Player* player = controller_->GetPlayer(i);
 		if (player) {
 			/*PAINT PLAYER SCORE*/
 			if (i == 1 || i == 2) {
@@ -169,21 +169,21 @@ void CGamingView::OnPaint()
 			}
 
 			std::vector<Card> cards = player->GetHand();
-			if (i == playerNumber) { //Is the current player, so it must to show its cards
+			if (i == player_number_) { //Is the current player, so it must to show its cards
 				LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
 				LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
 				LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
 			}
 			else {
-				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 0), cards.size() > 0 ? &cards[0] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
-				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 1), cards.size() > 1 ? &cards[1] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
-				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 2), cards.size() > 2 ? &cards[2] : nullptr, numberOfPlayers == 4 ? (playerNumber == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 0), cards.size() > 0 ? &cards[0] : nullptr, numberOfPlayers == 4 ? (player_number_ == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 1), cards.size() > 1 ? &cards[1] : nullptr, numberOfPlayers == 4 ? (player_number_ == 1 ? i == 3 : i == 4) : true);
+				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 2), cards.size() > 2 ? &cards[2] : nullptr, numberOfPlayers == 4 ? (player_number_ == 1 ? i == 3 : i == 4) : true);
 			}
 		}
 	}
 	/*PAINT DISCARDED CARDS*/
-	int firstPlayerIndex = controller->GetFirstPlayerIndex();
-	std::vector<Card> discardedCards = controller->GetDiscardedCards();
+	int firstPlayerIndex = controller_->GetFirstPlayerIndex();
+	std::vector<Card> discardedCards = controller_->GetDiscardedCards();
 	LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 0 ? &discardedCards[0] : nullptr, true);
 	if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
 	LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 1 ? &discardedCards[1] : nullptr, true);
@@ -195,7 +195,7 @@ void CGamingView::OnPaint()
 	}
 
 	/*PAINT ROUND STATUS*/
-	std::vector<Player*> winners = controller->GetHandRoundWinners();
+	std::vector<Player*> winners = controller_->GetHandRoundWinners();
 	if (winners.size() > 0) {
 		score_1_img.LoadImage(winners[0]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
 		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png")); 
@@ -207,22 +207,22 @@ void CGamingView::OnPaint()
 		score_3_img.LoadImage(_T(""));
 	}
 	CString roundValue;
-	roundValue.Format(_T("%d"), controller->GetCurrentHandValue());
+	roundValue.Format(_T("%d"), controller_->GetCurrentHandValue());
 	round_value.SetText(roundValue);
 	/*PAINT CURRENT PLAYER MESSAGE*/
-	CString currentPlayerString(controller->GetCurrentPlayer()->GetName().c_str());
+	CString currentPlayerString(controller_->GetCurrentPlayer()->GetName().c_str());
 	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
 	current_player.SetText(currentPlayerString, RGB(255, 255, 255), 10, false, true);
 }
 
 void CGamingView::OnBnClickedTrucoBtn()
 {
-	Player* player = controller->GetPlayer(playerNumber);
-	if (controller->CanPlay(player)) {
+	Player* player = controller_->GetPlayer(player_number_);
+	if (controller_->CanPlay(player)) {
 		word_truco_p1.ShowWindow(SW_SHOW);
 		SendMessageToParent(TRUCO);
 	}
-	else if (controller->CanRespondTruco(player)) {
+	else if (controller_->CanRespondTruco(player)) {
 		// Pediu 6
 		word_truco_p1.ShowWindow(SW_SHOW);
 		SendMessageToParent(TRUCO);
@@ -234,7 +234,7 @@ void CGamingView::OnBnClickedTrucoBtn()
 
 void CGamingView::OnBnClickedDesceBtn()
 {
-	if (controller->CanRespondTruco(controller->GetPlayer(playerNumber))) {
+	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
 		word_truco_p1.ShowWindow(SW_HIDE);
 		SendMessageToParent(CONTINUE);
 	}
@@ -245,7 +245,7 @@ void CGamingView::OnBnClickedDesceBtn()
 
 void CGamingView::OnBnClickedPassoBtn()
 {
-	if (controller->CanRespondTruco(controller->GetPlayer(playerNumber))) {
+	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
 		word_truco_p1.ShowWindow(SW_HIDE);
 		SendMessageToParent(QUIT);
 	}
@@ -256,7 +256,7 @@ void CGamingView::OnBnClickedPassoBtn()
 
 void CGamingView::OnBnClickedSaveGameBtn()
 {
-	bool response = controller->SaveGame();
+	bool response = controller_->SaveGame();
 	if (!response) {
 		//Call dialog error
 	}
@@ -264,7 +264,7 @@ void CGamingView::OnBnClickedSaveGameBtn()
 
 void CGamingView::OnCard1Clicked()
 {
-	if (controller->CanPlay(controller->GetPlayer(playerNumber)))
+	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_1.ShowWindow(SW_HIDE);
 		SendMessageToParent(CARD1_PICKED);
@@ -275,7 +275,7 @@ void CGamingView::OnCard1Clicked()
 
 void CGamingView::OnCard2Clicked()
 {
-	if (controller->CanPlay(controller->GetPlayer(playerNumber)))
+	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_2.ShowWindow(SW_HIDE);
 		SendMessageToParent(CARD2_PICKED);
@@ -286,7 +286,7 @@ void CGamingView::OnCard2Clicked()
 
 void CGamingView::OnCard3Clicked()
 {
-	if (controller->CanPlay(controller->GetPlayer(playerNumber)))
+	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_3.ShowWindow(SW_HIDE);
 		SendMessageToParent(CARD3_PICKED);
@@ -304,18 +304,18 @@ LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 
 void CGamingView::SendMessageToParent(GameEvents gameEvent)
 {
-	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(playerNumber));
+	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(player_number_));
 }
 
 CTransparentStatic* CGamingView::GetStaticComponent(int playerIndex, int numberOfPlayers)
 {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
-		return playerNumber == playerIndex ? &player1_name : &player3_name;
+		return player_number_ == playerIndex ? &player1_name : &player3_name;
 
 	if (numberOfPlayers == 4) { //The position of players respect its index
-		if (playerNumber == playerIndex)
+		if (player_number_ == playerIndex)
 			return &player1_name;
-		if (playerNumber == 1) {
+		if (player_number_ == 1) {
 			if (playerIndex == 2)
 				return &player2_name;
 			else if (playerIndex == 3)
@@ -323,7 +323,7 @@ CTransparentStatic* CGamingView::GetStaticComponent(int playerIndex, int numberO
 			else if (playerIndex == 4)
 				return &player4_name;
 		}
-		if (playerNumber == 2) {
+		if (player_number_ == 2) {
 			if (playerIndex == 3)
 				return &player2_name;
 			else if (playerIndex == 4)
@@ -341,7 +341,7 @@ CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPl
 		return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
 	
 	if (numberOfPlayers == 4) { //The position of players respect its index
-		if (playerNumber == 1) {
+		if (player_number_ == 1) {
 			if (playerIndex == 2)
 				return cardIndex == 0 ? &card_p2_1 : cardIndex == 1 ? &card_p2_2 : &card_p2_3;
 			else if (playerIndex == 3)
@@ -349,7 +349,7 @@ CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPl
 			else if (playerIndex == 4)
 				return cardIndex == 0 ? &card_p4_1 : cardIndex == 1 ? &card_p4_2 : &card_p4_3;
 		}
-		if (playerNumber == 2) {
+		if (player_number_ == 2) {
 			if (playerIndex == 3)
 				return cardIndex == 0 ? &card_p2_1 : cardIndex == 1 ? &card_p2_2 : &card_p2_3;
 			else if (playerIndex == 4)
@@ -364,12 +364,12 @@ CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPl
 CTransparentImage* CGamingView::GetRoundCardComponent(int playerIndex, int numberOfPlayers)
 {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
-		return playerNumber == playerIndex ? &card_round : &card_p3_round;
+		return player_number_ == playerIndex ? &card_round : &card_p3_round;
 
 	if (numberOfPlayers == 4) { //The position of players respect its index
-		if (playerNumber == playerIndex)
+		if (player_number_ == playerIndex)
 			return &card_round;
-		if (playerNumber == 1) {
+		if (player_number_ == 1) {
 			if (playerIndex == 2)
 				return &card_p2_round;
 			else if (playerIndex == 3)
@@ -377,7 +377,7 @@ CTransparentImage* CGamingView::GetRoundCardComponent(int playerIndex, int numbe
 			else if (playerIndex == 4)
 				return &card_p4_round;
 		}
-		if (playerNumber == 2) {
+		if (player_number_ == 2) {
 			if (playerIndex == 3)
 				return &card_p2_round;
 			else if (playerIndex == 4)

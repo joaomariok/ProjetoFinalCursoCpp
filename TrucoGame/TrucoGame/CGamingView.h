@@ -16,7 +16,7 @@ public:
 	CGamingView(CWnd* pParent = nullptr);
 	virtual ~CGamingView();
 
-	void SetController(int playerNumber, Controller *controller_);
+	void SetController(int playerNumber, Controller *controller);
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -30,8 +30,8 @@ private:
 		card_vira, card_vira_back, word_truco_p1, word_truco_p2, word_truco_p4, score_1_img, score_2_img, score_3_img;
 	CRect card1_rect, card2_rect, card3_rect;
 
-	int playerNumber;
-	Controller *controller;
+	int player_number_;
+	Controller *controller_;
 
 	void LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist = true);
 	void LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard);

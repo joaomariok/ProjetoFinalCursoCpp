@@ -14,11 +14,11 @@ public:
 	Controller(CMainWnd* view);
 	~Controller();
 
-	void Init(std::string player_one_name, std::string player_two_name, bool hasFourPlayers);
+	void Init(std::string player_one_name, std::string player_two_name, bool has_four_players);
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(int cardIndex);
+	void PlayCard(int card_index);
 
 	void Trucar();
 	void AcceptTruco();

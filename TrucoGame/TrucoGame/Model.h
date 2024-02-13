@@ -25,7 +25,7 @@ public:
 		Round& operator=(Round&& other) noexcept = default;
 		~Round() = default;
 
-		void PlayCard(int cardIndex);
+		void PlayCard(int card_index);
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
@@ -70,7 +70,7 @@ public:
 
 		void InitRound();
 
-		void PlayCard(int cardIndex);
+		void PlayCard(int card_index);
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();

@@ -55,13 +55,13 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 	current_truco_player_ = nullptr;
 }
 
-void Model::Round::PlayCard(int cardIndex) {
+void Model::Round::PlayCard(int card_index) {
 	if (Bot* bot_ = dynamic_cast<Bot*>(current_player_)) {
 		if (discarded_cards_.size() > 0)
 			bot_->SetChallengingCard(discarded_cards_[discarded_cards_.size() - 1]);
 	}
 
-	Card played_card = current_player_->PlayCard(cardIndex);
+	Card played_card = current_player_->PlayCard(card_index);
 	discarded_cards_.push_back(played_card);
 	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
 		current_winner_ = current_player_;
@@ -170,8 +170,8 @@ void Model::HandRound::InitRound() {
 	current_round_number_++;
 }
 
-void Model::HandRound::PlayCard(int cardIndex) {
-	current_round_->PlayCard(cardIndex);
+void Model::HandRound::PlayCard(int card_index) {
+	current_round_->PlayCard(card_index);
 
 	if (current_round_->IsRoundFinished())
 		InitRound();
@@ -318,8 +318,8 @@ void Model::CheckHandRoundFinished() {
 	}
 }
 
-void Model::PlayCard(int cardIndex) {
-	current_hand_round_->PlayCard(cardIndex);
+void Model::PlayCard(int card_index) {
+	current_hand_round_->PlayCard(card_index);
 	CheckHandRoundFinished();
 }
 
