@@ -5,6 +5,8 @@
 #include <iterator>
 #include <random>
 #include <ctime>
+#include <thread>
+#include <future>
 
 Deck::Deck() {
 	ResetDeck();
@@ -29,6 +31,29 @@ void Deck::Shuffle() {
 	std::random_device rd;
 	std::mt19937 g(rd());
 	std::shuffle(cards_.begin(), cards_.end(), g);
+
+	constexpr int total_threads = 4;
+	const size_t batch_size = cards_.size() / total_threads;
+	std::vector<Cards> results;
+	Cards shuffled_deck = Cards();
+
+	for (size_t i = 0; i < total_threads; i++) {
+		const size_t begin = i * batch_size;
+		const size_t end = begin + batch_size - 1;
+		Cards batch_vector(cards_.begin() + begin, cards_.begin() + end);
+		results.emplace_back( 
+			std::async(std::launch::async, [&](Cards cards) {
+				std::shuffle(cards.begin(), cards.end(), g);
+				return cards;
+			}, batch_vector).get());
+	}
+
+	for (auto& result : results) {
+		shuffled_deck.reserve(result.size()); // preallocate memory
+		shuffled_deck.insert(shuffled_deck.end(), result.begin(), result.end());
+	}
+
+	cards_ = shuffled_deck;
 	current_card_index_ = 0;
 }
 
@@ -45,10 +70,11 @@ void Deck::AddCard(Card& card) {
 	cards_.push_back(card);
 }
 
-std::vector<Card> Deck::DrawHand() {
-	std::vector<Card> hand = std::vector<Card>();
-	hand.push_back(DrawCard());
-	hand.push_back(DrawCard());
-	hand.push_back(DrawCard());
+Cards Deck::DrawHand() {
+	constexpr int HAND_SIZE = 3;
+	Cards hand = Cards();
+	for (size_t i = 0; i < HAND_SIZE; i++) {
+		hand.push_back(DrawCard());
+	}
 	return hand;
 }

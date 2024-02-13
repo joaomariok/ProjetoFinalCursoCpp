@@ -2,6 +2,8 @@
 #include "Card.h"
 #include <vector>
 
+using Cards = std::vector<Card>;
+
 class Deck
 {
 public:
@@ -11,10 +13,10 @@ public:
 	void Shuffle();
 	Card DrawCard();
 	void AddCard(Card& card);
-	std::vector<Card> DrawHand();
+	Cards DrawHand();
 
 private:
-	std::vector<Card> cards_;
+	Cards cards_;
 	int current_card_index_;
 	void InitializeDeck();
 };
