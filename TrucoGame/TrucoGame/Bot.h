@@ -9,4 +9,5 @@ public:
 	Bot(std::string inputName, Group group);
 
 	void SortCards();
+	int DefineWhichCardWillBePlayed(Card challengingCard);
 };
