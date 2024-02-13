@@ -1,6 +1,10 @@
 ﻿#include "pch.h"
 #include "framework.h"
 #include <tuple>
+#include <iostream>
+#include <thread>
+#include <future>
+#include <chrono>
 #include "CMainWnd.h"
 
 CMainWnd::CMainWnd() {
@@ -69,6 +73,20 @@ void CMainWnd::OnButtonClicked() {
 		gamingView_2.ShowWindow(SW_SHOW);
 	}
 	startButton.EnableWindow(FALSE);
+
+	std::thread([&]() {
+		while (gamingView_1.IsWindowVisible() && gamingView_2.IsWindowVisible())
+		{
+			OutputDebugStringW(L"Starting Bot thread\n");
+			if (Bot* bot_ = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
+				controller_->PlayCard(0);
+				SendMessageToGamingView(&gamingView_1);
+				SendMessageToGamingView(&gamingView_2);
+			}
+			OutputDebugStringW(L"Sleeping for 4 seconds\n");
+			std::this_thread::sleep_for(std::chrono::seconds(4));
+		}
+	}).detach();
 }
 
 void CMainWnd::OnLoadGameButtonClicked() {
@@ -94,13 +112,13 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 
 	switch (gameEvent) {
 		case CARD1_PICKED:
-			controller_->PlayCard(playerNumber, 0, true);
+			controller_->PlayCard(0);
 			break;
 		case CARD2_PICKED:
-			controller_->PlayCard(playerNumber, 1, true);
+			controller_->PlayCard(1);
 			break;
 		case CARD3_PICKED:
-			controller_->PlayCard(playerNumber, 2, true);
+			controller_->PlayCard(2);
 			break;
 		case TRUCO:
 			break;

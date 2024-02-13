@@ -7,6 +7,10 @@
 #include <ctime>
 
 Deck::Deck() {
+	ResetDeck();
+}
+
+void Deck::ResetDeck() {
 	current_card_index_ = 0;
 	InitializeDeck();
 	Shuffle();

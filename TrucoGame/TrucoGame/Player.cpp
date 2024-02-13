@@ -1,8 +1,9 @@
 #include "Player.h"
 
-Player::Player(std::string inputName, Group group)
+Player::Player(std::string inputName, Group group, int playerNum)
 {
 	name_ = inputName;
+	playerNumber = playerNum;
 	score_ = 0;
 	round_score_ = 0;
 	group_ = group;

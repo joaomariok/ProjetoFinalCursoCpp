@@ -32,6 +32,7 @@ public:
 		Player* GetFirstPlayer() { return first_player_; }
 		std::vector<Card> GetDiscardedCards() { return discarded_cards_; }
 		bool IsRoundFinished() { return current_player_ == first_player_; }
+		void ClearRound(Player* first_player);
 
 	private:
 		bool WasLastPlayer() const;
@@ -64,6 +65,7 @@ public:
 		Player* GetFirstPlayer() const { return first_player_; }
 		Round* GetCurrentRound() { return current_round_.get(); }
 		std::vector<Player*> GetHandRoundWinners() { return winners_; };
+		void ClearHandRound(Deck* deck, Player* first_player);
 
 	private:
 		std::unique_ptr<Round> current_round_ = nullptr;

@@ -18,8 +18,7 @@ public:
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(int playerNumber, int cardIndex, bool visible);
-	void BotPlayCard(int challengingplayerNumber, Card challengingCard, bool ischallengingCardVisible);
+	void PlayCard(int cardIndex);
 
 	void Trucar(Player* player, int value);
 	void AcceptTruco(Player* player);

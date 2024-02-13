@@ -198,8 +198,13 @@ void CGamingView::OnPaint()
 	std::vector<Player*> winners = controller->GetHandRoundWinners();
 	if (winners.size() > 0) {
 		score_1_img.LoadImage(winners[0]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
-		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png")); 
 		if (winners.size() > 2) score_3_img.LoadImage(winners[2]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+	}
+	else {
+		score_1_img.LoadImage(_T(""));
+		score_2_img.LoadImage(_T(""));
+		score_3_img.LoadImage(_T(""));
 	}
 	CString roundValue;
 	roundValue.Format(_T("%d"), controller->GetCurrentHandValue());
@@ -207,7 +212,7 @@ void CGamingView::OnPaint()
 	/*PAINT CURRENT PLAYER MESSAGE*/
 	CString currentPlayerString(controller->GetCurrentPlayer()->GetName().c_str());
 	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
-	current_player.SetText(currentPlayerString, RGB(255,255,255), 10, false, true);
+	current_player.SetText(currentPlayerString, RGB(255, 255, 255), 10, false, true);
 }
 
 void CGamingView::OnBnClickedTrucoBtn()
@@ -370,8 +375,10 @@ void CGamingView::LoadCardBackAsset(CTransparentImage* cardComponent, Card* card
 		cardComponent->ShowWindow(SW_HIDE);
 		return;
 	}
-	cardComponent->LoadImage(isHalfCard ? _T("Assets/CardBack2.png") : _T("Assets/CardBackRotated.png"));
+	if (!cardComponent->IsWindowVisible())
+		cardComponent->ShowWindow(SW_SHOW);
 
+	cardComponent->LoadImage(isHalfCard ? _T("Assets/CardBack2.png") : _T("Assets/CardBackRotated.png"));
 }
 
 void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist)

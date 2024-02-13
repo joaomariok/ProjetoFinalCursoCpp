@@ -42,6 +42,12 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 }
 
 void Model::Round::PlayCard(int cardIndex) {
+	
+	if (Bot* bot_ = dynamic_cast<Bot*>(current_player_)){
+		if (discarded_cards_.size() > 0)
+			bot_->SetChallengingCard(discarded_cards_[discarded_cards_.size() - 1]);
+	}
+
 	Card played_card = current_player_->PlayCard(cardIndex);
 	discarded_cards_.push_back(played_card);
 	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
@@ -71,6 +77,13 @@ void Model::Round::RunFromTruco() {
 
 bool Model::Round::HasWinner() const {
 	return WasLastPlayer() || DidSomebodyWin();
+}
+
+void Model::Round::ClearRound(Player* new_player)
+{
+	discarded_cards_.clear();
+	first_player_ = new_player;
+	current_player_ = new_player;
 }
 
 bool Model::Round::WasLastPlayer() const {
@@ -103,7 +116,6 @@ bool Model::Round::IsBiggestCard(Card current_card) const {
 //////////////////////////////////////////
 /// HAND ROUND
 Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player) :
-	//TODO: This first_player_ is still necessary?
 	players_(players), first_player_(first_player) {
 	for (Player* player : players) {
 		std::vector<Card> player_hand = deck->DrawHand();
@@ -120,11 +132,14 @@ Model::HandRound::~HandRound() {
 }
 
 void Model::HandRound::InitRound() {
-	if (current_round_)
+	if (current_round_ && current_round_number_ > 0)
 		winners_.push_back(current_round_->GetWinner());
 
 	Player* previous_winner = current_round_ ? current_round_->GetWinner() : players_.back();
-	current_round_ = std::make_unique<Round>(players_, vira_, player_utils::GetNextPlayer(players_, previous_winner));
+	if (current_round_)
+		current_round_->ClearRound(player_utils::GetNextPlayer(players_, previous_winner));
+	else
+		current_round_ = std::make_unique<Round>(players_, vira_, player_utils::GetNextPlayer(players_, previous_winner));
 	current_round_number_++;
 }
 
@@ -140,6 +155,7 @@ void Model::HandRound::PlayCard(int cardIndex) {
 		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
 			other_player->IncreaseScore(current_hand_value_);
 		}
+		current_hand_value_ = -1; //To reset HandRound
 	}
 }
 
@@ -162,23 +178,35 @@ Player* Model::HandRound::MaybeGetWinner() const {
 	return nullptr;
 }
 
+void Model::HandRound::ClearHandRound(Deck* deck, Player* first)
+{
+	for (Player* player : players_) {
+		std::vector<Card> player_hand = deck->DrawHand();
+		player->SetHand(player_hand);
+		player->ResetRoundScore();
+	}
+	first_player_ = first;
+	vira_ = new Card(deck->DrawCard());
+	current_round_number_ = 0;
+	current_hand_value_ = 1;
+	winners_.clear();
+	InitRound();
+}
+
 //////////////////////////////////////////
 /// MODEL
 void Model::Init(std::string player_one_name, std::string player_two_name, bool has_four_players) {
-	player_one_ = std::make_unique<Player>(player_one_name);
-	player_two_ = std::make_unique<Player>(player_two_name);
+	player_one_ = std::make_unique<Player>(player_one_name, Player::Group::GROUP_1, 1);
+	player_two_ = std::make_unique<Player>(player_two_name, Player::Group::GROUP_2, 2);
 	has_four_players_ = has_four_players;
 
 	players_ = std::vector<Player*>();
 	players_.push_back(player_one_.get());
 	players_.push_back(player_two_.get());
 
-	player_one_->SetGroup(Player::Group::GROUP_1);
-	player_two_->SetGroup(Player::Group::GROUP_2);
-
 	if (has_four_players) {
-		player_three_ = std::make_unique<Bot>("Bot player 1", Player::Group::GROUP_1);
-		player_four_ = std::make_unique<Bot>("Bot player 2", Player::Group::GROUP_2);
+		player_three_ = std::make_unique<Bot>("Bot player 1", Player::Group::GROUP_1, 3);
+		player_four_ = std::make_unique<Bot>("Bot player 2", Player::Group::GROUP_2, 4);
 		players_.push_back(static_cast<Player*>(player_three_.get()));
 		players_.push_back(static_cast<Player*>(player_four_.get()));
 	}
@@ -187,9 +215,17 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 }
 
 void Model::InitHandRound() {
-	deck_ = std::make_unique<Deck>();
+	if (deck_)
+		deck_->ResetDeck();
+	else
+		deck_ = std::make_unique<Deck>();
+
 	Player* previous_first_player = current_hand_round_ ? current_hand_round_->GetFirstPlayer() : players_.back();
-	current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), player_utils::GetNextPlayer(players_, previous_first_player));
+
+	if (current_hand_round_)
+		current_hand_round_->ClearHandRound(deck_.get(), previous_first_player);
+	else
+		current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), player_utils::GetNextPlayer(players_, previous_first_player));
 	current_hand_round_number_++;
 }
 
@@ -201,10 +237,14 @@ void Model::ResetGame() {
 
 void Model::PlayCard(int cardIndex) {
 	current_hand_round_->PlayCard(cardIndex);
+
 	Player* winner = current_hand_round_->MaybeGetWinner();
 	if (winner) {
 		// Game finished
 	}
+
+	if (current_hand_round_->GetCurrentHandValue() == -1)
+		InitHandRound();
 }
 
 Player* Model::GetPlayer(int position) const {
@@ -214,9 +254,9 @@ Player* Model::GetPlayer(int position) const {
 	case 2:
 		return player_two_.get();
 	case 3:
-		return static_cast<Player*>(player_three_.get());
+		return dynamic_cast<Player*>(player_three_.get());
 	case 4:
-		return static_cast<Player*>(player_four_.get());
+		return dynamic_cast<Player*>(player_four_.get());
 	}
 	return nullptr;
 }
@@ -233,11 +273,8 @@ int Model::GetFirstPlayerIndex()
 {
 	Round* current_round = GetCurrentRound();
 	if (current_round) {
-		Player* first_player = current_round->GetFirstPlayer();
-		if (first_player == player_one_.get()) return 1;
-		else if (first_player == player_two_.get()) return 2;
-		else if (first_player == player_three_.get()) return 3;
-		else if (first_player == player_four_.get()) return 4;
+		if (Player* first_player = current_round->GetFirstPlayer())
+			return first_player->GetPlayerNumber();
 	}
 	return 1;
 }
