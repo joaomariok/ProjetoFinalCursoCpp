@@ -8,14 +8,6 @@ bool cardsComparer(Card currentCard, Card nextCard) {
 	return nextCard.IsBiggerThan(currentCard);
 }
 
-void Bot::SortCards() {
-	std::vector<Card> sortedHand = GetHand();
-
-	std::sort(sortedHand.begin(), sortedHand.end(), cardsComparer);
-
-	SetHand(sortedHand);
-}
-
 void Bot::SetChallengingCard(Card card) { challengingCard = card; }
 
 /*Polimorfismo*/
@@ -32,7 +24,7 @@ Card Bot::PlayCard(int cardIndex) {
 }
 
 void Bot::SetHand(std::vector<Card>& newHand) {
-	//SetHand sorted for Bot players
+	//Bot cards are sorted from weakest to strongest.
 	std::sort(newHand.begin(), newHand.end(), cardsComparer);
 	Player::SetHand(newHand);
 }

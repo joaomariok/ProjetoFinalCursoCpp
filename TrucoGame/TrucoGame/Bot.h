@@ -9,7 +9,6 @@ public:
 	Bot();
 	Bot(std::string inputName, Group group, int playerNumber);
 
-	void SortCards();
 	void SetChallengingCard(Card card);
 
 	Card PlayCard(int cardIndex) override;
