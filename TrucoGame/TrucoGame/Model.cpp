@@ -42,8 +42,7 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 }
 
 void Model::Round::PlayCard(int cardIndex) {
-	
-	if (Bot* bot_ = dynamic_cast<Bot*>(current_player_)){
+	if (Bot* bot_ = dynamic_cast<Bot*>(current_player_)) {
 		if (discarded_cards_.size() > 0)
 			bot_->SetChallengingCard(discarded_cards_[discarded_cards_.size() - 1]);
 	}
@@ -53,6 +52,7 @@ void Model::Round::PlayCard(int cardIndex) {
 	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
 		current_winner_ = current_player_;
 	}
+
 	current_player_ = player_utils::GetNextPlayer(players_, current_player_);
 	if (current_player_ == first_player_) {
 		// Acabou a rodada
@@ -80,8 +80,7 @@ bool Model::Round::HasWinner() const {
 	return WasLastPlayer() || DidSomebodyWin();
 }
 
-void Model::Round::ClearRound(Player* new_player)
-{
+void Model::Round::ClearRound(Player* new_player) {
 	discarded_cards_.clear();
 	first_player_ = new_player;
 	current_player_ = new_player;
@@ -118,11 +117,14 @@ bool Model::Round::IsBiggestCard(Card current_card) const {
 /// HAND ROUND
 Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player) :
 	players_(players), first_player_(first_player) {
+	vira_ = new Card(deck->DrawCard());
+	deck->SetManilhas(*vira_);
+
 	for (Player* player : players) {
 		std::vector<Card> player_hand = deck->DrawHand();
 		player->SetHand(player_hand);
 	}
-	vira_ = new Card(deck->DrawCard());
+
 	current_round_number_ = 0;
 	winners_.clear();
 	InitRound();
@@ -180,15 +182,17 @@ Player* Model::HandRound::MaybeGetWinner() const {
 	return nullptr;
 }
 
-void Model::HandRound::ClearHandRound(Deck* deck, Player* first)
-{
+void Model::HandRound::ClearHandRound(Deck* deck, Player* first) {
+	vira_ = new Card(deck->DrawCard());
+	deck->SetManilhas(*vira_);
+
 	for (Player* player : players_) {
 		std::vector<Card> player_hand = deck->DrawHand();
 		player->SetHand(player_hand);
 		player->ResetRoundScore();
 	}
 	first_player_ = first;
-	vira_ = new Card(deck->DrawCard());
+
 	current_round_number_ = 0;
 	UpdateHandState();
 	winners_.clear();
@@ -287,8 +291,7 @@ void Model::SetHasFourPlayers(bool has_four_players) {
 	has_four_players_ = has_four_players;
 }
 
-int Model::GetFirstPlayerIndex()
-{
+int Model::GetFirstPlayerIndex() {
 	Round* current_round = GetCurrentRound();
 	if (current_round) {
 		if (Player* first_player = current_round->GetFirstPlayer())

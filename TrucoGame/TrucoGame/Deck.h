@@ -12,6 +12,7 @@ public:
 	void ResetDeck();
 	void Shuffle();
 	Card DrawCard();
+	void SetManilhas(Card& vira);
 	void AddCard(Card& card);
 	Cards DrawHand();
 

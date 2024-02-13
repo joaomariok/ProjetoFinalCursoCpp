@@ -66,6 +66,23 @@ Card Deck::DrawCard() {
 	return Card(Card::Suit::DIAMONDS, Card::Rank::FOUR);
 }
 
+void Deck::SetManilhas(Card& vira) {
+	Card::Rank manilhasRank;
+	Card::Rank viraRank = vira.GetRank();
+
+	if (viraRank == Card::THREE) {
+		manilhasRank = Card::FOUR;
+	}
+	else {
+		manilhasRank = static_cast<Card::Rank>(viraRank + 1);
+	}
+
+	for (int i = 0; i < cards_.size(); i++) {
+		if (cards_[i].GetRank() == manilhasRank)
+			cards_[i].SetIsManilha();
+	}
+}
+
 void Deck::AddCard(Card& card) {
 	cards_.push_back(card);
 }
