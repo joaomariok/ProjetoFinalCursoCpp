@@ -11,20 +11,8 @@ Player::Player(std::string inputName, Group group, int playerNum)
 
 Player::Player() : Player("") {}
 
-std::string Player::GetName() {
-	return name_;
-}
-
-int Player::GetScore() {
-	return score_;
-}
-
 void Player::IncreaseScore(int inputScore) {
 	score_ += inputScore;
-}
-
-std::vector<Card> Player::GetHand() {
-	return hand_;
 }
 
 void Player::SetHand(std::vector<Card>& newHand) {

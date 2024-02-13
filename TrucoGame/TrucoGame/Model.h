@@ -19,6 +19,10 @@ public:
 		static constexpr int MAX_ROUNDS = 3;
 
 		Round(std::vector<Player*>& players, Card* vira, Player* first_player);
+		Round(const Round& other) = default;
+		Round(Round&& other) noexcept = default;
+		Round& operator=(const Round& other) = default;
+		Round& operator=(Round&& other) noexcept = default;
 		~Round() = default;
 
 		void PlayCard(int cardIndex);
@@ -50,7 +54,13 @@ public:
 
 	class HandRound {
 	public:
+		enum HandState { MAO_NORMAL, MAO_DE_ONZE, MAO_DE_FERRO };
+
 		HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player);
+		HandRound(const HandRound& other) = default;
+		HandRound(HandRound&& other) noexcept = default;
+		HandRound& operator=(const HandRound& other) = default;
+		HandRound& operator=(HandRound&& other) noexcept = default;
 		~HandRound();
 
 		void InitRound();
@@ -68,6 +78,8 @@ public:
 		void ClearHandRound(Deck* deck, Player* first_player);
 
 	private:
+		void UpdateHandState();
+
 		std::unique_ptr<Round> current_round_ = nullptr;
 		std::vector<Player*> winners_;
 		std::vector<Player*> players_;
@@ -75,6 +87,7 @@ public:
 		Player* first_player_;
 		Card* vira_;
 
+		HandState state_;
 		int current_hand_value_ = 1;
 		int current_round_number_ = 0;
 	};
@@ -107,11 +120,11 @@ public:
 
 	Card* GetVira() const;
 	bool GetHasFourPlayers() const { return has_four_players_; }
-	void SetHasFourPlayers(bool value);
+	void SetHasFourPlayers(bool has_four_players);
 	int GetCurrentRoundNumber() const { return current_hand_round_number_; }
 	int GetFirstPlayerIndex();
 	Model::HandRound* GetCurrentHandRound() { return current_hand_round_.get(); }
-	Model::Round* GetCurrentRound() { return (current_hand_round_.get())->GetCurrentRound(); }
+	Model::Round* GetCurrentRound() { return current_hand_round_->GetCurrentRound(); }
 
 private:
 	std::unique_ptr<HandRound> current_hand_round_ = nullptr;

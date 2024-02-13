@@ -10,18 +10,23 @@ public:
 
 	Player();
 	Player(std::string inputName, Group group = Group::NO_GROUP, int playerNumber = 0);
-	std::string GetName();
-	int GetScore();
-	int GetPlayerNumber(){ return playerNumber; }
+
+	Card PlayCard(int cardIndex);
+
+	std::string GetName() const { return name_; }
+
 	void IncreaseScore(int inputScore);
-	std::vector<Card> GetHand();
-	virtual void SetHand(std::vector<Card>& newHand);
-	virtual Card PlayCard(int cardIndex);
+	int GetScore() const { return score_; }
+
+	void SetHand(std::vector<Card>& newHand);
+	std::vector<Card> GetHand() const { return hand_; }
+
 	void SetGroup(Group group);
 	Group GetGroup() const { return group_; }
-	void ResetRoundScore() { round_score_ = 0; }
+
 	void IncreaseRoundScore();
 	int GetRoundScore() const { return round_score_; }
+	void ResetRoundScore() { round_score_ = 0; }
 
 	virtual ~Player();
 	/*void PrintHand();

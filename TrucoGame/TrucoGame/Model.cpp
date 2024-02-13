@@ -72,6 +72,7 @@ void Model::Round::AcceptTruco() {
 }
 
 void Model::Round::RunFromTruco() {
+	// TODO
 	current_winner_ = current_player_;
 }
 
@@ -122,6 +123,7 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* f
 		player->SetHand(player_hand);
 	}
 	vira_ = new Card(deck->DrawCard());
+	UpdateHandState();
 	current_round_number_ = 0;
 	winners_.clear();
 	InitRound();
@@ -160,6 +162,7 @@ void Model::HandRound::PlayCard(int cardIndex) {
 }
 
 void Model::HandRound::AcceptTruco() {
+	// TODO: Include mao de onze logic here
 	current_hand_value_ = 3;
 	current_round_->AcceptTruco();
 }
@@ -191,6 +194,22 @@ void Model::HandRound::ClearHandRound(Deck* deck, Player* first)
 	current_hand_value_ = 1;
 	winners_.clear();
 	InitRound();
+}
+
+void Model::HandRound::UpdateHandState() {
+	constexpr int MAO_DE_ONZE_POINTS = WIN_POINTS - 1;
+	if (players_.at(0)->GetScore() == MAO_DE_ONZE_POINTS && players_.at(1)->GetScore() == MAO_DE_ONZE_POINTS) {
+		state_ = HandRound::HandState::MAO_DE_FERRO;
+		current_hand_value_ = 1;
+	}
+	else if (players_.at(0)->GetScore() == MAO_DE_ONZE_POINTS || players_.at(1)->GetScore() == MAO_DE_ONZE_POINTS) {
+		state_ = HandRound::HandState::MAO_DE_ONZE;
+		current_hand_value_ = 3;
+	}
+	else {
+		state_ = HandRound::HandState::MAO_NORMAL;
+		current_hand_value_ = 1;
+	}
 }
 
 //////////////////////////////////////////
@@ -265,8 +284,8 @@ Card* Model::GetVira() const {
 	return current_hand_round_->GetVira();
 }
 
-void Model::SetHasFourPlayers(bool value) {
-	has_four_players_ = value;
+void Model::SetHasFourPlayers(bool has_four_players) {
+	has_four_players_ = has_four_players;
 }
 
 int Model::GetFirstPlayerIndex()
