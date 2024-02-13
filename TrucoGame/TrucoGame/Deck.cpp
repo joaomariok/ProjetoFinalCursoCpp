@@ -41,11 +41,11 @@ void Deck::Shuffle() {
 		const size_t begin = i * batch_size;
 		const size_t end = begin + batch_size - 1;
 		Cards batch_vector(cards_.begin() + begin, cards_.begin() + end);
-		results.emplace_back( 
+		results.emplace_back(
 			std::async(std::launch::async, [&](Cards cards) {
 				std::shuffle(cards.begin(), cards.end(), g);
 				return cards;
-			}, batch_vector).get());
+				}, batch_vector).get());
 	}
 
 	for (auto& result : results) {
@@ -67,19 +67,20 @@ Card Deck::DrawCard() {
 }
 
 void Deck::SetManilhas(Card& vira) {
-	Card::Rank manilhasRank;
-	Card::Rank viraRank = vira.GetRank();
+	Card::Rank manilhas_rank;
+	Card::Rank vira_rank = vira.GetRank();
 
-	if (viraRank == Card::THREE) {
-		manilhasRank = Card::FOUR;
-	}
-	else {
-		manilhasRank = static_cast<Card::Rank>(viraRank + 1);
-	}
+	manilhas_rank = vira_rank == Card::THREE ?
+		Card::FOUR : static_cast<Card::Rank>(vira_rank + 1);
 
-	for (int i = 0; i < cards_.size(); i++) {
-		if (cards_[i].GetRank() == manilhasRank)
+	int i = 0, manilhas_count = 0;
+
+	while (manilhas_count < 4) {
+		if (cards_[i].GetRank() == manilhas_rank) {
 			cards_[i].SetIsManilha();
+			manilhas_count++;
+		}
+		i++;
 	}
 }
 
