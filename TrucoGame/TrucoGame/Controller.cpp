@@ -35,13 +35,19 @@ bool Controller::SaveGame() {
 	return save_->SaveGame(*model_);
 }
 
-void Controller::Trucar(Player* player, int value) {
+void Controller::Trucar() {
+	model_->GetCurrentHandRound()->Truco();
+	model_->CheckHandRoundFinished();
 }
 
-void Controller::AcceptTruco(Player* player) {
+void Controller::AcceptTruco() {
+	model_->GetCurrentHandRound()->AcceptTruco();
+	model_->CheckHandRoundFinished();
 }
 
-void Controller::RunFromTruco(Player* player) {
+void Controller::RunFromTruco() {
+	model_->GetCurrentHandRound()->RunFromTruco();
+	model_->CheckHandRoundFinished();
 }
 
 std::vector<Card> Controller::GetDiscardedCards()
@@ -52,12 +58,25 @@ std::vector<Card> Controller::GetDiscardedCards()
 	return std::vector<Card>();
 }
 
-BOOL Controller::IsPlayerTurn(Player* player)
-{
+bool Controller::IsPlayerTurn(Player* player) const {
 	Model::Round* current_round = model_->GetCurrentRound();
 	if (current_round)
 		return current_round->GetCurrentPlayer() == player;
 	return false;
+}
+
+bool Controller::IsInTrucoState() const {
+	Model::Round* current_round = model_->GetCurrentRound();
+	return current_round ? current_round->IsInTrucoState() : false;
+}
+
+bool Controller::CanRespondTruco(Player* player) const {
+	Model::Round* current_round = model_->GetCurrentRound();
+	return current_round ? current_round->CanRespondTruco(player) : false;
+}
+
+bool Controller::CanPlay(Player* player) const {
+	return IsPlayerTurn(player) && !IsInTrucoState();
 }
 
 std::vector<Player*> Controller::GetHandRoundWinners()

@@ -17,6 +17,19 @@ namespace player_utils {
 	}
 
 	/*
+	* Auxiliary function to get the previous player in vector of players, knowing pointer to <current_player>.
+	*/
+	Player* GetPreviousPlayer(const std::vector<Player*>& players, const Player* current_player) {
+		for (size_t i = 0; i < players.size(); i++) {
+			if (players.at(i) == current_player) {
+				return players.at(i == 0 ? players.size() : i - 1);
+			}
+		}
+
+		return nullptr;
+	}
+
+	/*
 	* Auxiliary function to get the player that is in the same group as <current_player>.
 	*/
 	Player* GetOtherGroupPlayer(const std::vector<Player*>& players, const Player* current_player) {
@@ -39,6 +52,7 @@ namespace player_utils {
 Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_player) :
 	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()), first_player_(first_player) {
 	current_player_ = first_player;
+	current_truco_player_ = nullptr;
 }
 
 void Model::Round::PlayCard(int cardIndex) {
@@ -64,20 +78,29 @@ void Model::Round::PlayCard(int cardIndex) {
 }
 
 void Model::Round::Truco() {
-	// TODO
+	is_in_truco_state_ = true;
+	current_truco_player_ =
+		!current_truco_player_ || current_truco_player_ == current_player_ ? player_utils::GetNextPlayer(players_, current_player_)
+																		   : current_player_;
 }
 
 void Model::Round::AcceptTruco() {
-	// TODO
+	is_in_truco_state_ = false;
+	current_truco_player_ = nullptr;
 }
 
 void Model::Round::RunFromTruco() {
-	// TODO
-	current_winner_ = current_player_;
+	current_winner_ = current_truco_player_ == current_player_ ? current_player_ : player_utils::GetNextPlayer(players_, current_player_);
+	is_in_truco_state_ = false;
+	current_truco_player_ = nullptr;
 }
 
 bool Model::Round::HasWinner() const {
 	return WasLastPlayer() || DidSomebodyWin();
+}
+
+bool Model::Round::CanRespondTruco(Player* player) const {
+	return is_in_truco_state_ && player == current_truco_player_;
 }
 
 void Model::Round::ClearRound(Player* new_player) {
@@ -126,6 +149,7 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* f
 	}
 
 	current_round_number_ = 0;
+	is_finished_ = false;
 	winners_.clear();
 	InitRound();
 }
@@ -158,19 +182,40 @@ void Model::HandRound::PlayCard(int cardIndex) {
 		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
 			other_player->IncreaseScore(current_hand_value_);
 		}
-		current_hand_value_ = -1; //To reset HandRound
+		is_finished_ = true;
 	}
 }
 
+void Model::HandRound::Truco() {
+	if (!CanAskForTruco()) { // Mao de onze and mao de ferro
+		current_hand_value_ = 3;
+		Player* next_player = player_utils::GetNextPlayer(players_, current_round_->GetCurrentPlayer());
+		next_player->IncreaseScore(current_hand_value_);
+		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, next_player)) {
+			other_player->IncreaseScore(current_hand_value_);
+		}
+		is_finished_ = true;
+		return;
+	}
+
+	current_hand_value_ += current_hand_value_ == 1 ? 2 : 3;
+	current_round_->Truco();
+}
+
 void Model::HandRound::AcceptTruco() {
-	// TODO: Include mao de onze logic here
-	current_hand_value_ = 3;
 	current_round_->AcceptTruco();
 }
 
 void Model::HandRound::RunFromTruco() {
-	current_hand_value_ = 1;
 	current_round_->RunFromTruco();
+	current_hand_value_ -= current_hand_value_ == 3 ? 2 : 3;
+	Player* current_player = current_round_->GetCurrentPlayer();
+	Player* winner = current_round_->GetWinner();
+	winner->IncreaseScore(current_hand_value_);
+	if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
+		other_player->IncreaseScore(current_hand_value_);
+	}
+	is_finished_ = true;
 }
 
 Player* Model::HandRound::MaybeGetWinner() const {
@@ -194,6 +239,7 @@ void Model::HandRound::ClearHandRound(Deck* deck, Player* first) {
 	first_player_ = first;
 
 	current_round_number_ = 0;
+	is_finished_ = false;
 	UpdateHandState();
 	winners_.clear();
 	InitRound();
@@ -213,6 +259,10 @@ void Model::HandRound::UpdateHandState() {
 		state_ = HandRound::HandState::MAO_NORMAL;
 		current_hand_value_ = 1;
 	}
+}
+
+bool Model::HandRound::CanAskForTruco() const {
+	return state_ == HandRound::HandState::MAO_NORMAL;
 }
 
 //////////////////////////////////////////
@@ -257,16 +307,20 @@ void Model::ResetGame() {
 	InitHandRound();
 }
 
-void Model::PlayCard(int cardIndex) {
-	current_hand_round_->PlayCard(cardIndex);
-
+void Model::CheckHandRoundFinished() {
 	Player* winner = current_hand_round_->MaybeGetWinner();
 	if (winner) {
 		// Game finished
 	}
 
-	if (current_hand_round_->GetCurrentHandValue() == -1)
+	if (current_hand_round_ && current_hand_round_->IsFinished()) {
 		InitHandRound();
+	}
+}
+
+void Model::PlayCard(int cardIndex) {
+	current_hand_round_->PlayCard(cardIndex);
+	CheckHandRoundFinished();
 }
 
 Player* Model::GetPlayer(int position) const {

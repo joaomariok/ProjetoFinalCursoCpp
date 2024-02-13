@@ -121,10 +121,13 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 			controller_->PlayCard(2);
 			break;
 		case TRUCO:
+			controller_->Trucar();
 			break;
 		case CONTINUE:
+			controller_->AcceptTruco();
 			break;
 		case QUIT:
+			controller_->RunFromTruco();
 			break;
 		default:
 			break;

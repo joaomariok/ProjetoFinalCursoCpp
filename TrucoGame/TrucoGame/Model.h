@@ -30,9 +30,12 @@ public:
 		void AcceptTruco();
 		void RunFromTruco();
 		bool HasWinner() const;
+		bool IsInTrucoState() const { return is_in_truco_state_; }
+		bool CanRespondTruco(Player* player) const;
 
 		Player* GetWinner() { return current_winner_; }
 		Player* GetCurrentPlayer() { return current_player_; }
+		Player* GetCurrentTrucoPlayer() { return current_truco_player_; }
 		Player* GetFirstPlayer() { return first_player_; }
 		std::vector<Card> GetDiscardedCards() { return discarded_cards_; }
 		bool IsRoundFinished() { return current_player_ == first_player_; }
@@ -47,9 +50,11 @@ public:
 		std::vector<Card> discarded_cards_;
 
 		Player* current_player_ = nullptr;
+		Player* current_truco_player_ = nullptr;
 		Player* current_winner_ = nullptr;
 		Card* vira_;
 		Player* first_player_;
+		bool is_in_truco_state_ = false;
 	};
 
 	class HandRound {
@@ -66,6 +71,7 @@ public:
 		void InitRound();
 
 		void PlayCard(int cardIndex);
+		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
 		Player* MaybeGetWinner() const;
@@ -76,9 +82,11 @@ public:
 		Round* GetCurrentRound() { return current_round_.get(); }
 		std::vector<Player*> GetHandRoundWinners() { return winners_; };
 		void ClearHandRound(Deck* deck, Player* first_player);
+		bool IsFinished() const { return is_finished_; }
 
 	private:
 		void UpdateHandState();
+		bool CanAskForTruco() const;
 
 		std::unique_ptr<Round> current_round_ = nullptr;
 		std::vector<Player*> winners_;
@@ -90,6 +98,7 @@ public:
 		HandState state_;
 		int current_hand_value_ = 1;
 		int current_round_number_ = 0;
+		bool is_finished_ = false;
 	};
 
 	//Default default constructor 
@@ -109,6 +118,7 @@ public:
 
 	void InitHandRound();
 	void ResetGame();
+	void CheckHandRoundFinished();
 
 	void PlayCard(int cardIndex);
 

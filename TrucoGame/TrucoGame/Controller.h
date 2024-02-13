@@ -20,9 +20,9 @@ public:
 
 	void PlayCard(int cardIndex);
 
-	void Trucar(Player* player, int value);
-	void AcceptTruco(Player* player);
-	void RunFromTruco(Player* player);
+	void Trucar();
+	void AcceptTruco();
+	void RunFromTruco();
 	bool LoadGame();
 	bool SaveGame();
 	int GetPlayerScore(Player* player) { return player->GetScore(); }
@@ -30,7 +30,10 @@ public:
 	Player* GetPlayer(int position) { return model_->GetPlayer(position); }
 	Card* GetVira() { return model_->GetVira(); }
 	std::vector<Card> GetDiscardedCards();
-	BOOL IsPlayerTurn(Player* player);
+	bool IsPlayerTurn(Player* player) const;
+	bool IsInTrucoState() const;
+	bool CanRespondTruco(Player* player) const;
+	bool CanPlay(Player* player) const;
 	std::vector<Player*> GetHandRoundWinners();
 	Player* GetCurrentPlayer();
 	int GetFirstPlayerIndex() { return model_->GetFirstPlayerIndex(); }

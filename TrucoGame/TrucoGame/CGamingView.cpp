@@ -217,18 +217,41 @@ void CGamingView::OnPaint()
 
 void CGamingView::OnBnClickedTrucoBtn()
 {
-	word_truco_p1.ShowWindow(SW_SHOW);
-	SendMessageToParent(TRUCO);
+	Player* player = controller->GetPlayer(playerNumber);
+	if (controller->CanPlay(player)) {
+		word_truco_p1.ShowWindow(SW_SHOW);
+		SendMessageToParent(TRUCO);
+	}
+	else if (controller->CanRespondTruco(player)) {
+		// Pediu 6
+		word_truco_p1.ShowWindow(SW_SHOW);
+		SendMessageToParent(TRUCO);
+	}
+	else {
+		AfxMessageBox(L"Espere sua vez");
+	}
 }
 
 void CGamingView::OnBnClickedDesceBtn()
 {
-	SendMessageToParent(CONTINUE);
+	if (controller->CanRespondTruco(controller->GetPlayer(playerNumber))) {
+		word_truco_p1.ShowWindow(SW_HIDE);
+		SendMessageToParent(CONTINUE);
+	}
+	else {
+		AfxMessageBox(L"Espere sua vez");
+	}
 }
 
 void CGamingView::OnBnClickedPassoBtn()
 {
-	SendMessageToParent(QUIT);
+	if (controller->CanRespondTruco(controller->GetPlayer(playerNumber))) {
+		word_truco_p1.ShowWindow(SW_HIDE);
+		SendMessageToParent(QUIT);
+	}
+	else {
+		AfxMessageBox(L"Espere sua vez");
+	}
 }
 
 void CGamingView::OnBnClickedSaveGameBtn()
@@ -241,7 +264,7 @@ void CGamingView::OnBnClickedSaveGameBtn()
 
 void CGamingView::OnCard1Clicked()
 {
-	if (controller->IsPlayerTurn(controller->GetPlayer(playerNumber)))
+	if (controller->CanPlay(controller->GetPlayer(playerNumber)))
 	{
 		card_1.ShowWindow(SW_HIDE);
 		SendMessageToParent(CARD1_PICKED);
@@ -252,7 +275,7 @@ void CGamingView::OnCard1Clicked()
 
 void CGamingView::OnCard2Clicked()
 {
-	if (controller->IsPlayerTurn(controller->GetPlayer(playerNumber)))
+	if (controller->CanPlay(controller->GetPlayer(playerNumber)))
 	{
 		card_2.ShowWindow(SW_HIDE);
 		SendMessageToParent(CARD2_PICKED);
@@ -263,7 +286,7 @@ void CGamingView::OnCard2Clicked()
 
 void CGamingView::OnCard3Clicked()
 {
-	if (controller->IsPlayerTurn(controller->GetPlayer(playerNumber)))
+	if (controller->CanPlay(controller->GetPlayer(playerNumber)))
 	{
 		card_3.ShowWindow(SW_HIDE);
 		SendMessageToParent(CARD3_PICKED);
