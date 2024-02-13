@@ -1,4 +1,5 @@
 #include "Bot.h"
+#include <algorithm>
 
 Bot::Bot() : Bot("", Group::NO_GROUP, 0) { }
 

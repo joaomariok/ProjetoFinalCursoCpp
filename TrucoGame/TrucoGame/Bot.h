@@ -1,6 +1,5 @@
 #pragma once
 #include "Player.h"
-#include <algorithm>
 
 /*Herança*/
 class Bot : public Player
