@@ -5,18 +5,16 @@ Bot::Bot() : Bot("", Group::NO_GROUP, 0) { }
 
 Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputName, group, playerNumber) { }
 
-bool cardsComparer(Card currentCard, Card nextCard) {
-	return nextCard.IsBiggerThan(currentCard);
+void Bot::SetChallengingCard(Card card) {
+	challenging_card_ = card;
 }
-
-void Bot::SetChallengingCard(Card card) { challengingCard = card; }
 
 /*Polimorfismo*/
 Card Bot::PlayCard(int cardIndex) {
 	std::vector<Card> botCards = GetHand();
 	for (int i = 0; i < botCards.size(); i++) {
 		// Plays the first cars that is bigger than challengingCard
-		if (botCards[i].IsBiggerThan(challengingCard)) {
+		if (botCards[i].IsBiggerThan(challenging_card_)) {
 			cardIndex = i;
 			break;
 		}
@@ -24,8 +22,12 @@ Card Bot::PlayCard(int cardIndex) {
 	return Player::PlayCard(cardIndex);
 }
 
+bool Bot::CardsComparer(Card currentCard, Card nextCard) {
+	return nextCard.IsBiggerThan(currentCard);
+}
+
 void Bot::SetHand(std::vector<Card>& newHand) {
 	//Bot cards are sorted from weakest to strongest.
-	std::sort(newHand.begin(), newHand.end(), cardsComparer);
+	std::sort(newHand.begin(), newHand.end(), CardsComparer);
 	Player::SetHand(newHand);
 }

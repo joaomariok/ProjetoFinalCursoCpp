@@ -12,6 +12,8 @@ public:
 
 	Card PlayCard(int cardIndex) override;
 	void SetHand(std::vector<Card>& newHand) override;
+
 private:
-	Card challengingCard;
+	Card challenging_card_;
+	bool CardsComparer(Card currentCard, Card nextCard);
 };
