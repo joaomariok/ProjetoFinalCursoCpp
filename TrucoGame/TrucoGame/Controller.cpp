@@ -21,10 +21,11 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 
 void Controller::PlayCard(int playerNumber, int cardIndex, bool visible) {
 	model_->PlayCard(cardIndex);
-	Card playedCard = GetDiscardedCards().back();
 
-	if (model_->GetHasFourPlayers())
+	if (model_->GetHasFourPlayers() && GetDiscardedCards().size() > 0) {
+		Card playedCard = GetDiscardedCards().back();
 		BotPlayCard(playerNumber, playedCard, visible);
+	}
 }
 
 void Controller::BotPlayCard(int challengingplayerNumber, Card challengingCard, bool ischallengingCardVisible) {
@@ -75,25 +76,6 @@ void Controller::AcceptTruco(Player* player) {
 void Controller::RunFromTruco(Player* player) {
 }
 
-int Controller::GetPlayerScore(Player* player) {
-	return player->GetScore();
-}
-
-int Controller::GetNumberOfPlayers()
-{
-	return model_->GetHasFourPlayers() ? 4 : 2;
-}
-
-Player* Controller::GetPlayer(int position)
-{
-	return model_->GetPlayer(position);
-}
-
-Card* Controller::GetVira()
-{
-	return model_->GetVira();
-}
-
 std::vector<Card> Controller::GetDiscardedCards()
 {
 	Model::Round* current_round = model_->GetCurrentRound();
@@ -105,9 +87,31 @@ std::vector<Card> Controller::GetDiscardedCards()
 BOOL Controller::IsPlayerTurn(Player* player)
 {
 	Model::Round* current_round = model_->GetCurrentRound();
-	if (current_round != nullptr)
-	{
+	if (current_round)
 		return current_round->GetCurrentPlayer() == player;
-	}
 	return false;
+}
+
+std::vector<Player*> Controller::GetHandRoundWinners()
+{
+	Model::HandRound* current_handRound = model_->GetCurrentHandRound();
+	if (current_handRound)
+		return current_handRound->GetHandRoundWinners();
+	return std::vector<Player*>();
+}
+
+Player* Controller::GetCurrentPlayer()
+{
+	Model::Round* current_round = model_->GetCurrentRound();
+	if (current_round)
+		return current_round->GetCurrentPlayer();
+	return nullptr;
+}
+
+int Controller::GetCurrentHandValue()
+{
+	Model::HandRound* currentHandRound = model_->GetCurrentHandRound();
+	if (currentHandRound)
+		return currentHandRound->GetCurrentHandValue();
+	return 1;
 }

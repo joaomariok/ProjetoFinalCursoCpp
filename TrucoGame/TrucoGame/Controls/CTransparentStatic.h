@@ -3,13 +3,14 @@
 class CTransparentStatic : public CStatic {
 	DECLARE_DYNAMIC(CTransparentStatic)
 public:
-	void SetText(LPCTSTR lpszText, COLORREF color = RGB(0,0,0), int fonSize = 10, BOOL alignCenter = false);
+	void SetText(LPCTSTR lpszText, COLORREF color = RGB(0, 0, 0), int fonSize = 10, bool alignCenter = false, bool alignRight = false);
 
 protected:
 	CString m_strText;
 	COLORREF foreground = RGB(0,0,0);
 	int fontSize = 10;
-	BOOL alignCenter = false;
+	bool alignCenter = false;
+	bool alignRight = false;
 	afx_msg BOOL OnEraseBkgnd(CDC*);
 	afx_msg BOOL PreCreateWindow(CREATESTRUCT& cs);
 	afx_msg HBRUSH CtlColor(CDC* pDC, UINT);

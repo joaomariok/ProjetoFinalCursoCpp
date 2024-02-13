@@ -26,12 +26,16 @@ public:
 	void RunFromTruco(Player* player);
 	bool LoadGame();
 	bool SaveGame();
-	int GetPlayerScore(Player* player);
-	int GetNumberOfPlayers();
-	Player* GetPlayer(int position);
-	Card* GetVira();
+	int GetPlayerScore(Player* player) { return player->GetScore(); }
+	int GetNumberOfPlayers() { return model_->GetHasFourPlayers() ? 4 : 2; }
+	Player* GetPlayer(int position) { return model_->GetPlayer(position); }
+	Card* GetVira() { return model_->GetVira(); }
 	std::vector<Card> GetDiscardedCards();
 	BOOL IsPlayerTurn(Player* player);
+	std::vector<Player*> GetHandRoundWinners();
+	Player* GetCurrentPlayer();
+	int GetFirstPlayerIndex() { return model_->GetFirstPlayerIndex(); }
+	int GetCurrentHandValue();
 
 private:
 	CMainWnd* view_;

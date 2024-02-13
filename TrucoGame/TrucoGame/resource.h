@@ -24,8 +24,8 @@
 #define IDC_PLAYER1_SCORE               1014
 #define IDC_PLAYER2_SCORE               1015
 #define IDC_ROUND_VALUE                 1016
-#define IDC_MANILHA                     1017
-#define IDC_MANILHA_BACK                1018
+#define IDC_VIRA                        1017
+#define IDC_VIRA_BACK                   1018
 #define IDC_CARD_P2_1                   1019
 #define IDC_CARD_P2_2                   1020
 #define IDC_CARD_P2_3                   1021
@@ -46,6 +46,7 @@
 #define IDC_SCORE_2                     1036
 #define IDC_SCORE_3                     1037
 #define IDC_SAVE_BUTTON                 1038
+#define IDC_CURRENT_PLAYER              1039
 
 // Next default values for new objects
 // 
@@ -53,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        107
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1039
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

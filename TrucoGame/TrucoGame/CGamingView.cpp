@@ -50,8 +50,8 @@ void CGamingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CARD_P4_3, card_p4_3);
 	DDX_Control(pDX, IDC_P4_CARD_ROUND, card_p4_round);
 
-	DDX_Control(pDX, IDC_MANILHA, card_manilha);
-	DDX_Control(pDX, IDC_MANILHA_BACK, card_manilha_back);
+	DDX_Control(pDX, IDC_VIRA, card_vira);
+	DDX_Control(pDX, IDC_VIRA_BACK, card_vira_back);
 	DDX_Control(pDX, IDC_TRUCO_P1, word_truco_p1);
 	DDX_Control(pDX, IDC_TRUCO_P2, word_truco_p2);
 	DDX_Control(pDX, IDC_TRUCO_P4, word_truco_p4);
@@ -69,6 +69,7 @@ void CGamingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PLAYER1_SCORE, player1_score);
 	DDX_Control(pDX, IDC_PLAYER2_SCORE, player2_score);
 	DDX_Control(pDX, IDC_ROUND_VALUE, round_value);
+	DDX_Control(pDX, IDC_CURRENT_PLAYER, current_player);
 }
 
 BOOL CGamingView::OnInitDialog()
@@ -90,7 +91,10 @@ BOOL CGamingView::OnInitDialog()
 		player4_name.ShowWindow(SW_HIDE);
 		for (int i = 1; i <= numberOfPlayers; ++i) {
 			Player* player = controller->GetPlayer(i);
-			if (player != nullptr) {
+			if (player) {
+				if (i == 1) player1_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
+				if (i == 2) player2_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
+
 				if (i == playerNumber)
 					player1_name.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
 				else
@@ -102,7 +106,10 @@ BOOL CGamingView::OnInitDialog()
 		backgroundBmp.LoadBitmap(IDB_BACKGROUND_4PLAYERS);
 		for (int i = 1; i <= numberOfPlayers; ++i) {
 			Player* player = controller->GetPlayer(i);
-			if (player != nullptr) {
+			if (player) {
+				if (i == 1) player1_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
+				if (i == 2) player2_name_score.SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 10);
+
 				CTransparentStatic* textComponent = GetStaticComponent(i, numberOfPlayers);
 				if (textComponent != nullptr)
 					textComponent->SetText(CStringW(player->GetName().c_str()), player->GetGroup() == Player::Group::GROUP_1 ? RGB(0, 0, 255) : RGB(255, 0, 0), 8, true);
@@ -120,12 +127,8 @@ BOOL CGamingView::OnInitDialog()
 	word_truco_p2.LoadImage(_T("Assets/Truco.png"));
 	word_truco_p4.LoadImage(_T("Assets/Truco.png"));
 
-	score_1_img.LoadImage(_T("Assets/Red.png"));
-	score_2_img.LoadImage(_T("Assets/Blue.png"));
-	score_3_img.LoadImage(_T("Assets/Red.png"));
-
-	LoadCardAsset(&card_manilha, controller->GetVira());
-	card_manilha_back.LoadImage(_T("Assets/CardBackRotated.png"));
+	LoadCardAsset(&card_vira, controller->GetVira());
+	card_vira_back.LoadImage(_T("Assets/CardBackRotated.png"));
 
 	/*CUSTOMIZE BUTTON FONT*/
 	CFont font;
@@ -156,7 +159,15 @@ void CGamingView::OnPaint()
 	for (int i = 1; i <= numberOfPlayers; ++i)
 	{
 		Player* player = controller->GetPlayer(i);
-		if (player != nullptr) {
+		if (player) {
+			/*PAINT PLAYER SCORE*/
+			if (i == 1 || i == 2) {
+				CString playerScore;
+				playerScore.Format(_T("%d"), player->GetScore());
+				if (i == 1) player1_score.SetText(playerScore,RGB(0,0,0),10,false,true);
+				if (i == 2) player2_score.SetText(playerScore,RGB(0,0,0),10,false,true);
+			}
+
 			std::vector<Card> cards = player->GetHand();
 			if (i == playerNumber) { //Is the current player, so it must to show its cards
 				LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
@@ -170,16 +181,33 @@ void CGamingView::OnPaint()
 			}
 		}
 	}
-	/*PAINT ROUND CARDS*/
+	/*PAINT DISCARDED CARDS*/
+	int firstPlayerIndex = controller->GetFirstPlayerIndex();
 	std::vector<Card> discardedCards = controller->GetDiscardedCards();
-	if (discardedCards.size() > 0) {
-		LoadCardAsset(GetRoundCardComponent(1, numberOfPlayers), discardedCards.size() > 0 ? &discardedCards[0] : nullptr, false);
-		LoadCardAsset(GetRoundCardComponent(2, numberOfPlayers), discardedCards.size() > 1 ? &discardedCards[1] : nullptr, false);
-		if (numberOfPlayers > 2) {
-			LoadCardAsset(GetRoundCardComponent(3, numberOfPlayers), discardedCards.size() > 2 ? &discardedCards[2] : nullptr, false);
-			LoadCardAsset(GetRoundCardComponent(4, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, false);
-		}
+	LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 0 ? &discardedCards[0] : nullptr, true);
+	if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
+	LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 1 ? &discardedCards[1] : nullptr, true);
+	if (numberOfPlayers > 2) {
+		if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
+		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 2 ? &discardedCards[2] : nullptr, true);
+		if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
+		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, true);
 	}
+
+	/*PAINT ROUND STATUS*/
+	std::vector<Player*> winners = controller->GetHandRoundWinners();
+	if (winners.size() > 0) {
+		score_1_img.LoadImage(winners[0]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+		if (winners.size() > 2) score_3_img.LoadImage(winners[2]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+	}
+	CString roundValue;
+	roundValue.Format(_T("%d"), controller->GetCurrentHandValue());
+	round_value.SetText(roundValue);
+	/*PAINT CURRENT PLAYER MESSAGE*/
+	CString currentPlayerString(controller->GetCurrentPlayer()->GetName().c_str());
+	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
+	current_player.SetText(currentPlayerString, RGB(255,255,255), 10, false, true);
 }
 
 void CGamingView::OnBnClickedTrucoBtn()

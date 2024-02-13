@@ -29,7 +29,9 @@ public:
 
 		Player* GetWinner() { return current_winner_; }
 		Player* GetCurrentPlayer() { return current_player_; }
+		Player* GetFirstPlayer() { return first_player_; }
 		std::vector<Card> GetDiscardedCards() { return discarded_cards_; }
+		bool IsRoundFinished() { return current_player_ == first_player_; }
 
 	private:
 		bool WasLastPlayer() const;
@@ -58,12 +60,14 @@ public:
 		Player* MaybeGetWinner() const;
 
 		Card* GetVira() const { return vira_; }
+		int GetCurrentHandValue() const { return current_hand_value_; }
 		Player* GetFirstPlayer() const { return first_player_; }
 		Round* GetCurrentRound() { return current_round_.get(); }
+		std::vector<Player*> GetHandRoundWinners() { return winners_; };
 
 	private:
 		std::unique_ptr<Round> current_round_ = nullptr;
-
+		std::vector<Player*> winners_;
 		std::vector<Player*> players_;
 
 		Player* first_player_;
@@ -103,6 +107,8 @@ public:
 	bool GetHasFourPlayers() const { return has_four_players_; }
 	void SetHasFourPlayers(bool value);
 	int GetCurrentRoundNumber() const { return current_hand_round_number_; }
+	int GetFirstPlayerIndex();
+	Model::HandRound* GetCurrentHandRound() { return current_hand_round_.get(); }
 	Model::Round* GetCurrentRound() { return (current_hand_round_.get())->GetCurrentRound(); }
 
 private:

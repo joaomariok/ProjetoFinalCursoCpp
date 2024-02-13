@@ -4,12 +4,13 @@
 
 IMPLEMENT_DYNAMIC(CTransparentStatic, CStatic)
 
-void CTransparentStatic::SetText(LPCTSTR lpszText, COLORREF color, int size, BOOL center)
+void CTransparentStatic::SetText(LPCTSTR lpszText, COLORREF color, int size, bool center, bool right)
 {
     m_strText = lpszText;
     fontSize = size;
     foreground = color;
     alignCenter = center;
+    alignRight = right;
     Invalidate();
 }
 
@@ -73,7 +74,7 @@ void CTransparentStatic::OnPaint()
 
     CString m_string;
     GetWindowText(m_string);
-    dc.DrawText(m_strText != "" ? m_strText : m_string, &rcClient, (alignCenter ? DT_CENTER : DT_LEFT) | DT_VCENTER | DT_SINGLELINE);
+    dc.DrawText(m_strText != "" ? m_strText : m_string, &rcClient, (alignCenter ? DT_CENTER : alignRight ? DT_RIGHT : DT_LEFT) | DT_VCENTER | DT_SINGLELINE);
 
     CStatic::OnPaint();
 }

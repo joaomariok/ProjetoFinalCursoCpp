@@ -103,6 +103,7 @@ bool Model::Round::IsBiggestCard(Card current_card) const {
 //////////////////////////////////////////
 /// HAND ROUND
 Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player) :
+	//TODO: This first_player_ is still necessary?
 	players_(players), first_player_(first_player) {
 	for (Player* player : players) {
 		std::vector<Card> player_hand = deck->DrawHand();
@@ -110,6 +111,7 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* f
 	}
 	vira_ = new Card(deck->DrawCard());
 	current_round_number_ = 0;
+	winners_.clear();
 	InitRound();
 }
 
@@ -118,6 +120,9 @@ Model::HandRound::~HandRound() {
 }
 
 void Model::HandRound::InitRound() {
+	if (current_round_)
+		winners_.push_back(current_round_->GetWinner());
+
 	Player* previous_winner = current_round_ ? current_round_->GetWinner() : players_.back();
 	current_round_ = std::make_unique<Round>(players_, vira_, player_utils::GetNextPlayer(players_, previous_winner));
 	current_round_number_++;
@@ -125,6 +130,10 @@ void Model::HandRound::InitRound() {
 
 void Model::HandRound::PlayCard(int cardIndex) {
 	current_round_->PlayCard(cardIndex);
+
+	if (current_round_->IsRoundFinished())
+		InitRound();
+
 	if (current_round_->HasWinner()) {
 		Player* winner = current_round_->GetWinner();
 		winner->IncreaseScore(current_hand_value_);
@@ -218,6 +227,19 @@ Card* Model::GetVira() const {
 
 void Model::SetHasFourPlayers(bool value) {
 	has_four_players_ = value;
+}
+
+int Model::GetFirstPlayerIndex()
+{
+	Round* current_round = GetCurrentRound();
+	if (current_round) {
+		Player* first_player = current_round->GetFirstPlayer();
+		if (first_player == player_one_.get()) return 1;
+		else if (first_player == player_two_.get()) return 2;
+		else if (first_player == player_three_.get()) return 3;
+		else if (first_player == player_four_.get()) return 4;
+	}
+	return 1;
 }
 
 Deck* Model::GetDeck() const {
