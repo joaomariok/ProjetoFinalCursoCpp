@@ -1,12 +1,28 @@
 #include "Bot.h"
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 Bot::Bot() : Bot("", Group::NO_GROUP, 0) { }
 
-Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputName, group, playerNumber) { }
+Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputName, group, playerNumber) {
+	// The initial decision making percentage is 5% regardless of the cards it has
+	percentage_to_challenge_truco_ = 5;
+}
 
 void Bot::SetChallengingCard(Card card) {
 	challenging_card_ = card;
+}
+
+void Bot::SetPercentageToChallengeTruco(int percentage) {
+	percentage_to_challenge_truco_ = percentage;
+}
+
+bool Bot::MakeTrucoDecision() const {
+	srand(time(0));
+	int randomNum = rand() % 100;
+
+	return randomNum <= percentage_to_challenge_truco_;
 }
 
 /*Polimorfismo*/
