@@ -151,4 +151,3 @@ private:
 	int current_hand_round_number_ = 0;
     bool has_four_players_ = false;
 };
-

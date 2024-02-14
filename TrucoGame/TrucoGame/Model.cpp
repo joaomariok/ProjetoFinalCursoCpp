@@ -47,6 +47,7 @@ namespace player_utils {
 	}
 }
 
+#pragma region Round
 //////////////////////////////////////////
 /// ROUND
 Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_player) :
@@ -81,7 +82,7 @@ void Model::Round::Truco() {
 	is_in_truco_state_ = true;
 	current_truco_player_ =
 		!current_truco_player_ || current_truco_player_ == current_player_ ? player_utils::GetNextPlayer(players_, current_player_)
-																		   : current_player_;
+		: current_player_;
 }
 
 void Model::Round::AcceptTruco() {
@@ -136,6 +137,9 @@ bool Model::Round::IsBiggestCard(Card current_card) const {
 	return true;
 }
 
+#pragma endregion
+
+#pragma region Hand Round
 //////////////////////////////////////////
 /// HAND ROUND
 Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* first_player) :
@@ -269,6 +273,9 @@ bool Model::HandRound::CanAskForTruco() const {
 	return state_ == HandRound::HandState::MAO_NORMAL;
 }
 
+#pragma endregion
+
+#pragma region Model
 //////////////////////////////////////////
 /// MODEL
 void Model::Init(std::string player_one_name, std::string player_two_name, bool has_four_players) {
@@ -415,3 +422,5 @@ void Model::SetPlayer(int position, Player player) {
 void Model::SetDeck(Deck* deck) {
 	deck_.reset(deck);
 }
+
+#pragma endregion
