@@ -7,22 +7,32 @@ Bot::Bot() : Bot("", Group::NO_GROUP, 0) { }
 
 Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputName, group, playerNumber) {
 	// The initial decision making percentage is 5% regardless of the cards it has
-	percentage_to_challenge_truco_ = 5;
+	percentage_to_ask_truco_ = 5;
+	percentage_to_accept_truco_ = 5;
 }
 
 void Bot::SetChallengingCard(Card card) {
 	challenging_card_ = card;
 }
 
-void Bot::SetPercentageToChallengeTruco(int percentage) {
-	percentage_to_challenge_truco_ = percentage;
+void Bot::SetPercentageToAskAndAcceptTruco(int percentageToAsk, int percentageToAccept) {
+	percentage_to_ask_truco_ = percentageToAsk;
+	percentage_to_accept_truco_ = percentageToAccept;
 }
 
-bool Bot::MakeTrucoDecision() const {
+int Bot::MakeTrucoDecision() const {
 	srand(time(0));
-	int randomNum = rand() % 100;
+	return rand() % 100;
+}
 
-	return randomNum <= percentage_to_challenge_truco_;
+bool Bot::AskTruco() {
+	int randomNumber = MakeTrucoDecision();
+	return randomNumber < percentage_to_ask_truco_;
+}
+
+bool Bot::AcceptTruco() {
+	int randomNumber = MakeTrucoDecision();
+	return randomNumber < percentage_to_accept_truco_;
 }
 
 /*Polimorfismo*/
