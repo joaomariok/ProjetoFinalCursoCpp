@@ -42,26 +42,7 @@ std::tuple<bool, bool> CMainWnd::checkIfPlayerNamesAreEmpty() {
 	return std::make_tuple(playerOneName.Trim().IsEmpty(), playerTwoName.Trim().IsEmpty());
 }
 
-void CMainWnd::OnButtonClicked() {
-	bool isPlayerOneEmpty, isPlayerTwoEmpty;
-
-	std::tie(isPlayerOneEmpty, isPlayerTwoEmpty) = checkIfPlayerNamesAreEmpty();
-
-	if (isPlayerOneEmpty || isPlayerTwoEmpty) {
-		AfxMessageBox(L"Por favor, preencha os nomes dos jogadores antes de iniciar a partida!");
-		return;
-	}
-
-	CString playerOneName, playerTwoName;
-	playerOneEdit.GetWindowText(playerOneName);
-	playerTwoEdit.GetWindowText(playerTwoName);
-
-	std::string playerOneString(CW2A(playerOneName.GetString()));
-	std::string playerTwoString(CW2A(playerTwoName.GetString()));
-
-	controller_ = std::make_unique<Controller>(this);
-	controller_->Init(playerOneString, playerTwoString, hasFourPlayers);
-
+void CMainWnd::InitGameViews() {
 	if (gamingView_1.GetSafeHwnd() == NULL) {
 		gamingView_1.SetController(1, controller_.get());
 		gamingView_1.Create(IDD_GAMINGVIEW, this);
@@ -86,12 +67,39 @@ void CMainWnd::OnButtonClicked() {
 			OutputDebugStringW(L"Sleeping for 4 seconds\n");
 			std::this_thread::sleep_for(std::chrono::seconds(4));
 		}
-	}).detach();
+		}).detach();
+}
+
+void CMainWnd::OnButtonClicked() {
+	bool isPlayerOneEmpty, isPlayerTwoEmpty;
+
+	std::tie(isPlayerOneEmpty, isPlayerTwoEmpty) = checkIfPlayerNamesAreEmpty();
+
+	if (isPlayerOneEmpty || isPlayerTwoEmpty) {
+		AfxMessageBox(L"Por favor, preencha os nomes dos jogadores antes de iniciar a partida!");
+		return;
+	}
+
+	CString playerOneName, playerTwoName;
+	playerOneEdit.GetWindowText(playerOneName);
+	playerTwoEdit.GetWindowText(playerTwoName);
+
+	std::string playerOneString(CW2A(playerOneName.GetString()));
+	std::string playerTwoString(CW2A(playerTwoName.GetString()));
+
+	controller_ = std::make_unique<Controller>(this);
+	controller_->Init(playerOneString, playerTwoString, hasFourPlayers);
+
+	InitGameViews();
 }
 
 void CMainWnd::OnLoadGameButtonClicked() {
+	// TODO: Checar se existe arquivo de save
 	controller_ = std::make_unique<Controller>(this);
 	bool response = controller_->LoadGame();
+	if (response) {
+		InitGameViews();
+	}
 }
 
 void CMainWnd::OnTwoPlayersClicked()

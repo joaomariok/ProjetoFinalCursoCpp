@@ -11,6 +11,17 @@ Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputNam
 	percentage_to_accept_truco_ = 5;
 }
 
+Bot::Bot(const Player& other) : Player(other) {
+	percentage_to_ask_truco_ = 5;
+	percentage_to_accept_truco_ = 5;
+}
+
+void Bot::Reset(const Player& player) {
+	Player::Reset(player);
+	percentage_to_ask_truco_ = 5;
+	percentage_to_accept_truco_ = 5;
+}
+
 void Bot::SetChallengingCard(Card card) {
 	challenging_card_ = card;
 }

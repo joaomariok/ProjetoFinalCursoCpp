@@ -4,6 +4,7 @@
 class CMyApp : public CWinApp {
 public:
 	virtual BOOL InitInstance();
+	virtual BOOL ExitInstance();
 };
 
 BOOL CMyApp::InitInstance() {
@@ -29,6 +30,12 @@ BOOL CMyApp::InitInstance() {
 	m_pMainWnd = new CMainWnd();
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+	return TRUE;
+}
+
+BOOL CMyApp::ExitInstance()
+{
+	delete m_pMainWnd;
 	return TRUE;
 }
 

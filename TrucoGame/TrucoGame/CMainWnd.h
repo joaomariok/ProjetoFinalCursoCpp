@@ -16,6 +16,8 @@ private:
 	bool hasFourPlayers;
 	std::unique_ptr<Controller> controller_ = nullptr;
 
+	void InitGameViews();
+
 public:
 	CMainWnd();
 	~CMainWnd();

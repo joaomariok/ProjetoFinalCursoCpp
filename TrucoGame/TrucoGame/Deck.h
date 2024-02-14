@@ -8,6 +8,10 @@ class Deck
 {
 public:
 	Deck();
+	Deck(const Deck& other) = default;
+	Deck(Deck&& other) noexcept = default;
+	Deck& operator=(const Deck& other) = default;
+	Deck& operator=(Deck&& other) noexcept = default;
 	~Deck() = default;
 	void ResetDeck();
 	void Shuffle();

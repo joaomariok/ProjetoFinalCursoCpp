@@ -227,6 +227,10 @@ Player* Model::HandRound::MaybeGetWinner() const {
 	return nullptr;
 }
 
+bool Model::HandRound::CanSeeCardsInHand() const {
+	return state_ != HandRound::HandState::MAO_DE_FERRO;
+}
+
 void Model::HandRound::ClearHandRound(Deck* deck, Player* first) {
 	vira_ = new Card(deck->DrawCard());
 	deck->SetManilhas(*vira_);
@@ -284,6 +288,27 @@ void Model::Init(std::string player_one_name, std::string player_two_name, bool 
 	}
 
 	ResetGame();
+}
+
+void Model::Load(const Model& model) {
+	player_one_.reset(model.GetPlayer(1));
+	player_two_.reset(model.GetPlayer(2));
+	has_four_players_ = model.GetHasFourPlayers();
+
+	players_ = std::vector<Player*>();
+	players_.push_back(player_one_.get());
+	players_.push_back(player_two_.get());
+
+	if (has_four_players_) {
+		player_three_.reset(static_cast<Bot*>(model.GetPlayer(3)));
+		player_four_.reset(static_cast<Bot*>(model.GetPlayer(4)));
+		players_.push_back(static_cast<Player*>(player_three_.get()));
+		players_.push_back(static_cast<Player*>(player_four_.get()));
+	}
+
+	current_hand_round_number_ = 0; // TODO: get correct save value
+	current_hand_round_ = nullptr;
+	InitHandRound();
 }
 
 void Model::InitHandRound() {
@@ -358,19 +383,31 @@ Deck* Model::GetDeck() const {
 	return deck_.get();
 }
 
-void Model::SetPlayer(int position, Player* player) {
+void Model::SetPlayer(int position, Player player) {
 	switch (position) {
 	case 1:
-		player_one_.reset(player);
+		if (player_one_)
+			player_one_->Reset(player);
+		else
+			player_one_ = std::make_unique<Player>(player);
 		break;
 	case 2:
-		player_two_.reset(player);
+		if (player_two_)
+			player_two_->Reset(player);
+		else
+			player_two_ = std::make_unique<Player>(player);
 		break;
 	case 3:
-		player_three_.reset(static_cast<Bot*>(player));
+		if (player_three_)
+			player_three_->Reset(static_cast<Bot>(player));
+		else
+			player_three_ = std::make_unique<Bot>(player);
 		break;
 	case 4:
-		player_four_.reset(static_cast<Bot*>(player));
+		if (player_four_)
+			player_four_->Reset(static_cast<Bot>(player));
+		else
+			player_four_ = std::make_unique<Bot>(player);
 		break;
 	}
 }
