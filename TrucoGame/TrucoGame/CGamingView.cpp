@@ -317,6 +317,8 @@ LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
 	case QUIT:
 		//OnBnClickedPassoBtn();
 		break;
+	case NONE:
+		Invalidate();
 	default:
 		break;
 	}
