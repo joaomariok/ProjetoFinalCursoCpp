@@ -17,12 +17,13 @@ private:
 	std::unique_ptr<Controller> controller_ = nullptr;
 
 	void InitGameViews();
+	void ExecuteBotDecisionMaking(Bot& bot);
 
 public:
 	CMainWnd();
 	~CMainWnd();
 
-	std::tuple<bool, bool> checkIfPlayerNamesAreEmpty();
+	std::tuple<bool, bool> CheckIfPlayerNamesAreEmpty();
 
 	afx_msg void OnButtonClicked();
 	afx_msg void OnLoadGameButtonClicked();

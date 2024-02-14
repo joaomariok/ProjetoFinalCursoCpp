@@ -35,7 +35,7 @@ CMainWnd::~CMainWnd()
 {
 }
 
-std::tuple<bool, bool> CMainWnd::checkIfPlayerNamesAreEmpty() {
+std::tuple<bool, bool> CMainWnd::CheckIfPlayerNamesAreEmpty() {
 	CString playerOneName, playerTwoName;
 	playerOneEdit.GetWindowText(playerOneName);
 	playerTwoEdit.GetWindowText(playerTwoName);
@@ -43,15 +43,15 @@ std::tuple<bool, bool> CMainWnd::checkIfPlayerNamesAreEmpty() {
 }
 
 void CMainWnd::InitGameViews() {
-	if (gamingView_1.GetSafeHwnd() == NULL) {
-		gamingView_1.SetController(1, controller_.get());
-		gamingView_1.Create(IDD_GAMINGVIEW, this);
-		gamingView_1.ShowWindow(SW_SHOW);
-	}
 	if (gamingView_2.GetSafeHwnd() == NULL) {
 		gamingView_2.SetController(2, controller_.get());
 		gamingView_2.Create(IDD_GAMINGVIEW, this);
 		gamingView_2.ShowWindow(SW_SHOW);
+	}
+	if (gamingView_1.GetSafeHwnd() == NULL) {
+		gamingView_1.SetController(1, controller_.get());
+		gamingView_1.Create(IDD_GAMINGVIEW, this);
+		gamingView_1.ShowWindow(SW_SHOW);
 	}
 	startButton.EnableWindow(FALSE);
 
@@ -59,8 +59,9 @@ void CMainWnd::InitGameViews() {
 		while (gamingView_1.IsWindowVisible() && gamingView_2.IsWindowVisible())
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
-			if (Bot* bot_ = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
-				controller_->PlayCard(0);
+			if (Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
+				ExecuteBotDecisionMaking(*bot);
+
 				SendMessageToGamingView(&gamingView_1);
 				SendMessageToGamingView(&gamingView_2);
 			}
@@ -70,10 +71,25 @@ void CMainWnd::InitGameViews() {
 		}).detach();
 }
 
+void CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {
+	if (controller_->IsInTrucoState()) {
+		if (bot.RespondTruco())
+			controller_->AcceptTruco();
+		else
+			controller_->RunFromTruco();
+	}
+	else if (bot.AskTruco()) {
+		controller_->Trucar();
+	}
+	else {
+		controller_->PlayCard(0);
+	}
+}
+
 void CMainWnd::OnButtonClicked() {
 	bool isPlayerOneEmpty, isPlayerTwoEmpty;
 
-	std::tie(isPlayerOneEmpty, isPlayerTwoEmpty) = checkIfPlayerNamesAreEmpty();
+	std::tie(isPlayerOneEmpty, isPlayerTwoEmpty) = CheckIfPlayerNamesAreEmpty();
 
 	if (isPlayerOneEmpty || isPlayerTwoEmpty) {
 		AfxMessageBox(L"Por favor, preencha os nomes dos jogadores antes de iniciar a partida!");
@@ -112,33 +128,33 @@ void CMainWnd::OnFourPlayersClicked()
 	hasFourPlayers = true;
 }
 
-LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam) 
+LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
 	int playerNumber = static_cast<int>(lParam);
 
 	switch (gameEvent) {
-		case CARD1_PICKED:
-			controller_->PlayCard(0);
-			break;
-		case CARD2_PICKED:
-			controller_->PlayCard(1);
-			break;
-		case CARD3_PICKED:
-			controller_->PlayCard(2);
-			break;
-		case TRUCO:
-			controller_->Trucar();
-			break;
-		case CONTINUE:
-			controller_->AcceptTruco();
-			break;
-		case QUIT:
-			controller_->RunFromTruco();
-			break;
-		default:
-			break;
+	case CARD1_PICKED:
+		controller_->PlayCard(0);
+		break;
+	case CARD2_PICKED:
+		controller_->PlayCard(1);
+		break;
+	case CARD3_PICKED:
+		controller_->PlayCard(2);
+		break;
+	case TRUCO:
+		controller_->Trucar();
+		break;
+	case CONTINUE:
+		controller_->AcceptTruco();
+		break;
+	case QUIT:
+		controller_->RunFromTruco();
+		break;
+	default:
+		break;
 	}
 
 	//Send message to update the views
@@ -147,7 +163,7 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CMainWnd::SendMessageToGamingView(CGamingView *gamingView)
+void CMainWnd::SendMessageToGamingView(CGamingView* gamingView)
 {
 	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(""), LPARAM(0));
 }

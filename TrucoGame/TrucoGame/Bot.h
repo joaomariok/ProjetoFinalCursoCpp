@@ -15,7 +15,7 @@ public:
 	void SetPercentageToAskAndAcceptTruco(int percentageToAsk, int percentageToAccept);
 
 	bool AskTruco();
-	bool AcceptTruco();
+	bool RespondTruco();
 
 	Card PlayCard(int cardIndex) override;
 	void SetHand(std::vector<Card>& newHand) override;

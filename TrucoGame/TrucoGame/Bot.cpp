@@ -41,7 +41,7 @@ bool Bot::AskTruco() {
 	return randomNumber < percentage_to_ask_truco_;
 }
 
-bool Bot::AcceptTruco() {
+bool Bot::RespondTruco() {
 	int randomNumber = MakeTrucoDecision();
 	return randomNumber < percentage_to_accept_truco_;
 }
