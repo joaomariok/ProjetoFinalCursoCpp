@@ -202,6 +202,10 @@ void Model::HandRound::Truco() {
 		return;
 	}
 
+	// Maximum value to a Truco challenge
+	if (current_hand_value_ == WIN_POINTS)
+		return;
+
 	current_hand_value_ += current_hand_value_ == 1 ? 2 : 3;
 	current_round_->Truco();
 }
