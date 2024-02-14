@@ -12,6 +12,9 @@ public:
 	void Reset(const Player& player) override;
 
 	void SetChallengingCard(Card card);
+
+	int GetPercentageToAskTruco() const { return percentage_to_ask_truco_; }
+	int GetPercentageToAcceptTruco() const { return percentage_to_accept_truco_; };
 	void SetPercentageToAskAndAcceptTruco(int percentageToAsk, int percentageToAccept);
 
 	bool AskTruco();
@@ -27,4 +30,5 @@ private:
 	Card challenging_card_;
 
 	int MakeTrucoDecision() const;
+	void CategorizeCards(std::vector<Card>& hand);
 };

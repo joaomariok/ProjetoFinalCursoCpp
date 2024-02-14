@@ -46,6 +46,27 @@ bool Bot::RespondTruco() {
 	return randomNumber < percentage_to_accept_truco_;
 }
 
+void Bot::CategorizeCards(std::vector<Card>& hand) {
+	int percentageToAskTruco = 5, percentageToAcceptTruco = 5;
+
+	for (Card& card : hand) {
+		if (card.IsZap()) {
+			percentageToAskTruco += 40;
+			percentageToAcceptTruco += 80;
+		}
+		else if (card.IsManilha()) {
+			percentageToAskTruco += 10;
+			percentageToAcceptTruco += 20;
+		}
+		else if (card.GetRank() == Card::THREE) {
+			percentageToAskTruco += 5;
+			percentageToAcceptTruco += 10;
+		}
+	}
+
+	SetPercentageToAskAndAcceptTruco(percentageToAskTruco, percentageToAcceptTruco);
+}
+
 /*Polimorfismo*/
 Card Bot::PlayCard(int cardIndex) {
 	std::vector<Card> botCards = GetHand();
@@ -66,4 +87,5 @@ void Bot::SetHand(std::vector<Card>& newHand) {
 		});
 
 	Player::SetHand(newHand);
+	CategorizeCards(newHand);
 }
