@@ -39,7 +39,7 @@ void Deck::Shuffle() {
 
 	for (size_t i = 0; i < total_threads; i++) {
 		const size_t begin = i * batch_size;
-		const size_t end = begin + batch_size - 1;
+		const size_t end = begin + batch_size;
 		Cards batch_vector(cards_.begin() + begin, cards_.begin() + end);
 		results.emplace_back(
 			std::async(std::launch::async, [&](Cards cards) {
