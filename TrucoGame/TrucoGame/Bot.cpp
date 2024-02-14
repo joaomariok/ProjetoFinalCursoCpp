@@ -39,12 +39,12 @@ int Bot::MakeTrucoDecision() const {
 
 bool Bot::AskTruco() {
 	int randomNumber = MakeTrucoDecision();
-	return randomNumber < percentage_to_ask_truco_;
+	return randomNumber <= percentage_to_ask_truco_;
 }
 
 bool Bot::RespondTruco() {
 	int randomNumber = MakeTrucoDecision();
-	return randomNumber < percentage_to_accept_truco_;
+	return randomNumber <= percentage_to_accept_truco_;
 }
 
 void Bot::CategorizeCards(std::vector<Card>& hand) {

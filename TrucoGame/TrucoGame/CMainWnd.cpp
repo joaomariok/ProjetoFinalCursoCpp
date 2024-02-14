@@ -60,10 +60,10 @@ void CMainWnd::InitGameViews() {
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
 			if (Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
-				ExecuteBotDecisionMaking(*bot);
+				GameEvents gameEvent = ExecuteBotDecisionMaking(*bot);
 
-				SendMessageToGamingView(&gamingView_1);
-				SendMessageToGamingView(&gamingView_2);
+				SendBotMessageToGamingView(&gamingView_1, gameEvent);
+				SendBotMessageToGamingView(&gamingView_2, gameEvent);
 			}
 			OutputDebugStringW(L"Sleeping for 4 seconds\n");
 			std::this_thread::sleep_for(std::chrono::seconds(4));
@@ -71,19 +71,23 @@ void CMainWnd::InitGameViews() {
 		}).detach();
 }
 
-void CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {
+GameEvents CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {
+	GameEvents gameEvent = NONE;
+
 	if (controller_->IsInTrucoState()) {
 		if (bot.RespondTruco())
-			controller_->AcceptTruco();
+			gameEvent = CONTINUE;
 		else
-			controller_->RunFromTruco();
+			gameEvent = QUIT;
 	}
 	else if (bot.AskTruco()) {
-		controller_->Trucar();
+		gameEvent = TRUCO;
 	}
 	else {
 		controller_->PlayCard(0);
 	}
+
+	return gameEvent;
 }
 
 void CMainWnd::OnButtonClicked() {
@@ -166,6 +170,11 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 void CMainWnd::SendMessageToGamingView(CGamingView* gamingView)
 {
 	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(""), LPARAM(0));
+}
+
+void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent)
+{
+	::PostMessage(gamingView->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(gameEvent), LPARAM(0));
 }
 
 BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)

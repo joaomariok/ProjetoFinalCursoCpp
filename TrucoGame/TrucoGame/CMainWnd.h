@@ -17,7 +17,7 @@ private:
 	std::unique_ptr<Controller> controller_ = nullptr;
 
 	void InitGameViews();
-	void ExecuteBotDecisionMaking(Bot& bot);
+	GameEvents ExecuteBotDecisionMaking(Bot& bot);
 
 public:
 	CMainWnd();
@@ -31,5 +31,6 @@ public:
 	afx_msg void OnFourPlayersClicked();
 	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
 	void SendMessageToGamingView(CGamingView* gamingView);
+	void SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent);
 	DECLARE_MESSAGE_MAP()
 };
