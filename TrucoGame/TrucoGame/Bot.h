@@ -24,5 +24,4 @@ private:
 	Card challenging_card_;
 
 	int MakeTrucoDecision() const;
-	bool CardsComparer(Card currentCard, Card nextCard);
 };

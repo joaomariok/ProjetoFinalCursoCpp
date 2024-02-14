@@ -48,12 +48,11 @@ Card Bot::PlayCard(int cardIndex) {
 	return Player::PlayCard(cardIndex);
 }
 
-bool Bot::CardsComparer(Card currentCard, Card nextCard) {
-	return nextCard.IsBiggerThan(currentCard);
-}
-
 void Bot::SetHand(std::vector<Card>& newHand) {
 	//Bot cards are sorted from weakest to strongest.
-	std::sort(newHand.begin(), newHand.end(), CardsComparer);
+	std::sort(newHand.begin(), newHand.end(), [](Card currentCard, Card nextCard) {
+		return nextCard.IsBiggerThan(currentCard);
+		});
+
 	Player::SetHand(newHand);
 }
