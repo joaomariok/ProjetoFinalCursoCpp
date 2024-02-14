@@ -12,6 +12,7 @@ Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputNam
 }
 
 Bot::Bot(const Player& other) : Player(other) {
+	// TODO: Is it possible to use other.GetPercentageToAskTruco() and other.GetPercentageToAcceptTruco() here?
 	percentage_to_ask_truco_ = 5;
 	percentage_to_accept_truco_ = 5;
 }
