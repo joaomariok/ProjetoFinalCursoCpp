@@ -28,12 +28,23 @@ bool Controller::LoadGame() {
 	bool response = save_->LoadGame(tmp_model);
 	if (response) {
 		model_->Load(tmp_model);
+		AfxMessageBox(L"Jogo carregado com sucesso!");
+	}
+	else {
+		AfxMessageBox(L"Erro ao carregar o jogo!");
 	}
 	return response;
 }
 
 bool Controller::SaveGame() {
-	return save_->SaveGame(*model_);
+	bool response = save_->SaveGame(*model_);
+	if (response) {
+		AfxMessageBox(L"Jogo salvo com sucesso!");
+	}
+	else {
+		AfxMessageBox(L"Erro ao salvar o jogo!");
+	}
+	return response;
 }
 
 void Controller::Trucar() {
