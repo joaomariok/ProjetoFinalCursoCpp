@@ -13,6 +13,8 @@ public:
 	Card& operator=(Card&& other) noexcept = default;
 	~Card();
 
+	bool operator==(const Card& other) const;
+
 	Suit GetSuit() const;
 	Rank GetRank() const;
 

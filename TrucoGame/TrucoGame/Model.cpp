@@ -170,11 +170,10 @@ void Model::HandRound::InitRound() {
 	if (current_round_ && current_round_number_ > 0)
 		winners_.push_back(current_round_->GetWinner());
 
-	Player* previous_winner = current_round_ ? current_round_->GetWinner() : players_.back();
 	if (current_round_)
-		current_round_->ClearRound(player_utils::GetNextPlayer(players_, previous_winner));
+		current_round_->ClearRound(current_round_->GetWinner());
 	else
-		current_round_ = std::make_unique<Round>(players_, vira_, player_utils::GetNextPlayer(players_, previous_winner));
+		current_round_ = std::make_unique<Round>(players_, vira_, players_.front());
 	current_round_number_++;
 }
 

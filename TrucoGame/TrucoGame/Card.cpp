@@ -8,6 +8,10 @@ Card::Card() :
 
 Card::~Card() = default;
 
+bool Card::operator==(const Card& other) const {
+	return GetRank() == other.GetRank() && GetSuit() == other.GetSuit();
+}
+
 Card::Suit Card::GetSuit() const {
 	return suit_;
 }
@@ -29,8 +33,8 @@ bool Card::IsZap() const {
 }
 
 bool Card::IsBiggerThan(Card card) const {
-	// The two compared cards are "Manilha"
-	if (IsManilha() && card.IsManilha())
+	// The two compared cards are "Manilha" or have the same rank
+	if (IsManilha() && card.IsManilha() || GetRank() == card.GetRank())
 		return GetSuit() > card.GetSuit();
 
 	// Only one card is "Manilha"
