@@ -6,7 +6,7 @@ class Bot : public Player
 {
 public:
 	Bot();
-	Bot(std::string inputName, Group group, int playerNumber);
+	Bot(std::string name, Group group, int player_number);
 	Bot(const Player& other);
 
 	void Reset(const Player& player) override;
@@ -15,13 +15,13 @@ public:
 
 	int GetPercentageToAskTruco() const { return percentage_to_ask_truco_; }
 	int GetPercentageToAcceptTruco() const { return percentage_to_accept_truco_; };
-	void SetPercentageToAskAndAcceptTruco(int percentageToAsk, int percentageToAccept);
+	void SetPercentageToAskAndAcceptTruco(int percentage_to_ask_truco, int percentage_to_accept_truco);
 
 	bool AskTruco();
 	bool RespondTruco();
 
-	Card PlayCard(int cardIndex) override;
-	void SetHand(std::vector<Card>& newHand) override;
+	Card PlayCard(int card_index) override;
+	void SetHand(std::vector<Card>& new_hand) override;
 
 private:
 	int percentage_to_ask_truco_;

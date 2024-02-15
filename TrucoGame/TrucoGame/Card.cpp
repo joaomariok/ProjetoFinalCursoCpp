@@ -1,7 +1,7 @@
 #include "Card.h"
 
-Card::Card(Suit inputSuit, Rank inputRank) :
-	suit_(inputSuit), rank_(inputRank), is_manilha_(false) {}
+Card::Card(Suit suit, Rank rank) :
+	suit_(suit), rank_(rank), is_manilha_(false) {}
 
 Card::Card() :
 	suit_(Suit::SPADES), rank_(Rank::ACE), is_manilha_(false) {}

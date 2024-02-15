@@ -83,17 +83,18 @@ public:
 		int GetCurrentHandValue() const { return current_hand_value_; }
 		Player* GetFirstPlayer() const { return first_player_; }
 		Round* GetCurrentRound() { return current_round_.get(); }
-		std::vector<Player*> GetHandRoundWinners() { return winners_; };
+		std::vector<Player*> GetRoundWinners() { return round_winners_; };
 		void ClearHandRound(Deck* deck, Player* first_player);
 		bool IsFinished() const { return is_finished_; }
 		HandState GetHandState() { return state_; }
 
 	private:
 		void UpdateHandState();
+		void IncreaseScoreForWinner();
 		bool CanAskForTruco() const;
 
 		std::unique_ptr<Round> current_round_ = nullptr;
-		std::vector<Player*> winners_;
+		std::vector<Player*> round_winners_;
 		std::vector<Player*> players_;
 
 		Player* first_player_;

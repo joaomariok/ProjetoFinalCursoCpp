@@ -29,11 +29,10 @@ CMainWnd::CMainWnd() {
 	fourPlayerRBtn.Create(_T("4 jogadores"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(725, 370, 972, 390), this, 5);
 
 	twoPlayersRBtn.SetCheck(BST_CHECKED);
+	hasFourPlayers = false;
 }
 
-CMainWnd::~CMainWnd()
-{
-}
+CMainWnd::~CMainWnd() {}
 
 std::tuple<bool, bool> CMainWnd::CheckIfPlayerNamesAreEmpty() {
 	CString playerOneName, playerTwoName;
@@ -43,6 +42,11 @@ std::tuple<bool, bool> CMainWnd::CheckIfPlayerNamesAreEmpty() {
 }
 
 void CMainWnd::InitGameViews() {
+	if (!controller_) {
+		// Safe guard if controller is null
+		return;
+	}
+
 	if (gamingView_2.GetSafeHwnd() == NULL) {
 		gamingView_2.SetController(2, controller_.get());
 		gamingView_2.Create(IDD_GAMINGVIEW, this);

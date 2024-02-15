@@ -32,7 +32,7 @@ namespace player_utils {
 	/*
 	* Auxiliary function to get the player that is in the same group as <current_player>.
 	*/
-	Player* GetOtherGroupPlayer(const std::vector<Player*>& players, const Player* current_player) {
+	Player* GetPartnerPlayer(const std::vector<Player*>& players, const Player* current_player) {
 		if (current_player->GetGroup() == Player::Group::NO_GROUP) {
 			return nullptr;
 		}
@@ -58,8 +58,9 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 
 void Model::Round::PlayCard(int card_index) {
 	if (Bot* bot_ = dynamic_cast<Bot*>(current_player_)) {
-		if (discarded_cards_.size() > 0)
+		if (discarded_cards_.size() > 0) {
 			bot_->SetChallengingCard(discarded_cards_[discarded_cards_.size() - 1]);
+		}
 	}
 
 	Card played_card = current_player_->PlayCard(card_index);
@@ -72,16 +73,16 @@ void Model::Round::PlayCard(int card_index) {
 	if (current_player_ == first_player_) {
 		// Acabou a rodada
 		current_winner_->IncreaseRoundScore();
-		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, current_winner_)) {
-			other_player->IncreaseRoundScore();
+		if (Player* partner_player = player_utils::GetPartnerPlayer(players_, current_winner_)) {
+			partner_player->IncreaseRoundScore();
 		}
 	}
 }
 
 void Model::Round::Truco() {
 	is_in_truco_state_ = true;
-	current_truco_player_ =
-		!current_truco_player_ || current_truco_player_ == current_player_ ? player_utils::GetNextPlayer(players_, current_player_)
+	current_truco_player_ = !current_truco_player_ || current_truco_player_ == current_player_
+		? player_utils::GetNextPlayer(players_, current_player_)
 		: current_player_;
 }
 
@@ -91,7 +92,9 @@ void Model::Round::AcceptTruco() {
 }
 
 void Model::Round::RunFromTruco() {
-	current_winner_ = current_truco_player_ == current_player_ ? current_player_ : player_utils::GetNextPlayer(players_, current_player_);
+	current_winner_ = current_truco_player_ == current_player_
+		? current_player_
+		: player_utils::GetNextPlayer(players_, current_player_);
 	is_in_truco_state_ = false;
 	current_truco_player_ = nullptr;
 }
@@ -158,7 +161,7 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* f
 
 	current_round_number_ = 0;
 	is_finished_ = false;
-	winners_.clear();
+	round_winners_ = std::vector<Player*>();
 	InitRound();
 }
 
@@ -167,47 +170,59 @@ Model::HandRound::~HandRound() {
 }
 
 void Model::HandRound::InitRound() {
-	if (current_round_ && current_round_number_ > 0)
-		winners_.push_back(current_round_->GetWinner());
+	if (current_round_ && current_round_number_ > 0) {
+		round_winners_.push_back(current_round_->GetWinner());
+	}
 
-	if (current_round_)
+	if (current_round_) {
 		current_round_->ClearRound(current_round_->GetWinner());
-	else
+	}
+	else {
 		current_round_ = std::make_unique<Round>(players_, vira_, players_.front());
+	}
+
 	current_round_number_++;
+}
+
+void Model::HandRound::IncreaseScoreForWinner()
+{
+	Player* winner_player = current_round_->GetWinner();
+	winner_player->IncreaseScore(current_hand_value_);
+	if (Player* partner_player = player_utils::GetPartnerPlayer(players_, winner_player)) {
+		partner_player->IncreaseScore(current_hand_value_);
+	}
+	is_finished_ = true;
 }
 
 void Model::HandRound::PlayCard(int card_index) {
 	current_round_->PlayCard(card_index);
 
-	if (current_round_->IsRoundFinished())
+	if (current_round_->IsRoundFinished()) {
 		InitRound();
+	}
 
 	if (current_round_->HasWinner()) {
-		Player* winner = current_round_->GetWinner();
-		winner->IncreaseScore(current_hand_value_);
-		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
-			other_player->IncreaseScore(current_hand_value_);
-		}
-		is_finished_ = true;
+		IncreaseScoreForWinner();
 	}
 }
 
 void Model::HandRound::Truco() {
-	if (!CanAskForTruco()) { // Mao de onze and mao de ferro
+	// Mao de onze and mao de ferro
+	if (!CanAskForTruco()) {
 		current_hand_value_ = 3;
 		Player* next_player = player_utils::GetNextPlayer(players_, current_round_->GetCurrentPlayer());
 		next_player->IncreaseScore(current_hand_value_);
-		if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, next_player)) {
-			other_player->IncreaseScore(current_hand_value_);
+		if (Player* partner_player = player_utils::GetPartnerPlayer(players_, next_player)) {
+			partner_player->IncreaseScore(current_hand_value_);
 		}
 		is_finished_ = true;
 		return;
 	}
 
 	// Maximum value to a Truco challenge
-	if (current_hand_value_ == WIN_POINTS)
+	if (current_hand_value_ == WIN_POINTS) {
 		return;
+	}
 
 	current_hand_value_ += current_hand_value_ == 1 ? 2 : 3;
 	current_round_->Truco();
@@ -220,23 +235,13 @@ void Model::HandRound::AcceptTruco() {
 void Model::HandRound::RunFromTruco() {
 	current_round_->RunFromTruco();
 	current_hand_value_ -= current_hand_value_ == 3 ? 2 : 3;
-	Player* winner = current_round_->GetWinner();
-	winner->IncreaseScore(current_hand_value_);
-	if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
-		other_player->IncreaseScore(current_hand_value_);
-	}
-	is_finished_ = true;
+	IncreaseScoreForWinner();
 }
 
 void Model::HandRound::RunFromMaoDeOnze() {
 	current_round_->RunFromMaoDeOnze();
 	current_hand_value_ = 1;
-	if (Player* winner = current_round_->GetWinner()) {
-		winner->IncreaseScore(current_hand_value_);
-		if (Player* partner = players_.at(winner->GetPlayerNumber() + 1))
-			partner->IncreaseScore(current_hand_value_);
-	}
-	is_finished_ = true;
+	IncreaseScoreForWinner();
 }
 
 Player* Model::HandRound::MaybeGetWinner() const {
@@ -266,7 +271,7 @@ void Model::HandRound::ClearHandRound(Deck* deck, Player* first) {
 	current_round_number_ = 0;
 	is_finished_ = false;
 	UpdateHandState();
-	winners_.clear();
+	round_winners_.clear();
 	InitRound();
 }
 
@@ -336,17 +341,22 @@ void Model::Load(const Model& model) {
 }
 
 void Model::InitHandRound() {
-	if (deck_)
+	if (deck_) {
 		deck_->ResetDeck();
-	else
+	}
+	else {
 		deck_ = std::make_unique<Deck>();
+	}
 
 	Player* previous_first_player = current_hand_round_ ? current_hand_round_->GetFirstPlayer() : players_.back();
 
-	if (current_hand_round_)
+	if (current_hand_round_) {
 		current_hand_round_->ClearHandRound(deck_.get(), previous_first_player);
-	else
+	}
+	else {
 		current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), player_utils::GetNextPlayer(players_, previous_first_player));
+	}
+
 	current_hand_round_number_++;
 }
 
@@ -397,8 +407,9 @@ void Model::SetHasFourPlayers(bool has_four_players) {
 int Model::GetFirstPlayerIndex() {
 	Round* current_round = GetCurrentRound();
 	if (current_round) {
-		if (Player* first_player = current_round->GetFirstPlayer())
+		if (Player* first_player = current_round->GetFirstPlayer()) {
 			return first_player->GetPlayerNumber();
+		}
 	}
 	return 1;
 }
@@ -410,28 +421,36 @@ Deck* Model::GetDeck() const {
 void Model::SetPlayer(int position, Player player) {
 	switch (position) {
 	case 1:
-		if (player_one_)
+		if (player_one_) {
 			player_one_->Reset(player);
-		else
+		}
+		else {
 			player_one_ = std::make_unique<Player>(player);
+		}
 		break;
 	case 2:
-		if (player_two_)
+		if (player_two_) {
 			player_two_->Reset(player);
-		else
+		}
+		else {
 			player_two_ = std::make_unique<Player>(player);
+		}
 		break;
 	case 3:
-		if (player_three_)
+		if (player_three_) {
 			player_three_->Reset(static_cast<Bot>(player));
-		else
+		}
+		else {
 			player_three_ = std::make_unique<Bot>(player);
+		}
 		break;
 	case 4:
-		if (player_four_)
+		if (player_four_) {
 			player_four_->Reset(static_cast<Bot>(player));
-		else
+		}
+		else {
 			player_four_ = std::make_unique<Bot>(player);
+		}
 		break;
 	}
 }

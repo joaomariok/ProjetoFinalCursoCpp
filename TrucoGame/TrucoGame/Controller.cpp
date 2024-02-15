@@ -3,8 +3,8 @@
 
 Controller::Controller(CMainWnd* view) :
 	view_(view),
-	model_(std::make_unique<Model>()),
-	save_(std::make_unique<Save>()) {
+	model_(std::move(std::make_unique<Model>())),
+	save_(std::move(std::make_unique<Save>())) {
 }
 
 Controller::~Controller() {
@@ -55,19 +55,14 @@ void Controller::RunFromMaoDeOnze() {
 	model_->GetCurrentHandRound()->RunFromMaoDeOnze();
 }
 
-std::vector<Card> Controller::GetDiscardedCards()
-{
+std::vector<Card> Controller::GetDiscardedCards() {
 	Model::Round* current_round = model_->GetCurrentRound();
-	if (current_round != nullptr)
-		return current_round->GetDiscardedCards();
-	return std::vector<Card>();
+	return current_round ? current_round->GetDiscardedCards() : std::vector<Card>();
 }
 
 bool Controller::IsPlayerTurn(Player* player) const {
 	Model::Round* current_round = model_->GetCurrentRound();
-	if (current_round)
-		return current_round->GetCurrentPlayer() == player;
-	return false;
+	return current_round ? current_round->GetCurrentPlayer() == player : false;
 }
 
 bool Controller::IsInTrucoState() const {
@@ -84,26 +79,17 @@ bool Controller::CanPlay(Player* player) const {
 	return IsPlayerTurn(player) && !IsInTrucoState();
 }
 
-std::vector<Player*> Controller::GetHandRoundWinners()
-{
-	Model::HandRound* current_handRound = model_->GetCurrentHandRound();
-	if (current_handRound)
-		return current_handRound->GetHandRoundWinners();
-	return std::vector<Player*>();
+std::vector<Player*> Controller::GetHandRoundWinners() {
+	Model::HandRound* current_hand_round = model_->GetCurrentHandRound();
+	return current_hand_round ? current_hand_round->GetRoundWinners() : std::vector<Player*>();
 }
 
-Player* Controller::GetCurrentPlayer()
-{
+Player* Controller::GetCurrentPlayer() {
 	Model::Round* current_round = model_->GetCurrentRound();
-	if (current_round)
-		return current_round->GetCurrentPlayer();
-	return nullptr;
+	return current_round ? current_round->GetCurrentPlayer() : nullptr;
 }
 
-int Controller::GetCurrentHandValue()
-{
-	Model::HandRound* currentHandRound = model_->GetCurrentHandRound();
-	if (currentHandRound)
-		return currentHandRound->GetCurrentHandValue();
-	return 1;
+int Controller::GetCurrentHandValue() {
+	Model::HandRound* current_hand_round = model_->GetCurrentHandRound();
+	return current_hand_round ? current_hand_round->GetCurrentHandValue() : 1;
 }

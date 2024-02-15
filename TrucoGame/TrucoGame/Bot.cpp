@@ -5,7 +5,7 @@
 
 Bot::Bot() : Bot("", Group::NO_GROUP, 0) { }
 
-Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputName, group, playerNumber) {
+Bot::Bot(std::string name, Group group, int player_number) : Player(name, group, player_number) {
 	// The initial decision making percentage is 5% regardless of the cards it has
 	percentage_to_ask_truco_ = 5;
 	percentage_to_accept_truco_ = 5;
@@ -27,9 +27,9 @@ void Bot::SetChallengingCard(Card card) {
 	challenging_card_ = card;
 }
 
-void Bot::SetPercentageToAskAndAcceptTruco(int percentageToAsk, int percentageToAccept) {
-	percentage_to_ask_truco_ = percentageToAsk;
-	percentage_to_accept_truco_ = percentageToAccept;
+void Bot::SetPercentageToAskAndAcceptTruco(int percentage_to_ask_truco, int percentage_to_accept_truco) {
+	percentage_to_ask_truco_ = percentage_to_ask_truco;
+	percentage_to_accept_truco_ = percentage_to_accept_truco;
 }
 
 int Bot::MakeTrucoDecision() const {
@@ -69,24 +69,24 @@ void Bot::CategorizeCards(std::vector<Card>& hand) {
 }
 
 /*Polimorfismo*/
-Card Bot::PlayCard(int cardIndex) {
+Card Bot::PlayCard(int card_index) {
 	std::vector<Card> botCards = GetHand();
 	for (int i = 0; i < botCards.size(); i++) {
 		// Plays the first cars that is bigger than challengingCard
 		if (botCards[i].IsBiggerThan(challenging_card_)) {
-			cardIndex = i;
+			card_index = i;
 			break;
 		}
 	}
-	return Player::PlayCard(cardIndex);
+	return Player::PlayCard(card_index);
 }
 
-void Bot::SetHand(std::vector<Card>& newHand) {
+void Bot::SetHand(std::vector<Card>& new_hand) {
 	//Bot cards are sorted from weakest to strongest.
-	std::sort(newHand.begin(), newHand.end(), [](Card currentCard, Card nextCard) {
-		return nextCard.IsBiggerThan(currentCard);
+	std::sort(new_hand.begin(), new_hand.end(), [](Card current_card, Card next_card) {
+		return next_card.IsBiggerThan(current_card);
 		});
 
-	Player::SetHand(newHand);
-	CategorizeCards(newHand);
+	Player::SetHand(new_hand);
+	CategorizeCards(new_hand);
 }

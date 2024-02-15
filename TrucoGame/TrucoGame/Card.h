@@ -5,7 +5,7 @@ public:
 	enum Suit { DIAMONDS, SPADES, HEARTS, CLUBS };
 	enum Rank { FOUR, FIVE, SIX, SEVEN, QUEEN, JACK, KING, ACE, TWO, THREE };
 
-	Card(Suit inputSuit, Rank inputRank);
+	Card(Suit suit, Rank rank);
 	Card();
 	Card(const Card& other) = default;
 	Card(Card&& other) noexcept = default;
