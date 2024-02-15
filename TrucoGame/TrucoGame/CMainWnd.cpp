@@ -120,8 +120,8 @@ void CMainWnd::OnButtonClicked() {
 void CMainWnd::OnLoadGameButtonClicked() {
 	// TODO: Checar se existe arquivo de save
 	controller_ = std::make_unique<Controller>(this);
-	bool response = controller_->LoadGame();
-	if (response) {
+	int response = controller_->LoadGame();
+	if (response == 1) {
 		InitGameViews();
 	}
 }

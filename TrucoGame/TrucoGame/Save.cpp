@@ -5,13 +5,13 @@ Save::Save() {
 	std::filesystem::create_directories(directory_);
 }
 
-bool Save::SaveGame(const Model& inputModel) {
+int Save::SaveGame(const Model& inputModel) {
 	try {
 		std::ofstream outFile(directory_ + "save.txt", std::ios::binary);
 
 		if (!outFile.is_open())
 		{
-			return false;
+			return 5;
 		}
 
 		char has_four_players = inputModel.GetHasFourPlayers() ? 1 : 0;
@@ -41,18 +41,30 @@ bool Save::SaveGame(const Model& inputModel) {
 		outFile.close();
 		return 1;
 	}
+	catch (const std::ios_base::failure& e) {
+		std::cerr << "Erro de E/S: " << e.what() << std::endl;
+		return 2;
+	}
+	catch (const std::bad_alloc& e) {
+		std::cerr << "Erro de alocação de memória: " << e.what() << std::endl;
+		return 3;
+	}
+	catch (const std::bad_cast& e) {
+		std::cerr << "Erro de conversão de tipo: " << e.what() << std::endl;
+		return 4;
+	}
 	catch (const std::exception& e) {
-		std::cerr << "Erro!!!. " << e.what() << std::endl;
+		std::cerr << "Erro genérico: " << e.what() << std::endl;
 		return 0;
 	}
 }
 
-bool Save::LoadGame(Model& inputModel) {
+int Save::LoadGame(Model& inputModel) {
 	try {
 		std::ifstream inFile(directory_ + "save.txt", std::ios::binary);
 
 		if (!inFile.is_open()) {
-			return false;
+			return 5;
 		}
 		char has_four_players;
 		Player player_one;
@@ -85,8 +97,20 @@ bool Save::LoadGame(Model& inputModel) {
 		inFile.close();
 		return 1;
 	}
+	catch (const std::ios_base::failure& e) {
+		std::cerr << "Erro de E/S: " << e.what() << std::endl;
+		return 2;
+	}
+	catch (const std::bad_alloc& e) {
+		std::cerr << "Erro de alocação de memória: " << e.what() << std::endl;
+		return 3;
+	}
+	catch (const std::bad_cast& e) {
+		std::cerr << "Erro de conversão de tipo: " << e.what() << std::endl;
+		return 4;
+	}
 	catch (const std::exception& e) {
-		std::cerr << "Erro!!!. " << e.what() << std::endl;
+		std::cerr << "Erro genérico: " << e.what() << std::endl;
 		return 0;
 	}
 }
