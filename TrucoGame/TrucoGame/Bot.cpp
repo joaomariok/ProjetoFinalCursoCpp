@@ -11,6 +11,18 @@ Bot::Bot(std::string inputName, Group group, int playerNumber) : Player(inputNam
 	percentage_to_accept_truco_ = 5;
 }
 
+Bot::Bot(const Player& other) : Player(other) {
+	// TODO: Is it possible to use other.GetPercentageToAskTruco() and other.GetPercentageToAcceptTruco() here?
+	percentage_to_ask_truco_ = 5;
+	percentage_to_accept_truco_ = 5;
+}
+
+void Bot::Reset(const Player& player) {
+	Player::Reset(player);
+	percentage_to_ask_truco_ = 5;
+	percentage_to_accept_truco_ = 5;
+}
+
 void Bot::SetChallengingCard(Card card) {
 	challenging_card_ = card;
 }
@@ -27,12 +39,33 @@ int Bot::MakeTrucoDecision() const {
 
 bool Bot::AskTruco() {
 	int randomNumber = MakeTrucoDecision();
-	return randomNumber < percentage_to_ask_truco_;
+	return randomNumber <= percentage_to_ask_truco_;
 }
 
-bool Bot::AcceptTruco() {
+bool Bot::RespondTruco() {
 	int randomNumber = MakeTrucoDecision();
-	return randomNumber < percentage_to_accept_truco_;
+	return randomNumber <= percentage_to_accept_truco_;
+}
+
+void Bot::CategorizeCards(std::vector<Card>& hand) {
+	int percentageToAskTruco = 5, percentageToAcceptTruco = 5;
+
+	for (Card& card : hand) {
+		if (card.IsZap()) {
+			percentageToAskTruco += 40;
+			percentageToAcceptTruco += 80;
+		}
+		else if (card.IsManilha()) {
+			percentageToAskTruco += 10;
+			percentageToAcceptTruco += 20;
+		}
+		else if (card.GetRank() == Card::THREE) {
+			percentageToAskTruco += 5;
+			percentageToAcceptTruco += 10;
+		}
+	}
+
+	SetPercentageToAskAndAcceptTruco(percentageToAskTruco, percentageToAcceptTruco);
 }
 
 /*Polimorfismo*/
@@ -55,4 +88,5 @@ void Bot::SetHand(std::vector<Card>& newHand) {
 		});
 
 	Player::SetHand(newHand);
+	CategorizeCards(newHand);
 }

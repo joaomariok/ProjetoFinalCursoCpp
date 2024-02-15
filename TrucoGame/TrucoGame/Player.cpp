@@ -7,6 +7,16 @@ Player::Player(std::string inputName, Group group, int playerNum)
 	score_ = 0;
 	round_score_ = 0;
 	group_ = group;
+	hand_ = std::vector<Card>();
+}
+
+Player::Player(const Player& other) {
+	name_ = other.GetName();
+	playerNumber = other.GetPlayerNumber();
+	score_ = other.GetScore();
+	round_score_ = other.GetRoundScore();
+	group_ = other.GetGroup();
+	hand_ = other.GetHand();
 }
 
 Player::Player() : Player("") {}
@@ -23,6 +33,15 @@ Card Player::PlayCard(int cardIndex) {
 	Card card = hand_.at(cardIndex);
 	hand_.erase(hand_.begin() + cardIndex);
 	return card;
+}
+
+void Player::Reset(const Player& player) {
+	name_ = player.GetName();
+	playerNumber = player.GetPlayerNumber();
+	score_ = player.GetScore();
+	round_score_ = player.GetRoundScore();
+	group_ = player.GetGroup();
+	hand_.clear();
 }
 
 void Player::SetGroup(Group group) {

@@ -24,9 +24,10 @@ void Controller::PlayCard(int card_index) {
 }
 
 bool Controller::LoadGame() {
-	bool response = save_->LoadGame(*model_);
+	Model tmp_model;
+	bool response = save_->LoadGame(tmp_model);
 	if (response) {
-		model_->Init(model_->GetPlayer(1)->GetName(), model_->GetPlayer(2)->GetName(), model_->GetHasFourPlayers());
+		model_->Load(tmp_model);
 	}
 	return response;
 }

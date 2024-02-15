@@ -77,6 +77,7 @@ public:
 		void RunFromTruco();
 		void RunFromMaoDeOnze();
 		Player* MaybeGetWinner() const;
+		bool CanSeeCardsInHand() const;
 
 		Card* GetVira() const { return vira_; }
 		int GetCurrentHandValue() const { return current_hand_value_; }
@@ -118,6 +119,7 @@ public:
 	~Model() = default;
 
 	void Init(std::string player_one_name, std::string player_two_name, bool has_four_players);
+	void Load(const Model& model);
 
 	void InitHandRound();
 	void ResetGame();
@@ -125,7 +127,7 @@ public:
 
 	void PlayCard(int cardIndex);
 
-    void SetPlayer(int position, Player* player);
+    void SetPlayer(int position, Player player);
 	Player* GetPlayer(int position) const;
 
     void SetDeck(Deck* deck);
@@ -154,4 +156,3 @@ private:
 	int current_hand_round_number_ = 0;
     bool has_four_players_ = false;
 };
-

@@ -24,6 +24,10 @@ bool Card::IsManilha() const {
 	return is_manilha_;
 }
 
+bool Card::IsZap() const {
+	return is_manilha_ && suit_ == Suit::CLUBS;
+}
+
 bool Card::IsBiggerThan(Card card) const {
 	// The two compared cards are "Manilha"
 	if (IsManilha() && card.IsManilha())

@@ -21,7 +21,7 @@ CGamingView::~CGamingView()
 {
 }
 
-void CGamingView::SetController(int playerNumber, Controller *controller)
+void CGamingView::SetController(int playerNumber, Controller* controller)
 {
 	player_number_ = playerNumber;
 	controller_ = controller;
@@ -119,7 +119,7 @@ BOOL CGamingView::OnInitDialog()
 	backgroundImg.SetBitmap((HBITMAP)backgroundBmp.Detach());
 
 	/* CREATING CLICKABLE CARDS */
-	card_1.Create(_T("Card1"),SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP , CRect(505, 538, 594, 678), this, IDC_CARD_1);
+	card_1.Create(_T("Card1"), SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP, CRect(505, 538, 594, 678), this, IDC_CARD_1);
 	card_2.Create(_T("Card2"), SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP, CRect(612, 538, 702, 678), this, IDC_CARD_2);
 	card_3.Create(_T("Card3"), SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY | WS_TABSTOP, CRect(720, 538, 810, 678), this, IDC_CARD_3);
 
@@ -164,8 +164,8 @@ void CGamingView::OnPaint()
 			if (i == 1 || i == 2) {
 				CString playerScore;
 				playerScore.Format(_T("%d"), player->GetScore());
-				if (i == 1) player1_score.SetText(playerScore,RGB(0,0,0),10,false,true);
-				if (i == 2) player2_score.SetText(playerScore,RGB(0,0,0),10,false,true);
+				if (i == 1) player1_score.SetText(playerScore, RGB(0, 0, 0), 10, false, true);
+				if (i == 2) player2_score.SetText(playerScore, RGB(0, 0, 0), 10, false, true);
 			}
 
 			std::vector<Card> cards = player->GetHand();
@@ -222,7 +222,7 @@ void CGamingView::OnPaint()
 	std::vector<Player*> winners = controller_->GetHandRoundWinners();
 	if (winners.size() > 0) {
 		score_1_img.LoadImage(winners[0]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
-		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png")); 
+		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
 		if (winners.size() > 2) score_3_img.LoadImage(winners[2]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
 	}
 	else {
@@ -326,6 +326,30 @@ LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
+{
+	//Message received
+	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+
+	switch (gameEvent) {
+	case TRUCO:
+		//OnBnClickedTrucoBtn();
+		break;
+	case CONTINUE:
+		//OnBnClickedDesceBtn();
+		break;
+	case QUIT:
+		//OnBnClickedPassoBtn();
+		break;
+	case NONE:
+		Invalidate();
+	default:
+		break;
+	}
+
+	return 0;
+}
+
 void CGamingView::SendMessageToParent(GameEvents gameEvent)
 {
 	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(player_number_));
@@ -363,7 +387,7 @@ CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPl
 {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
-	
+
 	if (numberOfPlayers == 4) { //The position of players respect its index
 		if (player_number_ == 1) {
 			if (playerIndex == 2)
@@ -512,4 +536,5 @@ BEGIN_MESSAGE_MAP(CGamingView, CDialog)
 	ON_BN_CLICKED(IDC_PASSO_BTN, OnBnClickedPassoBtn)
 	ON_BN_CLICKED(IDC_SAVE_BUTTON, OnBnClickedSaveGameBtn)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)
+	ON_MESSAGE(WM_BOT_PLAY_MESSAGE, OnBotPlayMessage)
 END_MESSAGE_MAP()

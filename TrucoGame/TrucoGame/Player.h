@@ -10,8 +10,13 @@ public:
 
 	Player();
 	Player(std::string inputName, Group group = Group::NO_GROUP, int playerNumber = 0);
+	Player(const Player& other);
+	Player(Player&& other) noexcept = default;
+	Player& operator=(const Player& other) = default;
+	Player& operator=(Player&& other) noexcept = default;
 
 	virtual Card PlayCard(int cardIndex);
+	virtual void Reset(const Player& player);
 
 	std::string GetName() const { return name_; }
 	int GetPlayerNumber() const { return playerNumber; }

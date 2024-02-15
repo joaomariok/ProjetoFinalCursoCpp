@@ -11,6 +11,12 @@
 class Save
 {
 public:
+	struct PlayerSave {
+		std::string name_;
+		int player_num_;
+		int score_;
+	};
+
 	Save();
 	~Save();
 	bool SaveGame(const Model &inputModel);

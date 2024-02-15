@@ -15,6 +15,8 @@ public:
 
 	Suit GetSuit() const;
 	Rank GetRank() const;
+
+	bool IsZap() const;
 	void SetIsManilha();
 	bool IsManilha() const;
 	bool IsBiggerThan(Card card) const;
