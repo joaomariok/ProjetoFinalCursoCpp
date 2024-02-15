@@ -11,7 +11,6 @@ bool Save::SaveGame(const Model& inputModel) {
 
 		if (!outFile.is_open())
 		{
-			std::cerr << "File could not be opened." << std::endl;
 			return false;
 		}
 
@@ -43,6 +42,7 @@ bool Save::SaveGame(const Model& inputModel) {
 		return 1;
 	}
 	catch (const std::exception& e) {
+		std::cerr << "Erro!!!. " << e.what() << std::endl;
 		return 0;
 	}
 }
@@ -86,6 +86,7 @@ bool Save::LoadGame(Model& inputModel) {
 		return 1;
 	}
 	catch (const std::exception& e) {
+		std::cerr << "Erro!!!. " << e.what() << std::endl;
 		return 0;
 	}
 }
