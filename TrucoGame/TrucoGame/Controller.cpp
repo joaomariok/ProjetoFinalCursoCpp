@@ -50,6 +50,10 @@ void Controller::RunFromTruco() {
 	model_->CheckHandRoundFinished();
 }
 
+void Controller::RunFromMaoDeOnze() {
+	model_->GetCurrentHandRound()->RunFromMaoDeOnze();
+}
+
 std::vector<Card> Controller::GetDiscardedCards()
 {
 	Model::Round* current_round = model_->GetCurrentRound();

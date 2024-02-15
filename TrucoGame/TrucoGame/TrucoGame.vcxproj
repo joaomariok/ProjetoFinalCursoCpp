@@ -133,6 +133,7 @@
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CGamingView.cpp" />
     <ClCompile Include="CMainWnd.cpp" />
+    <ClCompile Include="CMaoOnzeDlg.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Controls\CTransparentImage.cpp" />
     <ClCompile Include="Controls\CTransparentStatic.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Card.h" />
     <ClInclude Include="CGamingView.h" />
     <ClInclude Include="CMainWnd.h" />
+    <ClInclude Include="CMaoOnzeDlg.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Controls\CTransparentImage.h" />
     <ClInclude Include="Controls\CTransparentStatic.h" />
@@ -169,6 +171,7 @@
     <Image Include="Assets\Background2players.bmp" />
     <Image Include="Assets\Background4players.bmp" />
     <Image Include="Assets\BackgroundMenu.bmp" />
+    <Image Include="Assets\BackgroundOnze.bmp" />
     <Image Include="Assets\CardBack.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

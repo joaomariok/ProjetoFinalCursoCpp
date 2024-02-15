@@ -23,6 +23,7 @@ public:
 	void Trucar();
 	void AcceptTruco();
 	void RunFromTruco();
+	void RunFromMaoDeOnze();
 	bool LoadGame();
 	bool SaveGame();
 	int GetPlayerScore(Player* player) { return player->GetScore(); }
@@ -38,6 +39,8 @@ public:
 	Player* GetCurrentPlayer();
 	int GetFirstPlayerIndex() { return model_->GetFirstPlayerIndex(); }
 	int GetCurrentHandValue();
+	bool IsMaoDeFerro() { return model_->IsMaoDeFerro(); }
+	bool IsMaoDeOnze() { return model_->IsMaoDeOnze(); }
 
 private:
 	CMainWnd* view_;

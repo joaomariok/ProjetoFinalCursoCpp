@@ -29,6 +29,7 @@ public:
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
+		void RunFromMaoDeOnze();
 		bool HasWinner() const;
 		bool IsInTrucoState() const { return is_in_truco_state_; }
 		bool CanRespondTruco(Player* player) const;
@@ -74,6 +75,7 @@ public:
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
+		void RunFromMaoDeOnze();
 		Player* MaybeGetWinner() const;
 
 		Card* GetVira() const { return vira_; }
@@ -83,6 +85,7 @@ public:
 		std::vector<Player*> GetHandRoundWinners() { return winners_; };
 		void ClearHandRound(Deck* deck, Player* first_player);
 		bool IsFinished() const { return is_finished_; }
+		HandState GetHandState() { return state_; }
 
 	private:
 		void UpdateHandState();
@@ -135,6 +138,8 @@ public:
 	int GetFirstPlayerIndex();
 	Model::HandRound* GetCurrentHandRound() { return current_hand_round_.get(); }
 	Model::Round* GetCurrentRound() { return current_hand_round_->GetCurrentRound(); }
+	bool IsMaoDeOnze() { return current_hand_round_->GetHandState() == HandRound::MAO_DE_ONZE; }
+	bool IsMaoDeFerro() { return current_hand_round_->GetHandState() == HandRound::MAO_DE_FERRO; }
 
 private:
 	std::unique_ptr<HandRound> current_hand_round_ = nullptr;

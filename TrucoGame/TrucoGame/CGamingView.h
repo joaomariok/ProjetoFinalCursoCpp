@@ -2,9 +2,7 @@
 
 #include <memory>
 #include "Controller.h"
-#include "Controls/CTransparentImage.h"
-#include "Controls/CTransparentStatic.h"
-#include "Utils.h"
+#include "CMaoOnzeDlg.h"
 
 using namespace Utils;
 
@@ -35,6 +33,7 @@ private:
 
 	void LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist = true);
 	void LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard);
+	CString GetCardAssetPath(Card* card);
 	CTransparentImage* GetCardComponent(int playerIndex, int numberOfPlayers, int cardIndex);
 	CTransparentImage* GetRoundCardComponent(int playerIndex, int numberOfPlayers);
 	CTransparentStatic* GetStaticComponent(int playerIndex, int numberOfPlayers);

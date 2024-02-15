@@ -8,6 +8,8 @@
 #define IDB_BACKGROUND_2PLAYERS         104
 #define IDB_BACKGROUND_4PLAYERS         105
 #define IDB_BACKGROUNDMENU              106
+#define IDD_MAO_ONZE_DLG                107
+#define IDB_BACKGROUND_ONZE             109
 #define IDC_BACKGROUND                  1001
 #define IDC_CARD_1                      1002
 #define IDC_CARD_2                      1003
@@ -47,14 +49,21 @@
 #define IDC_SCORE_3                     1037
 #define IDC_SAVE_BUTTON                 1038
 #define IDC_CURRENT_PLAYER              1039
+#define IDC_BACKGROUND_ONZE             1041
+#define IDC_MAO_ONZE_TEXT               1042
+#define IDC_MAO_ONZE_CARD1              1043
+#define IDC_MAO_ONZE_CARD2              1044
+#define IDC_MAO_ONZE_CARD3              1045
+#define ID_YES                          1046
+#define ID_NO                           1047
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        107
+#define _APS_NEXT_RESOURCE_VALUE        110
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1040
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -95,6 +95,10 @@ void Model::Round::RunFromTruco() {
 	current_truco_player_ = nullptr;
 }
 
+void Model::Round::RunFromMaoDeOnze() {
+	current_winner_ = player_utils::GetNextPlayer(players_, current_player_);
+}
+
 bool Model::Round::HasWinner() const {
 	return WasLastPlayer() || DidSomebodyWin();
 }
@@ -209,11 +213,21 @@ void Model::HandRound::AcceptTruco() {
 void Model::HandRound::RunFromTruco() {
 	current_round_->RunFromTruco();
 	current_hand_value_ -= current_hand_value_ == 3 ? 2 : 3;
-	Player* current_player = current_round_->GetCurrentPlayer();
 	Player* winner = current_round_->GetWinner();
 	winner->IncreaseScore(current_hand_value_);
 	if (Player* other_player = player_utils::GetOtherGroupPlayer(players_, winner)) {
 		other_player->IncreaseScore(current_hand_value_);
+	}
+	is_finished_ = true;
+}
+
+void Model::HandRound::RunFromMaoDeOnze() {
+	current_round_->RunFromMaoDeOnze();
+	current_hand_value_ = 1;
+	if (Player* winner = current_round_->GetWinner()) {
+		winner->IncreaseScore(current_hand_value_);
+		if (Player* partner = players_.at(winner->GetPlayerNumber() + 1))
+			partner->IncreaseScore(current_hand_value_);
 	}
 	is_finished_ = true;
 }

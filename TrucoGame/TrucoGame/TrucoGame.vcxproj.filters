@@ -57,6 +57,9 @@
     <ClCompile Include="Controls\CTransparentStatic.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
+    <ClCompile Include="CMaoOnzeDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -107,6 +110,9 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CMaoOnzeDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrucoGame.rc">
@@ -127,6 +133,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Assets\BackgroundMenu.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\BackgroundOnze.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

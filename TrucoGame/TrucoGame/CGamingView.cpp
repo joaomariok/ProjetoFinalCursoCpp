@@ -169,10 +169,34 @@ void CGamingView::OnPaint()
 			}
 
 			std::vector<Card> cards = player->GetHand();
-			if (i == player_number_) { //Is the current player, so it must to show its cards
-				LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
-				LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
-				LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
+			if (i == player_number_) { 
+				//Is the current player, so it must to show its cards, except if it's a Mao de Ferro
+
+				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11) {
+					if (Player* player = controller_->GetPlayer(i + 1)) { //Get its partner
+						std::vector<Card> partnerCards = player->GetHand();
+						if (partnerCards.size() == 3) {
+							std::vector<CString> m_assetsPath;
+							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[0]));
+							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[1]));
+							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[2]));
+							CMaoOnzeDlg maoOnzeDlg;
+							maoOnzeDlg.m_assetsPath = m_assetsPath;
+							if (maoOnzeDlg.DoModal() == ID_NO)
+								controller_->RunFromMaoDeOnze();
+						}
+					}
+				}
+				if (controller_->IsMaoDeFerro()) {
+					LoadCardBackAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr, false);
+					LoadCardBackAsset(&card_2, cards.size() > 0 ? &cards[1] : nullptr, false);
+					LoadCardBackAsset(&card_3, cards.size() > 0 ? &cards[2] : nullptr, false);
+				}
+				else {
+					LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
+					LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
+					LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
+				}
 			}
 			else {
 				LoadCardBackAsset(GetCardComponent(i, numberOfPlayers, 0), cards.size() > 0 ? &cards[0] : nullptr, numberOfPlayers == 4 ? (player_number_ == 1 ? i == 3 : i == 4) : true);
@@ -418,58 +442,64 @@ void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bo
 	if (!cardComponent->IsWindowVisible())
 		cardComponent->ShowWindow(SW_SHOW);
 
+	CString assetsPath = GetCardAssetPath(card);
+	cardComponent->LoadImage(assetsPath);
+}
+
+CString CGamingView::GetCardAssetPath(Card* card)
+{
 	CString cardSuit, cardRank;
 
 	switch (card->GetSuit()) {
-		case Card::Suit::SPADES:
-			cardSuit = "Spade";
-			break;
-		case Card::Suit::HEARTS:
-			cardSuit = "Heart";
-			break;
-		case Card::Suit::DIAMONDS:
-			cardSuit = "Diamond";
-			break;
-		case Card::Suit::CLUBS:
-			cardSuit = "Club";
-			break;
+	case Card::Suit::SPADES:
+		cardSuit = "Spade";
+		break;
+	case Card::Suit::HEARTS:
+		cardSuit = "Heart";
+		break;
+	case Card::Suit::DIAMONDS:
+		cardSuit = "Diamond";
+		break;
+	case Card::Suit::CLUBS:
+		cardSuit = "Club";
+		break;
 	}
 
 	switch (card->GetRank()) {
-		case Card::Rank::ACE:
-			cardRank = "01";
-			break;
-		case Card::Rank::TWO:
-			cardRank = "02";
-			break;
-		case Card::Rank::THREE:
-			cardRank = "03";
-			break;
-		case Card::Rank::FOUR:
-			cardRank = "04";
-			break;
-		case Card::Rank::FIVE:
-			cardRank = "05";
-			break;
-		case Card::Rank::SIX:
-			cardRank = "06";
-			break;
-		case Card::Rank::SEVEN:
-			cardRank = "07";
-			break;
-		case Card::Rank::JACK:
-			cardRank = "11";
-			break;
-		case Card::Rank::QUEEN:
-			cardRank = "12";
-			break;
-		case Card::Rank::KING:
-			cardRank = "13";
-			break;
+	case Card::Rank::ACE:
+		cardRank = "01";
+		break;
+	case Card::Rank::TWO:
+		cardRank = "02";
+		break;
+	case Card::Rank::THREE:
+		cardRank = "03";
+		break;
+	case Card::Rank::FOUR:
+		cardRank = "04";
+		break;
+	case Card::Rank::FIVE:
+		cardRank = "05";
+		break;
+	case Card::Rank::SIX:
+		cardRank = "06";
+		break;
+	case Card::Rank::SEVEN:
+		cardRank = "07";
+		break;
+	case Card::Rank::JACK:
+		cardRank = "11";
+		break;
+	case Card::Rank::QUEEN:
+		cardRank = "12";
+		break;
+	case Card::Rank::KING:
+		cardRank = "13";
+		break;
 	}
 	CString assetsPath;
 	assetsPath.Format(_T("Assets/%s%s.png"), cardSuit, cardRank);
-	cardComponent->LoadImage(assetsPath);
+	return assetsPath;
 }
 
 BEGIN_MESSAGE_MAP(CGamingView, CDialog)
