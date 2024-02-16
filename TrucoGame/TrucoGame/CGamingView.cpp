@@ -66,6 +66,7 @@ void CGamingView::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_PLAYER2_SCORE, player2_score);
 	DDX_Control(pDX, IDC_ROUND_VALUE, round_value);
 	DDX_Control(pDX, IDC_CURRENT_PLAYER, current_player);
+	DDX_Control(pDX, IDC_CHECK_HIDE_CARD, check_hide_card_btn);
 }
 
 BOOL CGamingView::OnInitDialog() {
@@ -142,9 +143,8 @@ BOOL CGamingView::OnInitDialog() {
 	viewButton = static_cast<CButton*>(GetDlgItem(IDC_SAVE_BUTTON));
 	if (viewButton != nullptr)
 		viewButton->SetFont(&font);
-	viewButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD));
-	if (viewButton != nullptr)
-		viewButton->SetFont(&font);
+
+	check_hide_card_btn.SetFont(&font);
 
 	return TRUE;
 }
@@ -224,14 +224,19 @@ void CGamingView::OnPaint() {
 	int firstPlayerIndex = controller_->GetFirstPlayerIndex();
 	std::vector<Card> discardedCards = controller_->GetDiscardedCards();
 	LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 0 ? &discardedCards[0] : nullptr, true);
-	if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
+	if (firstPlayerIndex > numberOfPlayers)
+		firstPlayerIndex = 1;
 	LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 1 ? &discardedCards[1] : nullptr, true);
+
 	if (numberOfPlayers > 2) {
-		if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
+		if (firstPlayerIndex > numberOfPlayers)
+			firstPlayerIndex = 1;
 		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 2 ? &discardedCards[2] : nullptr, true);
-		if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
+		if (firstPlayerIndex > numberOfPlayers)
+			firstPlayerIndex = 1;
 		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, true);
 	}
+
 	LoadCardAsset(&card_vira, controller_->GetVira());
 
 	/*PAINT ROUND STATUS*/
@@ -259,6 +264,14 @@ void CGamingView::OnPaint() {
 	if (!controller_->IsInTrucoState()) {
 		HideAnyTrucoImage();
 	}
+
+	/*ENABLE OR DISABLE HIDE CARD BUTTON*/
+	bool shouldEnableBtn = controller_->GetCurrentRoundNumber() > 1;
+
+	if (!shouldEnableBtn && IsHideCardBtnChecked())
+		check_hide_card_btn.SetCheck(BST_UNCHECKED);
+
+	check_hide_card_btn.EnableWindow(shouldEnableBtn);
 }
 
 void CGamingView::OnBnClickedTrucoBtn() {
@@ -305,10 +318,7 @@ void CGamingView::OnCard1Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_1.ShowWindow(SW_HIDE);
-		bool is_hidden = false;
-		if (CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD)))
-			is_hidden = checkButton->GetCheck() == BST_CHECKED;
-		SendMessageToParent(is_hidden ? CARD1_PICKED_HIDDEN : CARD1_PICKED);
+		SendMessageToParent(IsHideCardBtnChecked() ? CARD1_PICKED_HIDDEN : CARD1_PICKED);
 	}
 	else
 		AfxMessageBox(L"Espere sua vez");
@@ -318,10 +328,7 @@ void CGamingView::OnCard2Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_2.ShowWindow(SW_HIDE);
-		bool is_hidden = false;
-		if (CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD)))
-			is_hidden = checkButton->GetCheck() == BST_CHECKED;
-		SendMessageToParent(is_hidden ? CARD2_PICKED_HIDDEN : CARD2_PICKED);
+		SendMessageToParent(IsHideCardBtnChecked() ? CARD2_PICKED_HIDDEN : CARD2_PICKED);
 	}
 	else
 		AfxMessageBox(L"Espere sua vez");
@@ -331,13 +338,14 @@ void CGamingView::OnCard3Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_3.ShowWindow(SW_HIDE);
-		bool is_hidden = false;
-		if (CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD)))
-			is_hidden = checkButton->GetCheck() == BST_CHECKED;
-		SendMessageToParent(is_hidden ? CARD3_PICKED_HIDDEN : CARD3_PICKED);
+		SendMessageToParent(IsHideCardBtnChecked() ? CARD3_PICKED_HIDDEN : CARD3_PICKED);
 	}
 	else
 		AfxMessageBox(L"Espere sua vez");
+}
+
+bool CGamingView::IsHideCardBtnChecked() const {
+	return check_hide_card_btn.GetCheck() == BST_CHECKED;
 }
 
 void CGamingView::HideAnyTrucoImage() {

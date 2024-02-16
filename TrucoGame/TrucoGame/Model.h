@@ -83,6 +83,7 @@ public:
 
 		Card* GetVira() const { return vira_; }
 		int GetCurrentHandValue() const { return current_hand_value_; }
+		int GetCurrentRoundNumber() const { return current_round_number_; }
 		Player* GetFirstPlayer() const { return first_player_; }
 		Round* GetCurrentRound() { return current_round_.get(); }
 		std::vector<Player*> GetRoundWinners() { return round_winners_; };
@@ -130,11 +131,11 @@ public:
 
 	void PlayCard(int cardIndex, bool is_hidden = false);
 
-    void SetPlayer(int position, Player player);
+	void SetPlayer(int position, Player player);
 	Player* GetPlayer(int position) const;
 
-    void SetDeck(Deck* deck);
-    Deck* GetDeck() const;
+	void SetDeck(Deck* deck);
+	Deck* GetDeck() const;
 
 	Card* GetVira() const;
 	bool GetHasFourPlayers() const { return has_four_players_; }
@@ -158,5 +159,5 @@ private:
 	std::vector<Player*> players_;
 
 	int current_hand_round_number_ = 0;
-    bool has_four_players_ = false;
+	bool has_four_players_ = false;
 };

@@ -134,3 +134,8 @@ int Controller::GetCurrentHandValue() {
 	Model::HandRound* current_hand_round = model_->GetCurrentHandRound();
 	return current_hand_round ? current_hand_round->GetCurrentHandValue() : 1;
 }
+
+int Controller::GetCurrentRoundNumber() {
+	Model::HandRound* current_hand_round = model_->GetCurrentHandRound();
+	return current_hand_round ? current_hand_round->GetCurrentRoundNumber() : 1;
+}

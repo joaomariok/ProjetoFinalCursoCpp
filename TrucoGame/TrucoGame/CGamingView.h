@@ -28,6 +28,7 @@ private:
 		card_p3_1, card_p3_2, card_p3_3, card_p3_round, card_p4_1, card_p4_2, card_p4_3, card_p4_round,
 		card_vira, card_vira_back, word_truco_p1, word_truco_p2, word_truco_p3, word_truco_p4, score_1_img, score_2_img, score_3_img;
 	CRect card1_rect, card2_rect, card3_rect;
+	CButton check_hide_card_btn;
 
 	int player_number_;
 	bool mao_de_onze_dialog_opened = false;
@@ -35,6 +36,7 @@ private:
 	Controller* controller_;
 
 	void HideAnyTrucoImage();
+	bool IsHideCardBtnChecked() const;
 	void ShowTrucoImageBasedOnPlayerPosition(int gamingViewNumber);
 	void LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist = true);
 	void LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard);
