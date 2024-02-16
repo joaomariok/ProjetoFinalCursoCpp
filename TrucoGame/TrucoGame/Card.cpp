@@ -1,10 +1,9 @@
 #include "Card.h"
 
 Card::Card(Suit suit, Rank rank) :
-	suit_(suit), rank_(rank), is_manilha_(false) {}
+	suit_(suit), rank_(rank), is_manilha_(false), is_hidden_(false) {}
 
-Card::Card() :
-	suit_(Suit::SPADES), rank_(Rank::ACE), is_manilha_(false) {}
+Card::Card() : Card(Suit::SPADES, Rank::ACE) {}
 
 Card::~Card() = default;
 
@@ -26,6 +25,14 @@ void Card::SetIsManilha() {
 
 bool Card::IsManilha() const {
 	return is_manilha_;
+}
+
+void Card::SetIsHidden(bool is_hidden) {
+	is_hidden_ = is_hidden;
+}
+
+bool Card::IsHidden() const {
+	return is_hidden_;
 }
 
 bool Card::IsZap() const {

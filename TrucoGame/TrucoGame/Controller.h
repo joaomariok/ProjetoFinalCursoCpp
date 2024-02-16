@@ -18,7 +18,7 @@ public:
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(int card_index);
+	void PlayCard(int card_index, bool is_hidden = false);
 
 	void Trucar();
 	void AcceptTruco();
