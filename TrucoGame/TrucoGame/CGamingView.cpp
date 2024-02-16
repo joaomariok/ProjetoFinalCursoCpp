@@ -142,6 +142,9 @@ BOOL CGamingView::OnInitDialog() {
 	viewButton = static_cast<CButton*>(GetDlgItem(IDC_SAVE_BUTTON));
 	if (viewButton != nullptr)
 		viewButton->SetFont(&font);
+	viewButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD));
+	if (viewButton != nullptr)
+		viewButton->SetFont(&font);
 
 	return TRUE;
 }
@@ -578,4 +581,19 @@ BEGIN_MESSAGE_MAP(CGamingView, CDialog)
 	ON_BN_CLICKED(IDC_SAVE_BUTTON, OnBnClickedSaveGameBtn)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)
 	ON_MESSAGE(WM_BOT_PLAY_MESSAGE, OnBotPlayMessage)
+	ON_BN_CLICKED(IDC_CHECK_HIDE_CARD, OnBnClickedCheckHideCard)
 END_MESSAGE_MAP()
+
+
+void CGamingView::OnBnClickedCheckHideCard()
+{
+	CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD));
+	if (checkButton) {
+		if (checkButton->GetCheck() == BST_CHECKED) {
+			//TODO controller->HideCard();
+		}
+		else {
+			//TODO controller->ShowCard();
+		}
+	}
+}
