@@ -349,7 +349,24 @@ void CGamingView::ShowTrucoImageBasedOnPlayerPosition(int gamingViewNumber) {
 LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
-	Invalidate();
+	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+
+	if (gameEvent == TRUCO_FROM_OPPONENT) {
+		int numberOfPlayers = controller_->GetNumberOfPlayers();
+		if (numberOfPlayers == 4) {
+			if (player_number_ == 1)
+				word_truco_p2.ShowWindow(SW_SHOW);
+			else if (player_number_ == 2)
+				word_truco_p4.ShowWindow(SW_SHOW);
+		}
+		else {
+			word_truco_p3.ShowWindow(SW_SHOW);
+		}
+	}
+	else {
+		Invalidate();
+	}
+
 	return 0;
 }
 

@@ -31,7 +31,7 @@ public:
 	afx_msg void OnTwoPlayersClicked();
 	afx_msg void OnFourPlayersClicked();
 	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
-	void SendMessageToGamingView(CGamingView* gamingView);
+	void SendMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent);
 	void SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber);
 	DECLARE_MESSAGE_MAP()
 };

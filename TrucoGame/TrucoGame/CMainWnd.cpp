@@ -163,6 +163,8 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+	int playerNumber = static_cast<int>(lParam);
+	bool alreadySentEvent = false;
 
 	switch (gameEvent) {
 	case CARD1_PICKED:
@@ -176,6 +178,14 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 		break;
 	case TRUCO:
 		controller_->Trucar();
+		if (playerNumber == 1) {
+			SendMessageToGamingView(&gamingView_2, TRUCO_FROM_OPPONENT);
+			alreadySentEvent = true;
+		}
+		else if (playerNumber == 2) {
+			SendMessageToGamingView(&gamingView_1, TRUCO_FROM_OPPONENT);
+			alreadySentEvent = true;
+		}
 		break;
 	case CONTINUE:
 		controller_->AcceptTruco();
@@ -188,14 +198,17 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Send message to update the views
-	SendMessageToGamingView(&gamingView_1);
-	SendMessageToGamingView(&gamingView_2);
+	if (!alreadySentEvent) {
+		SendMessageToGamingView(&gamingView_1, NONE);
+		SendMessageToGamingView(&gamingView_2, NONE);
+	}
+
 	return 0;
 }
 
-void CMainWnd::SendMessageToGamingView(CGamingView* gamingView)
+void CMainWnd::SendMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent)
 {
-	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(""), LPARAM(0));
+	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(0));
 }
 
 void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber)
