@@ -370,6 +370,9 @@ LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
 	case QUIT:
 		HideAnyTrucoImage();
 		break;
+	case NONE:
+		Invalidate();
+		break;
 	default:
 		break;
 	}
