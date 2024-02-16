@@ -92,9 +92,7 @@ void Model::Round::AcceptTruco() {
 }
 
 void Model::Round::RunFromTruco() {
-	current_winner_ = current_truco_player_ == current_player_
-		? current_player_
-		: player_utils::GetNextPlayer(players_, current_player_);
+	current_winner_ = current_player_;
 	is_in_truco_state_ = false;
 	current_truco_player_ = nullptr;
 }
