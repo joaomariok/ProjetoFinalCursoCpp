@@ -11,6 +11,7 @@ Repositório para o projeto final do curso de C++
 * Clone o repositório
 * Abra a solution (ProjetoFinalCursoCpp\TrucoGame\TrucoGame.sln)
 * Configure para Debug x64 e clique em "Local Windows Debugger"
+* Após executar o jogo e inserir o nome dos jogadores, 2 dialogs novos vão aparecer: Jogador 1 e Jogador 2 (ficando 3 ao todos). Lembre-se de mover eles para conseguir visualizá-los. 
 
  ## Recomendações
  * Recomendamos executar o projeto em monitores com Escala 100%. Caso contrário alguns problemas de UI podem acontecer.
