@@ -164,10 +164,22 @@ void CGamingView::OnPaint()
 		if (player) {
 			/*PAINT PLAYER SCORE*/
 			if (i == 1 || i == 2) {
-				CString playerScore;
-				playerScore.Format(_T("%d"), player->GetScore());
-				if (i == 1) player1_score.SetText(playerScore, RGB(0, 0, 0), 10, false, true);
-				if (i == 2) player2_score.SetText(playerScore, RGB(0, 0, 0), 10, false, true);
+				int playerScore = player->GetScore();
+				CString c_playerScore;
+				c_playerScore.Format(_T("%d"), playerScore);
+				if (i == 1) player1_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
+				if (i == 2) player2_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
+
+				if (playerScore >= 12) {
+					if (i == player_number_) {
+						AfxMessageBox(L"Parabéns! Você venceu o jogo!!");
+						EndDialog(0);
+					}
+					else {
+						AfxMessageBox(L"Que pena! Você perdeu o jogo...");
+						EndDialog(0);
+					}
+				}
 			}
 
 			std::vector<Card> cards = player->GetHand();
