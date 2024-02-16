@@ -19,6 +19,7 @@ void Deck::ResetDeck() {
 }
 
 void Deck::InitializeDeck() {
+	cards_.clear();
 	for (int suit = Card::DIAMONDS; suit <= Card::CLUBS; ++suit) {
 		for (int rank = Card::FOUR; rank <= Card::THREE; ++rank) {
 			cards_.emplace_back(static_cast<Card::Suit>(suit), static_cast<Card::Rank>(rank));
@@ -75,7 +76,7 @@ void Deck::SetManilhas(Card& vira) {
 
 	int i = 0, manilhas_count = 0;
 
-	while (manilhas_count < 4) {
+	while (manilhas_count < 4 && i < cards_.size() ) {
 		if (cards_[i].GetRank() == manilhas_rank) {
 			cards_[i].SetIsManilha();
 			manilhas_count++;

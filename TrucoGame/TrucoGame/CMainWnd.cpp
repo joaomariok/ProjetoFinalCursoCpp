@@ -206,6 +206,9 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam) {
 	case QUIT:
 		controller_->RunFromTruco();
 		break;
+	case RUN_FROM_MAO_DE_ONZE:
+		controller_->RunFromMaoDeOnze();
+		break;
 	default:
 		break;
 	}

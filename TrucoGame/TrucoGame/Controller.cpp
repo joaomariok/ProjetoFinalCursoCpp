@@ -84,6 +84,7 @@ void Controller::RunFromTruco() {
 
 void Controller::RunFromMaoDeOnze() {
 	model_->GetCurrentHandRound()->RunFromMaoDeOnze();
+	model_->CheckHandRoundFinished();
 }
 
 std::vector<Card> Controller::GetDiscardedCards() {

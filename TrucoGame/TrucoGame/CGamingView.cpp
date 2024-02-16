@@ -152,6 +152,8 @@ BOOL CGamingView::OnInitDialog() {
 void CGamingView::OnPaint() {
 	CPaintDC dc(this);
 
+	/*PAINT VIRA*/
+	LoadCardAsset(&card_vira, controller_->GetVira());
 	/* PAINT ALL PLAYER CARDS */
 	int numberOfPlayers = controller_->GetNumberOfPlayers();
 	for (int i = 1; i <= numberOfPlayers; ++i)
@@ -184,7 +186,17 @@ void CGamingView::OnPaint() {
 			if (i == player_number_) {
 				//Is the current player, so it must to show its cards, except if it's a Mao de Ferro
 
-				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11 && !mao_de_onze_dialog_opened) {
+				if (controller_->IsMaoDeFerro()) {
+					LoadCardBackAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr, false);
+					LoadCardBackAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr, false);
+					LoadCardBackAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr, false);
+				}
+				else {
+					LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
+					LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
+					LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
+				}
+				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0) {
 					mao_de_onze_dialog_opened = true;
 					if (Player* player = controller_->GetPlayer(i + 1)) { //Get its partner
 						std::vector<Card> partnerCards = player->GetHand();
@@ -195,21 +207,12 @@ void CGamingView::OnPaint() {
 							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[2]));
 							CMaoOnzeDlg maoOnzeDlg;
 							maoOnzeDlg.m_assetsPath = m_assetsPath;
-							if (maoOnzeDlg.DoModal() == ID_NO)
-								controller_->RunFromMaoDeOnze();
+							if (maoOnzeDlg.DoModal() == ID_NO) {
+								SendMessageToParent(RUN_FROM_MAO_DE_ONZE);
+							}
 						}
 					}
 					mao_de_onze_dialog_opened = false;
-				}
-				if (controller_->IsMaoDeFerro()) {
-					LoadCardBackAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr, false);
-					LoadCardBackAsset(&card_2, cards.size() > 0 ? &cards[1] : nullptr, false);
-					LoadCardBackAsset(&card_3, cards.size() > 0 ? &cards[2] : nullptr, false);
-				}
-				else {
-					LoadCardAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr);
-					LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
-					LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
 				}
 			}
 			else {
@@ -232,7 +235,6 @@ void CGamingView::OnPaint() {
 		if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
 		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, true);
 	}
-	LoadCardAsset(&card_vira, controller_->GetVira());
 
 	/*PAINT ROUND STATUS*/
 	std::vector<Player*> winners = controller_->GetHandRoundWinners();

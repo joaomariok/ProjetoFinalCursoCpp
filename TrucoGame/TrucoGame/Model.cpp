@@ -106,7 +106,10 @@ void Model::Round::RunFromTruco() {
 }
 
 void Model::Round::RunFromMaoDeOnze() {
-	current_winner_ = player_utils::GetNextPlayer(players_, current_player_);
+	if (players_.size() > 2)
+		current_winner_ = players_[0]->GetScore() == WIN_POINTS - 1 ? players_[1] : players_[0];
+	else
+		current_winner_ = player_utils::GetNextPlayer(players_, current_player_);
 }
 
 bool Model::Round::HasWinner() const {
@@ -173,6 +176,7 @@ Model::HandRound::HandRound(std::vector<Player*>& players, Deck* deck, Player* f
 	current_round_number_ = 0;
 	is_finished_ = false;
 	round_winners_ = std::vector<Player*>();
+	UpdateHandState(); //to game load flow
 	InitRound();
 }
 
