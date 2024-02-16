@@ -386,8 +386,7 @@ void Model::CheckHandRoundFinished() {
 	if (winner) {
 		// Game finished
 	}
-
-	if (current_hand_round_ && current_hand_round_->IsFinished()) {
+	else if (current_hand_round_ && current_hand_round_->IsFinished()) {
 		InitHandRound();
 	}
 }
