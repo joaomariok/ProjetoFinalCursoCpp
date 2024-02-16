@@ -11,24 +11,19 @@
 IMPLEMENT_DYNAMIC(CGamingView, CDialog)
 
 CGamingView::CGamingView(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_GAMINGVIEW, pParent)
-{
+	: CDialog(IDD_GAMINGVIEW, pParent) {
 	player_number_ = 0;
 	controller_ = nullptr;
 }
 
-CGamingView::~CGamingView()
-{
-}
+CGamingView::~CGamingView() {}
 
-void CGamingView::SetController(int playerNumber, Controller* controller)
-{
+void CGamingView::SetController(int playerNumber, Controller* controller) {
 	player_number_ = playerNumber;
 	controller_ = controller;
 }
 
-void CGamingView::DoDataExchange(CDataExchange* pDX)
-{
+void CGamingView::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 
 	DDX_Control(pDX, IDC_BACKGROUND, backgroundImg);
@@ -73,8 +68,7 @@ void CGamingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CURRENT_PLAYER, current_player);
 }
 
-BOOL CGamingView::OnInitDialog()
-{
+BOOL CGamingView::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	/* DIALOG TITLE */
@@ -152,8 +146,7 @@ BOOL CGamingView::OnInitDialog()
 	return TRUE;
 }
 
-void CGamingView::OnPaint()
-{
+void CGamingView::OnPaint() {
 	CPaintDC dc(this);
 
 	/* PAINT ALL PLAYER CARDS */
@@ -219,6 +212,7 @@ void CGamingView::OnPaint()
 			}
 		}
 	}
+
 	/*PAINT DISCARDED CARDS*/
 	int firstPlayerIndex = controller_->GetFirstPlayerIndex();
 	std::vector<Card> discardedCards = controller_->GetDiscardedCards();
@@ -247,17 +241,19 @@ void CGamingView::OnPaint()
 	CString roundValue;
 	roundValue.Format(_T("%d"), controller_->GetCurrentHandValue());
 	round_value.SetText(roundValue);
+
 	/*PAINT CURRENT PLAYER MESSAGE*/
 	CString currentPlayerString(controller_->GetCurrentPlayer()->GetName().c_str());
 	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
 	current_player.SetText(currentPlayerString, RGB(255, 255, 255), 10, false, true);
+
 	/*HIDE TRUCO WORDS*/
-	if (!controller_->IsInTrucoState())
+	if (!controller_->IsInTrucoState()) {
 		HideAnyTrucoImage();
+	}
 }
 
-void CGamingView::OnBnClickedTrucoBtn()
-{
+void CGamingView::OnBnClickedTrucoBtn() {
 	Player* player = controller_->GetPlayer(player_number_);
 	if (controller_->CanPlay(player)) {
 		word_truco_p1.ShowWindow(SW_SHOW);
@@ -273,8 +269,7 @@ void CGamingView::OnBnClickedTrucoBtn()
 	}
 }
 
-void CGamingView::OnBnClickedDesceBtn()
-{
+void CGamingView::OnBnClickedDesceBtn() {
 	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
 		HideAnyTrucoImage();
 		SendMessageToParent(CONTINUE);
@@ -284,8 +279,7 @@ void CGamingView::OnBnClickedDesceBtn()
 	}
 }
 
-void CGamingView::OnBnClickedPassoBtn()
-{
+void CGamingView::OnBnClickedPassoBtn() {
 	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
 		HideAnyTrucoImage();
 		SendMessageToParent(QUIT);
@@ -295,13 +289,11 @@ void CGamingView::OnBnClickedPassoBtn()
 	}
 }
 
-void CGamingView::OnBnClickedSaveGameBtn()
-{
+void CGamingView::OnBnClickedSaveGameBtn() {
 	controller_->SaveGame();
 }
 
-void CGamingView::OnCard1Clicked()
-{
+void CGamingView::OnCard1Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_1.ShowWindow(SW_HIDE);
@@ -311,8 +303,7 @@ void CGamingView::OnCard1Clicked()
 		AfxMessageBox(L"Espere sua vez");
 }
 
-void CGamingView::OnCard2Clicked()
-{
+void CGamingView::OnCard2Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_2.ShowWindow(SW_HIDE);
@@ -322,8 +313,7 @@ void CGamingView::OnCard2Clicked()
 		AfxMessageBox(L"Espere sua vez");
 }
 
-void CGamingView::OnCard3Clicked()
-{
+void CGamingView::OnCard3Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_3.ShowWindow(SW_HIDE);
@@ -361,8 +351,7 @@ void CGamingView::ShowTrucoImageBasedOnPlayerPosition(int gamingViewNumber) {
 	}
 }
 
-LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
-{
+LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam) {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
 
@@ -378,15 +367,12 @@ LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 			word_truco_p3.ShowWindow(SW_SHOW);
 		}
 	}
-	else {
-		Invalidate();
-	}
 
+	Invalidate();
 	return 0;
 }
 
-LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
-{
+LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam) {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
 	int gamingViewNumber = static_cast<int>(lParam);
@@ -402,22 +388,20 @@ LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
 		HideAnyTrucoImage();
 		break;
 	case NONE:
-		Invalidate();
-		break;
 	default:
 		break;
 	}
 
+	Invalidate();
 	return 0;
 }
 
-void CGamingView::SendMessageToParent(GameEvents gameEvent)
-{
+void CGamingView::SendMessageToParent(GameEvents gameEvent) {
 	::PostMessage(GetParent()->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(player_number_));
+	Invalidate();
 }
 
-CTransparentStatic* CGamingView::GetStaticComponent(int playerIndex, int numberOfPlayers)
-{
+CTransparentStatic* CGamingView::GetStaticComponent(int playerIndex, int numberOfPlayers) {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return player_number_ == playerIndex ? &player1_name : &player3_name;
 
@@ -444,8 +428,7 @@ CTransparentStatic* CGamingView::GetStaticComponent(int playerIndex, int numberO
 	return nullptr;
 }
 
-CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPlayers, int cardIndex)
-{
+CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPlayers, int cardIndex) {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return cardIndex == 0 ? &card_p3_1 : cardIndex == 1 ? &card_p3_2 : &card_p3_3;
 
@@ -470,8 +453,7 @@ CTransparentImage* CGamingView::GetCardComponent(int playerIndex, int numberOfPl
 	return nullptr;
 }
 
-CTransparentImage* CGamingView::GetRoundCardComponent(int playerIndex, int numberOfPlayers)
-{
+CTransparentImage* CGamingView::GetRoundCardComponent(int playerIndex, int numberOfPlayers) {
 	if (numberOfPlayers == 2) //The position of player 2 is on top
 		return player_number_ == playerIndex ? &card_round : &card_p3_round;
 
@@ -498,8 +480,7 @@ CTransparentImage* CGamingView::GetRoundCardComponent(int playerIndex, int numbe
 	return nullptr;
 }
 
-void CGamingView::LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard)
-{
+void CGamingView::LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard) {
 	if (cardComponent == nullptr)
 		return;
 
@@ -513,8 +494,7 @@ void CGamingView::LoadCardBackAsset(CTransparentImage* cardComponent, Card* card
 	cardComponent->LoadImage(isHalfCard ? _T("Assets/CardBack2.png") : _T("Assets/CardBackRotated.png"));
 }
 
-void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist)
-{
+void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist) {
 	if (cardComponent == nullptr)
 		return;
 
@@ -531,8 +511,7 @@ void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bo
 	cardComponent->LoadImage(assetsPath);
 }
 
-CString CGamingView::GetCardAssetPath(Card* card)
-{
+CString CGamingView::GetCardAssetPath(Card* card) {
 	CString cardSuit, cardRank;
 
 	switch (card->GetSuit()) {

@@ -133,8 +133,9 @@ void CMainWnd::OnButtonClicked() {
 	std::string playerOneString(CW2A(playerOneName.GetString()));
 	std::string playerTwoString(CW2A(playerTwoName.GetString()));
 
-	if (!controller_)
+	if (!controller_) {
 		controller_ = std::make_unique<Controller>(this);
+	}
 	controller_->Init(playerOneString, playerTwoString, hasFourPlayers);
 
 	InitGameViews();
@@ -155,18 +156,15 @@ void CMainWnd::OnLoadGameButtonClicked() {
 	}
 }
 
-void CMainWnd::OnTwoPlayersClicked()
-{
+void CMainWnd::OnTwoPlayersClicked() {
 	hasFourPlayers = false;
 }
 
-void CMainWnd::OnFourPlayersClicked()
-{
+void CMainWnd::OnFourPlayersClicked() {
 	hasFourPlayers = true;
 }
 
-LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
-{
+LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam) {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
 	int playerNumber = static_cast<int>(lParam);
@@ -212,13 +210,11 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CMainWnd::SendMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent)
-{
+void CMainWnd::SendMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent) {
 	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(0));
 }
 
-void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber)
-{
+void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber) {
 	::PostMessage(gamingView->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(gameEvent), LPARAM(gamingViewNumber));
 }
 
