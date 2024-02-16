@@ -33,7 +33,7 @@ void Bot::SetPercentageToAskAndAcceptTruco(int percentage_to_ask_truco, int perc
 }
 
 int Bot::MakeTrucoDecision() const {
-	srand(time(0));
+	std::srand(static_cast<unsigned int>(std::time(0)));
 	return rand() % 100;
 }
 

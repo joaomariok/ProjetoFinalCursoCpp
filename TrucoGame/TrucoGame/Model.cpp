@@ -1,4 +1,5 @@
 #include "Model.h"
+
 #include "Card.h"
 #include "Deck.h"
 
@@ -363,13 +364,11 @@ void Model::InitHandRound() {
 		deck_ = std::make_unique<Deck>();
 	}
 
-	Player* previous_first_player = current_hand_round_ ? current_hand_round_->GetFirstPlayer() : players_.back();
-
 	if (current_hand_round_) {
-		current_hand_round_->ClearHandRound(deck_.get(), previous_first_player);
+		current_hand_round_->ClearHandRound(deck_.get(), current_hand_round_->GetFirstPlayer());
 	}
 	else {
-		current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), player_utils::GetNextPlayer(players_, previous_first_player));
+		current_hand_round_ = std::make_unique<HandRound>(players_, deck_.get(), players_.front());
 	}
 
 	current_hand_round_number_++;
