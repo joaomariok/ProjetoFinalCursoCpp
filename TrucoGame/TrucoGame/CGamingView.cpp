@@ -196,21 +196,28 @@ void CGamingView::OnPaint() {
 					LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
 					LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
 				}
-				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0) {
+				if (controller_->IsMaoDeOnze() && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0 && cards.size() == 3) {
 					mao_de_onze_dialog_opened = true;
-					if (Player* player = controller_->GetPlayer(i + 1)) { //Get its partner
-						std::vector<Card> partnerCards = player->GetHand();
-						if (partnerCards.size() == 3) {
-							std::vector<CString> m_assetsPath;
-							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[0]));
-							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[1]));
-							m_assetsPath.push_back(GetCardAssetPath(&partnerCards[2]));
-							CMaoOnzeDlg maoOnzeDlg;
-							maoOnzeDlg.m_assetsPath = m_assetsPath;
-							if (maoOnzeDlg.DoModal() == ID_NO) {
-								SendMessageToParent(RUN_FROM_MAO_DE_ONZE);
+					if (numberOfPlayers == 4) {
+						if (Player* player = controller_->GetPlayer(i + 2)) { //Get its partner
+							std::vector<Card> partnerCards = player->GetHand();
+							if (partnerCards.size() == 3) {
+								std::vector<CString> m_assetsPath;
+								m_assetsPath.push_back(GetCardAssetPath(&partnerCards[0]));
+								m_assetsPath.push_back(GetCardAssetPath(&partnerCards[1]));
+								m_assetsPath.push_back(GetCardAssetPath(&partnerCards[2]));
+								CMaoOnzeDlg maoOnzeDlg;
+								maoOnzeDlg.m_assetsPath = m_assetsPath;
+								if (maoOnzeDlg.DoModal() == ID_NO) {
+									SendMessageToParent(RUN_FROM_MAO_DE_ONZE);
+								}
 							}
 						}
+					}
+					else {
+						int response = AfxMessageBox(_T("[Mão de Onze] Deseja prosseguir a rodada com essas cartas?"), MB_YESNO | MB_ICONQUESTION);
+						if (response == IDNO)
+							SendMessageToParent(RUN_FROM_MAO_DE_ONZE);
 					}
 					mao_de_onze_dialog_opened = false;
 				}
