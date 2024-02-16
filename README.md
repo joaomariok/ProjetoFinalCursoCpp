@@ -7,6 +7,14 @@ Repositório para o projeto final do curso de C++
 - Matheus Barbosa
 - Thiago Freitas
 
+## Como buildar o projeto (Visual Studio 2022)
+* Clone o repositório
+* Abra a solution (ProjetoFinalCursoCpp\TrucoGame\TrucoGame.sln)
+* Configure para Debug x64 e clique em "Local Windows Debugger"
+
+ ## Recomendações
+ * Recomendamos executar o projeto em monitores com Escala 100%. Caso contrário alguns problemas de UI podem acontecer.
+
 ## Dicas para build do projeto (Visual Studio 2022)
 * Certifique-se que as seguintes cargas de trabalho estão instaladas:
 
