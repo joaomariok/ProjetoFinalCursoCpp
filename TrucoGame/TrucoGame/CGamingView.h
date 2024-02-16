@@ -54,7 +54,6 @@ protected:
 	afx_msg void OnCard1Clicked();
 	afx_msg void OnCard2Clicked();
 	afx_msg void OnCard3Clicked();
-	afx_msg void OnBnClickedCheckHideCard();
 	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnBotPlayMessage(WPARAM wParam, LPARAM lParam);
 	void SendMessageToParent(GameEvents gameEvent);
