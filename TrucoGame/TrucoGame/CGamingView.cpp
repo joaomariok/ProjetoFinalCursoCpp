@@ -145,7 +145,7 @@ BOOL CGamingView::OnInitDialog() {
 		viewButton->SetFont(&font);
 
 	check_hide_card_btn.SetFont(&font);
-
+	
 	return TRUE;
 }
 
@@ -169,15 +169,18 @@ void CGamingView::OnPaint() {
 				if (i == 2) player2_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
 
 				if (playerScore >= 12 && !game_over_dialog_opened) {
+					CString title;
+					title.Format(_T("Jogador %d"), player_number_);
 					game_over_dialog_opened = true;
+
 					if (i == player_number_) {
-						AfxMessageBox(L"Parabéns! Você venceu o jogo!!");
-						EndDialog(0);
+						MessageBox(L"Parabéns! Você venceu o jogo!!", title);
 					}
 					else {
-						AfxMessageBox(L"Que pena! Você perdeu o jogo...");
-						EndDialog(0);
+						MessageBox(L"Que pena! Você perdeu o jogo...", title);
 					}
+
+					EndDialog(0);
 					game_over_dialog_opened = false;
 				}
 			}
