@@ -100,6 +100,11 @@ Player* Controller::GetCurrentPlayer() {
 	return current_round ? current_round->GetCurrentPlayer() : nullptr;
 }
 
+Player* Controller::GetCurrentTrucoPlayer() {
+	Model::Round* current_round = model_->GetCurrentRound();
+	return current_round ? current_round->GetCurrentTrucoPlayer() : nullptr;
+}
+
 int Controller::GetCurrentHandValue() {
 	Model::HandRound* current_hand_round = model_->GetCurrentHandRound();
 	return current_hand_round ? current_hand_round->GetCurrentHandValue() : 1;

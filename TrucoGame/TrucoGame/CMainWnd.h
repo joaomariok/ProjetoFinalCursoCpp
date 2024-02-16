@@ -17,12 +17,14 @@ private:
 	std::unique_ptr<Controller> controller_ = nullptr;
 
 	void InitGameViews();
+	GameEvents TryBotPlay(Bot& bot);
 	GameEvents ExecuteBotDecisionMaking(Bot& bot);
 
 public:
 	CMainWnd();
 	~CMainWnd();
 
+	int test = 0;
 	std::tuple<bool, bool> CheckIfPlayerNamesAreEmpty();
 
 	afx_msg void OnButtonClicked();
@@ -31,6 +33,6 @@ public:
 	afx_msg void OnFourPlayersClicked();
 	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
 	void SendMessageToGamingView(CGamingView* gamingView);
-	void SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent);
+	void SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber);
 	DECLARE_MESSAGE_MAP()
 };

@@ -37,6 +37,7 @@ public:
 	bool CanPlay(Player* player) const;
 	std::vector<Player*> GetHandRoundWinners();
 	Player* GetCurrentPlayer();
+	Player* GetCurrentTrucoPlayer();
 	int GetFirstPlayerIndex() { return model_->GetFirstPlayerIndex(); }
 	int GetCurrentHandValue();
 	bool IsMaoDeFerro() { return model_->IsMaoDeFerro(); }

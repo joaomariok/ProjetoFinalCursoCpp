@@ -64,10 +64,10 @@ void CMainWnd::InitGameViews() {
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
 			if (Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
-				GameEvents gameEvent = ExecuteBotDecisionMaking(*bot);
+				GameEvents gameEvent = TryBotPlay(*bot);
 
-				SendBotMessageToGamingView(&gamingView_1, gameEvent);
-				SendBotMessageToGamingView(&gamingView_2, gameEvent);
+				SendBotMessageToGamingView(&gamingView_1, gameEvent, 1);
+				SendBotMessageToGamingView(&gamingView_2, gameEvent, 2);
 			}
 			OutputDebugStringW(L"Sleeping for 4 seconds\n");
 			std::this_thread::sleep_for(std::chrono::seconds(4));
@@ -75,17 +75,33 @@ void CMainWnd::InitGameViews() {
 		}).detach();
 }
 
+GameEvents CMainWnd::TryBotPlay(Bot& bot) {
+	if (!controller_->CanPlay(&bot)) {
+		if (Bot* trucoBot = dynamic_cast<Bot*>(controller_->GetCurrentTrucoPlayer()))
+			return ExecuteBotDecisionMaking(*trucoBot);
+		else
+			return NONE;
+	}
+
+	return ExecuteBotDecisionMaking(bot);
+}
+
 GameEvents CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {
 	GameEvents gameEvent = NONE;
 
-	if (controller_->IsInTrucoState()) {
-		if (bot.RespondTruco())
+	if (controller_->CanRespondTruco(&bot)) {
+		if (bot.RespondTruco()) {
 			gameEvent = CONTINUE;
-		else
+			OnCustomMessage(CONTINUE, 0);
+		}
+		else {
 			gameEvent = QUIT;
+			OnCustomMessage(QUIT, 0);
+		}
 	}
-	else if (bot.AskTruco()) {
+	else if (!controller_->IsInTrucoState() && bot.AskTruco()) {
 		gameEvent = TRUCO;
+		OnCustomMessage(TRUCO, 0);
 	}
 	else {
 		controller_->PlayCard(0);
@@ -140,7 +156,6 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
-	int playerNumber = static_cast<int>(lParam);
 
 	switch (gameEvent) {
 	case CARD1_PICKED:
@@ -176,9 +191,9 @@ void CMainWnd::SendMessageToGamingView(CGamingView* gamingView)
 	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(""), LPARAM(0));
 }
 
-void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent)
+void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber)
 {
-	::PostMessage(gamingView->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(gameEvent), LPARAM(0));
+	::PostMessage(gamingView->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(gameEvent), LPARAM(gamingViewNumber));
 }
 
 BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)
