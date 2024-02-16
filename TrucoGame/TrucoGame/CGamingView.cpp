@@ -196,7 +196,10 @@ void CGamingView::OnPaint() {
 					LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
 					LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
 				}
-				if (controller_->IsMaoDeOnze() && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0 && cards.size() == 3) {
+				if (controller_->IsMaoDeOnze() && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0 && 
+					cards.size() == 3 && mao_de_onze_last_hand_round_checked != controller_->GetCurrentHandRoundNumber()) {
+
+					mao_de_onze_last_hand_round_checked = controller_->GetCurrentHandRoundNumber();
 					mao_de_onze_dialog_opened = true;
 					if (numberOfPlayers == 4) {
 						if (Player* player = controller_->GetPlayer(i + 2)) { //Get its partner
@@ -208,9 +211,10 @@ void CGamingView::OnPaint() {
 								m_assetsPath.push_back(GetCardAssetPath(&partnerCards[2]));
 								CMaoOnzeDlg maoOnzeDlg;
 								maoOnzeDlg.m_assetsPath = m_assetsPath;
-								if (maoOnzeDlg.DoModal() == ID_NO) {
+								if (maoOnzeDlg.DoModal() == ID_NO)
 									SendMessageToParent(RUN_FROM_MAO_DE_ONZE);
-								}
+								else
+									Invalidate();
 							}
 						}
 					}
@@ -218,6 +222,8 @@ void CGamingView::OnPaint() {
 						int response = AfxMessageBox(_T("[Mão de Onze] Deseja prosseguir a rodada com essas cartas?"), MB_YESNO | MB_ICONQUESTION);
 						if (response == IDNO)
 							SendMessageToParent(RUN_FROM_MAO_DE_ONZE);
+						else
+							Invalidate();
 					}
 					mao_de_onze_dialog_opened = false;
 				}

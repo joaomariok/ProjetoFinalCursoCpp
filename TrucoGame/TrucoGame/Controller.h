@@ -42,6 +42,7 @@ public:
 	Player* GetCurrentTrucoPlayer();
 	int GetFirstPlayerIndex() { return model_->GetFirstPlayerIndex(); }
 	int GetCurrentHandValue();
+	int GetCurrentHandRoundNumber() const { return model_->GetCurrentHandRoundNumber(); }
 	int GetCurrentRoundNumber();
 	bool IsMaoDeFerro() { return model_->IsMaoDeFerro(); }
 	bool IsMaoDeOnze() { return model_->IsMaoDeOnze(); }

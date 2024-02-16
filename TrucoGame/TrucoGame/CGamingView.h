@@ -31,6 +31,7 @@ private:
 	CButton check_hide_card_btn;
 
 	int player_number_;
+	int mao_de_onze_last_hand_round_checked = 0;
 	bool mao_de_onze_dialog_opened = false;
 	bool game_over_dialog_opened = false;
 	Controller* controller_;
