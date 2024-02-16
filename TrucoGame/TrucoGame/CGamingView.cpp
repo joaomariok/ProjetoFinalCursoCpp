@@ -301,7 +301,10 @@ void CGamingView::OnCard1Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_1.ShowWindow(SW_HIDE);
-		SendMessageToParent(CARD1_PICKED);
+		bool is_hidden = false;
+		if (CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD)))
+			is_hidden = checkButton->GetCheck() == BST_CHECKED;
+		SendMessageToParent(is_hidden ? CARD1_PICKED_HIDDEN : CARD1_PICKED);
 	}
 	else
 		AfxMessageBox(L"Espere sua vez");
@@ -311,7 +314,10 @@ void CGamingView::OnCard2Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_2.ShowWindow(SW_HIDE);
-		SendMessageToParent(CARD2_PICKED);
+		bool is_hidden = false;
+		if (CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD)))
+			is_hidden = checkButton->GetCheck() == BST_CHECKED;
+		SendMessageToParent(is_hidden ? CARD2_PICKED_HIDDEN : CARD2_PICKED);
 	}
 	else
 		AfxMessageBox(L"Espere sua vez");
@@ -321,7 +327,10 @@ void CGamingView::OnCard3Clicked() {
 	if (controller_->CanPlay(controller_->GetPlayer(player_number_)))
 	{
 		card_3.ShowWindow(SW_HIDE);
-		SendMessageToParent(CARD3_PICKED);
+		bool is_hidden = false;
+		if (CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD)))
+			is_hidden = checkButton->GetCheck() == BST_CHECKED;
+		SendMessageToParent(is_hidden ? CARD3_PICKED_HIDDEN : CARD3_PICKED);
 	}
 	else
 		AfxMessageBox(L"Espere sua vez");
@@ -516,6 +525,9 @@ void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bo
 }
 
 CString CGamingView::GetCardAssetPath(Card* card) {
+	if (card->IsHidden())
+		return  _T("Assets/CardBack.png");
+	
 	CString cardSuit, cardRank;
 
 	switch (card->GetSuit()) {
@@ -581,19 +593,4 @@ BEGIN_MESSAGE_MAP(CGamingView, CDialog)
 	ON_BN_CLICKED(IDC_SAVE_BUTTON, OnBnClickedSaveGameBtn)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE, OnCustomMessage)
 	ON_MESSAGE(WM_BOT_PLAY_MESSAGE, OnBotPlayMessage)
-	ON_BN_CLICKED(IDC_CHECK_HIDE_CARD, OnBnClickedCheckHideCard)
 END_MESSAGE_MAP()
-
-
-void CGamingView::OnBnClickedCheckHideCard()
-{
-	CButton* checkButton = static_cast<CButton*>(GetDlgItem(IDC_CHECK_HIDE_CARD));
-	if (checkButton) {
-		if (checkButton->GetCheck() == BST_CHECKED) {
-			//TODO controller->HideCard();
-		}
-		else {
-			//TODO controller->ShowCard();
-		}
-	}
-}
