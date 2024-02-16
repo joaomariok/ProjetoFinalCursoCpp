@@ -239,6 +239,9 @@ void CGamingView::OnPaint()
 	CString currentPlayerString(controller_->GetCurrentPlayer()->GetName().c_str());
 	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
 	current_player.SetText(currentPlayerString, RGB(255, 255, 255), 10, false, true);
+	/*HIDE TRUCO WORDS*/
+	if (!controller_->IsInTrucoState())
+		HideAnyTrucoImage();
 }
 
 void CGamingView::OnBnClickedTrucoBtn()
@@ -319,10 +322,10 @@ void CGamingView::OnCard3Clicked()
 }
 
 void CGamingView::HideAnyTrucoImage() {
-	word_truco_p1.ShowWindow(SW_HIDE);
-	word_truco_p2.ShowWindow(SW_HIDE);
-	word_truco_p3.ShowWindow(SW_HIDE);
-	word_truco_p4.ShowWindow(SW_HIDE);
+	if (word_truco_p1.IsWindowVisible()) word_truco_p1.ShowWindow(SW_HIDE);
+	if (word_truco_p2.IsWindowVisible()) word_truco_p2.ShowWindow(SW_HIDE);
+	if (word_truco_p3.IsWindowVisible()) word_truco_p3.ShowWindow(SW_HIDE);
+	if (word_truco_p4.IsWindowVisible()) word_truco_p4.ShowWindow(SW_HIDE);
 }
 
 void CGamingView::ShowTrucoImageBasedOnPlayerPosition(int gamingViewNumber) {
@@ -382,7 +385,6 @@ LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
 		break;
 	case CONTINUE:
 		HideAnyTrucoImage();
-		ShowTrucoImageBasedOnPlayerPosition(gamingViewNumber);
 		break;
 	case QUIT:
 		HideAnyTrucoImage();
