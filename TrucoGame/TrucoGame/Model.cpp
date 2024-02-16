@@ -375,6 +375,7 @@ void Model::InitHandRound() {
 }
 
 void Model::ResetGame() {
+	is_finished_ = false;
 	current_hand_round_number_ = 0;
 	current_hand_round_ = nullptr;
 	InitHandRound();
@@ -384,13 +385,19 @@ void Model::CheckHandRoundFinished() {
 	Player* winner = current_hand_round_->MaybeGetWinner();
 	if (winner) {
 		// Game finished
+		is_finished_ = true;
+		return;
 	}
-	else if (current_hand_round_ && current_hand_round_->IsFinished()) {
+	if (current_hand_round_ && current_hand_round_->IsFinished()) {
 		InitHandRound();
 	}
 }
 
 void Model::PlayCard(int card_index, bool is_hidden) {
+	if (is_finished_) {
+		return;
+	}
+
 	current_hand_round_->PlayCard(card_index, is_hidden);
 	CheckHandRoundFinished();
 }
