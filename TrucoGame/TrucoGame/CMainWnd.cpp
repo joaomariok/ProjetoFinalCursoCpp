@@ -64,11 +64,24 @@ void CMainWnd::InitGameViews() {
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
 
-			Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer());
-			Bot* trucoBot = dynamic_cast<Bot*>(controller_->GetCurrentTrucoPlayer());
+			Bot* botPlayer = dynamic_cast<Bot*>(controller_->GetCurrentPlayer());
+			Bot* trucoBotPlayer = dynamic_cast<Bot*>(controller_->GetCurrentTrucoPlayer());
 
-			if (bot || trucoBot) {
-				GameEvents gameEvent = bot != nullptr ? ExecuteBotDecisionMaking(*bot) : ExecuteBotDecisionMaking(*trucoBot);
+			if (botPlayer || trucoBotPlayer) {
+				GameEvents gameEvent = NONE;
+
+				if (controller_->IsInTrucoState()) {
+					if (trucoBotPlayer != NULL)
+						gameEvent = ExecuteBotDecisionMaking(*trucoBotPlayer);
+					else
+						continue;
+				}
+				else if (botPlayer != NULL) {
+					gameEvent = ExecuteBotDecisionMaking(*botPlayer);
+				}
+				else {
+					continue;
+				}
 
 				SendBotMessageToGamingView(&gamingView_1, gameEvent, 1);
 				SendBotMessageToGamingView(&gamingView_2, gameEvent, 2);
