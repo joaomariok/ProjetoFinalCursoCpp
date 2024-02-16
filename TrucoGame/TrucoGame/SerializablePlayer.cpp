@@ -11,17 +11,24 @@ SerializablePlayer::SerializablePlayer(int player_number, std::string name, int 
 	s_score_ = score;
 	s_round_score_ = round_score;
 	s_group_ = group;
-	s_card1_suit = card_1[0];
-	s_card1_rank = card_1[1];
-	s_card1_is_manilha = card_1[2];
 
-	s_card2_suit = card_2[0];
-	s_card2_rank = card_2[1];
-	s_card2_is_manilha = card_2[2];
+	if (card_1.size() == 3) {
+		s_card1_suit = card_1[0];
+		s_card1_rank = card_1[1];
+		s_card1_is_manilha = card_1[2];
+	}
 
-	s_card3_suit = card_3[0];
-	s_card3_rank = card_3[1];
-	s_card3_is_manilha = card_3[2];
+	if (card_2.size() == 3) {
+		s_card2_suit = card_2[0];
+		s_card2_rank = card_2[1];
+		s_card2_is_manilha = card_2[2];
+	}
+
+	if (card_3.size() == 3) {
+		s_card3_suit = card_3[0];
+		s_card3_rank = card_3[1];
+		s_card3_is_manilha = card_3[2];
+	}
 }
 std::string SerializablePlayer::GetName()
 {

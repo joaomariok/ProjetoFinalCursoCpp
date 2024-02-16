@@ -19,8 +19,8 @@ public:
 
 	Save();
 	~Save();
-	bool SaveGame(const Model &inputModel);
-	bool LoadGame(Model* inputModel);
+	int SaveGame(const Model &inputModel);
+	int LoadGame(Model* inputModel);
 	bool ThereIsALoad();
 
 private:

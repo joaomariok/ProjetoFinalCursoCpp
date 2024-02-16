@@ -54,6 +54,7 @@ void CGamingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_VIRA_BACK, card_vira_back);
 	DDX_Control(pDX, IDC_TRUCO_P1, word_truco_p1);
 	DDX_Control(pDX, IDC_TRUCO_P2, word_truco_p2);
+	DDX_Control(pDX, IDC_TRUCO_P3, word_truco_p3);
 	DDX_Control(pDX, IDC_TRUCO_P4, word_truco_p4);
 
 	DDX_Control(pDX, IDC_SCORE_1, score_1_img);
@@ -125,6 +126,7 @@ BOOL CGamingView::OnInitDialog()
 
 	word_truco_p1.LoadImage(_T("Assets/Truco.png"));
 	word_truco_p2.LoadImage(_T("Assets/Truco.png"));
+	word_truco_p3.LoadImage(_T("Assets/Truco.png"));
 	word_truco_p4.LoadImage(_T("Assets/Truco.png"));
 
 	LoadCardAsset(&card_vira, controller_->GetVira());
@@ -169,7 +171,7 @@ void CGamingView::OnPaint()
 			}
 
 			std::vector<Card> cards = player->GetHand();
-			if (i == player_number_) { 
+			if (i == player_number_) {
 				//Is the current player, so it must to show its cards, except if it's a Mao de Ferro
 
 				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11) {
@@ -259,7 +261,7 @@ void CGamingView::OnBnClickedTrucoBtn()
 void CGamingView::OnBnClickedDesceBtn()
 {
 	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
-		word_truco_p1.ShowWindow(SW_HIDE);
+		HideAnyTrucoImage();
 		SendMessageToParent(CONTINUE);
 	}
 	else {
@@ -270,7 +272,7 @@ void CGamingView::OnBnClickedDesceBtn()
 void CGamingView::OnBnClickedPassoBtn()
 {
 	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
-		word_truco_p1.ShowWindow(SW_HIDE);
+		HideAnyTrucoImage();
 		SendMessageToParent(QUIT);
 	}
 	else {
@@ -280,12 +282,7 @@ void CGamingView::OnBnClickedPassoBtn()
 
 void CGamingView::OnBnClickedSaveGameBtn()
 {
-	if (bool saved = controller_->SaveGame()) {
-		AfxMessageBox(L"Jogo salvo em 'C:/TrucoGame/save.txt'. Seu nome e pontuação serão mantidos mas as cartas desta rodada serão perdidas.");
-	}
-	else {
-		AfxMessageBox(L"Erro ao salvar o jogo.");
-	}
+	controller_->SaveGame();
 }
 
 void CGamingView::OnCard1Clicked()
@@ -321,10 +318,55 @@ void CGamingView::OnCard3Clicked()
 		AfxMessageBox(L"Espere sua vez");
 }
 
+void CGamingView::HideAnyTrucoImage() {
+	word_truco_p1.ShowWindow(SW_HIDE);
+	word_truco_p2.ShowWindow(SW_HIDE);
+	word_truco_p3.ShowWindow(SW_HIDE);
+	word_truco_p4.ShowWindow(SW_HIDE);
+}
+
+void CGamingView::ShowTrucoImageBasedOnPlayerPosition(int gamingViewNumber) {
+	int botNumber = controller_->GetCurrentPlayer()->GetPlayerNumber();
+
+	if (gamingViewNumber == 1) {
+		if (botNumber == 3) {
+			word_truco_p3.ShowWindow(SW_SHOW);
+		}
+		else if (botNumber == 4) {
+			word_truco_p4.ShowWindow(SW_SHOW);
+		}
+	}
+	else if (gamingViewNumber == 2) {
+		if (botNumber == 3) {
+			word_truco_p2.ShowWindow(SW_SHOW);
+		}
+		else if (botNumber == 4) {
+			word_truco_p3.ShowWindow(SW_SHOW);
+		}
+	}
+}
+
 LRESULT CGamingView::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
-	Invalidate();
+	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+
+	if (gameEvent == TRUCO_FROM_OPPONENT) {
+		int numberOfPlayers = controller_->GetNumberOfPlayers();
+		if (numberOfPlayers == 4) {
+			if (player_number_ == 1)
+				word_truco_p2.ShowWindow(SW_SHOW);
+			else if (player_number_ == 2)
+				word_truco_p4.ShowWindow(SW_SHOW);
+		}
+		else {
+			word_truco_p3.ShowWindow(SW_SHOW);
+		}
+	}
+	else {
+		Invalidate();
+	}
+
 	return 0;
 }
 
@@ -332,19 +374,22 @@ LRESULT CGamingView::OnBotPlayMessage(WPARAM wParam, LPARAM lParam)
 {
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
+	int gamingViewNumber = static_cast<int>(lParam);
 
 	switch (gameEvent) {
 	case TRUCO:
-		//OnBnClickedTrucoBtn();
+		ShowTrucoImageBasedOnPlayerPosition(gamingViewNumber);
 		break;
 	case CONTINUE:
-		//OnBnClickedDesceBtn();
+		HideAnyTrucoImage();
+		ShowTrucoImageBasedOnPlayerPosition(gamingViewNumber);
 		break;
 	case QUIT:
-		//OnBnClickedPassoBtn();
+		HideAnyTrucoImage();
 		break;
 	case NONE:
 		Invalidate();
+		break;
 	default:
 		break;
 	}

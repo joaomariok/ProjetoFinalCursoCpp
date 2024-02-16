@@ -62,12 +62,30 @@ void CMainWnd::InitGameViews() {
 		while (gamingView_1.IsWindowVisible() && gamingView_2.IsWindowVisible())
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
-			if (Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
-				GameEvents gameEvent = ExecuteBotDecisionMaking(*bot);
 
-				SendBotMessageToGamingView(&gamingView_1, gameEvent);
-				SendBotMessageToGamingView(&gamingView_2, gameEvent);
+			Bot* botPlayer = dynamic_cast<Bot*>(controller_->GetCurrentPlayer());
+			Bot* trucoBotPlayer = dynamic_cast<Bot*>(controller_->GetCurrentTrucoPlayer());
+
+			if (botPlayer || trucoBotPlayer) {
+				GameEvents gameEvent = NONE;
+
+				if (controller_->IsInTrucoState()) {
+					if (trucoBotPlayer != NULL)
+						gameEvent = ExecuteBotDecisionMaking(*trucoBotPlayer);
+					else
+						continue;
+				}
+				else if (botPlayer != NULL) {
+					gameEvent = ExecuteBotDecisionMaking(*botPlayer);
+				}
+				else {
+					continue;
+				}
+
+				SendBotMessageToGamingView(&gamingView_1, gameEvent, 1);
+				SendBotMessageToGamingView(&gamingView_2, gameEvent, 2);
 			}
+
 			OutputDebugStringW(L"Sleeping for 4 seconds\n");
 			std::this_thread::sleep_for(std::chrono::seconds(4));
 		}
@@ -77,14 +95,19 @@ void CMainWnd::InitGameViews() {
 GameEvents CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {
 	GameEvents gameEvent = NONE;
 
-	if (controller_->IsInTrucoState()) {
-		if (bot.RespondTruco())
+	if (controller_->CanRespondTruco(&bot)) {
+		if (bot.RespondTruco()) {
 			gameEvent = CONTINUE;
-		else
+			OnCustomMessage(CONTINUE, 0);
+		}
+		else {
 			gameEvent = QUIT;
+			OnCustomMessage(QUIT, 0);
+		}
 	}
-	else if (bot.AskTruco()) {
+	else if (!controller_->IsInTrucoState() && bot.AskTruco()) {
 		gameEvent = TRUCO;
+		OnCustomMessage(TRUCO, 0);
 	}
 	else {
 		controller_->PlayCard(0);
@@ -147,6 +170,7 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	//Message received
 	GameEvents gameEvent = static_cast<GameEvents>(wParam);
 	int playerNumber = static_cast<int>(lParam);
+	bool alreadySentEvent = false;
 
 	switch (gameEvent) {
 	case CARD1_PICKED:
@@ -160,6 +184,14 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 		break;
 	case TRUCO:
 		controller_->Trucar();
+		if (playerNumber == 1) {
+			SendMessageToGamingView(&gamingView_2, TRUCO_FROM_OPPONENT);
+			alreadySentEvent = true;
+		}
+		else if (playerNumber == 2) {
+			SendMessageToGamingView(&gamingView_1, TRUCO_FROM_OPPONENT);
+			alreadySentEvent = true;
+		}
 		break;
 	case CONTINUE:
 		controller_->AcceptTruco();
@@ -172,19 +204,22 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Send message to update the views
-	SendMessageToGamingView(&gamingView_1);
-	SendMessageToGamingView(&gamingView_2);
+	if (!alreadySentEvent) {
+		SendMessageToGamingView(&gamingView_1, NONE);
+		SendMessageToGamingView(&gamingView_2, NONE);
+	}
+
 	return 0;
 }
 
-void CMainWnd::SendMessageToGamingView(CGamingView* gamingView)
+void CMainWnd::SendMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent)
 {
-	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(""), LPARAM(0));
+	::PostMessage(gamingView->GetSafeHwnd(), WM_CUSTOM_MESSAGE, WPARAM(gameEvent), LPARAM(0));
 }
 
-void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent)
+void CMainWnd::SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber)
 {
-	::PostMessage(gamingView->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(gameEvent), LPARAM(0));
+	::PostMessage(gamingView->GetSafeHwnd(), WM_BOT_PLAY_MESSAGE, WPARAM(gameEvent), LPARAM(gamingViewNumber));
 }
 
 BEGIN_MESSAGE_MAP(CMainWnd, CFrameWnd)

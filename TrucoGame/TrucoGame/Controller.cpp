@@ -23,17 +23,48 @@ void Controller::PlayCard(int card_index) {
 	model_->PlayCard(card_index);
 }
 
+void Controller::ShowResponse(int response, std::string inputType) {
+	std::string message0 = "Erro ao " + inputType + " o jogo!";
+	std::string type1 = inputType == "salvar" ? "salvo" : "carregado";
+	std::string message1 = type1 = inputType == "salvar" ? 
+		"Jogo salvo em 'C:/TrucoGame/save.txt'. Seu nome e pontuação serão mantidos mas as cartas desta rodada serão perdidas." 
+		: "Jogo " + type1 + " com sucesso!";
+
+	switch (response) {
+	case 0:
+		AfxMessageBox(CString(message0.c_str()));
+		break;
+	case 1:
+		AfxMessageBox(CString(message1.c_str()));
+		break;
+	case 2:
+		AfxMessageBox(L"Erro de E/S!");
+		break;
+	case 3:
+		AfxMessageBox(L"Erro de alocação de memória!");
+		break;
+	case 4:
+		AfxMessageBox(L"Erro de conversão de tipo!");
+		break;
+	case 5:
+		AfxMessageBox(L"Erro ao tentar abrir arquivo!");
+		break;
+	}
+}
+
 bool Controller::LoadGame() {
 	Model tmp_model;
-	bool loaded = save_->LoadGame(&tmp_model);
+	int loaded = save_->LoadGame(&tmp_model);
 	if (loaded) {
 		model_->Load(&tmp_model);
 	}
-	return loaded;
+	ShowResponse(loaded, "carregar");
+	return loaded == 1;
 }
 
-bool Controller::SaveGame() {
-	return save_->SaveGame(*model_);
+void Controller::SaveGame() {
+	int response = save_->SaveGame(*model_);
+	ShowResponse(response, "salvar");
 }
 
 void Controller::Trucar() {
@@ -87,6 +118,11 @@ std::vector<Player*> Controller::GetHandRoundWinners() {
 Player* Controller::GetCurrentPlayer() {
 	Model::Round* current_round = model_->GetCurrentRound();
 	return current_round ? current_round->GetCurrentPlayer() : nullptr;
+}
+
+Player* Controller::GetCurrentTrucoPlayer() {
+	Model::Round* current_round = model_->GetCurrentRound();
+	return current_round ? current_round->GetCurrentTrucoPlayer() : nullptr;
 }
 
 int Controller::GetCurrentHandValue() {

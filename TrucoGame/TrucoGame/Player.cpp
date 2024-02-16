@@ -79,19 +79,25 @@ void Player::DeserializePlayer(SerializablePlayer s_player)
 SerializablePlayer Player::SerializePlayer()
 {
 	std::vector<int> s_card_1;
-	s_card_1.push_back(static_cast<int>(hand_[0].GetSuit()));
-	s_card_1.push_back(static_cast<int>(hand_[0].GetRank()));
-	s_card_1.push_back(static_cast<int>(hand_[0].IsManilha()));
+	if (hand_.size() > 0) {
+		s_card_1.push_back(static_cast<int>(hand_[0].GetSuit()));
+		s_card_1.push_back(static_cast<int>(hand_[0].GetRank()));
+		s_card_1.push_back(static_cast<int>(hand_[0].IsManilha()));
+	}
 
 	std::vector<int> s_card_2;
-	s_card_2.push_back(static_cast<int>(hand_[1].GetSuit()));
-	s_card_2.push_back(static_cast<int>(hand_[1].GetRank()));
-	s_card_2.push_back(static_cast<int>(hand_[1].IsManilha()));
+	if (hand_.size() > 1) {
+		s_card_2.push_back(static_cast<int>(hand_[1].GetSuit()));
+		s_card_2.push_back(static_cast<int>(hand_[1].GetRank()));
+		s_card_2.push_back(static_cast<int>(hand_[1].IsManilha()));
+	}
 
 	std::vector<int> s_card_3;
-	s_card_3.push_back(static_cast<int>(hand_[2].GetSuit()));
-	s_card_3.push_back(static_cast<int>(hand_[2].GetRank()));
-	s_card_3.push_back(static_cast<int>(hand_[2].IsManilha()));
+	if (hand_.size() > 2) {
+		s_card_3.push_back(static_cast<int>(hand_[2].GetSuit()));
+		s_card_3.push_back(static_cast<int>(hand_[2].GetRank()));
+		s_card_3.push_back(static_cast<int>(hand_[2].IsManilha()));
+	}
 
 	SerializablePlayer s_player = SerializablePlayer(player_number_, name_, score_, round_score_, s_card_1, s_card_2, s_card_3, static_cast<int>(group_));
 	return s_player;

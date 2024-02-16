@@ -49,6 +49,7 @@
 #define IDC_SCORE_3                     1037
 #define IDC_SAVE_BUTTON                 1038
 #define IDC_CURRENT_PLAYER              1039
+#define IDC_TRUCO_P3                    1040
 #define IDC_BACKGROUND_ONZE             1041
 #define IDC_MAO_ONZE_TEXT               1042
 #define IDC_MAO_ONZE_CARD1              1043

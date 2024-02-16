@@ -25,7 +25,7 @@ public:
 	void RunFromTruco();
 	void RunFromMaoDeOnze();
 	bool LoadGame();
-	bool SaveGame();
+	void SaveGame();
 	bool ThereIsALoad() { return save_->ThereIsALoad(); }
 	int GetPlayerScore(Player* player) { return player->GetScore(); }
 	int GetNumberOfPlayers() { return model_->GetHasFourPlayers() ? 4 : 2; }
@@ -38,10 +38,12 @@ public:
 	bool CanPlay(Player* player) const;
 	std::vector<Player*> GetHandRoundWinners();
 	Player* GetCurrentPlayer();
+	Player* GetCurrentTrucoPlayer();
 	int GetFirstPlayerIndex() { return model_->GetFirstPlayerIndex(); }
 	int GetCurrentHandValue();
 	bool IsMaoDeFerro() { return model_->IsMaoDeFerro(); }
 	bool IsMaoDeOnze() { return model_->IsMaoDeOnze(); }
+	void ShowResponse(int response, std::string inputType);
 
 private:
 	CMainWnd* view_;

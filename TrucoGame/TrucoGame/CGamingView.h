@@ -20,17 +20,20 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_GAMINGVIEW };
 #endif
+
 private:
 	CStatic backgroundImg;
 	CTransparentStatic player1_name, player2_name, player3_name, player4_name, player1_name_score, player2_name_score, player1_score, player2_score, round_value, current_player;
 	CTransparentImage card_1, card_2, card_3, card_round, card_p2_1, card_p2_2, card_p2_3, card_p2_round,
 		card_p3_1, card_p3_2, card_p3_3, card_p3_round, card_p4_1, card_p4_2, card_p4_3, card_p4_round,
-		card_vira, card_vira_back, word_truco_p1, word_truco_p2, word_truco_p4, score_1_img, score_2_img, score_3_img;
+		card_vira, card_vira_back, word_truco_p1, word_truco_p2, word_truco_p3, word_truco_p4, score_1_img, score_2_img, score_3_img;
 	CRect card1_rect, card2_rect, card3_rect;
 
 	int player_number_;
 	Controller* controller_;
 
+	void HideAnyTrucoImage();
+	void ShowTrucoImageBasedOnPlayerPosition(int gamingViewNumber);
 	void LoadCardAsset(CTransparentImage* cardComponent, Card* card, bool hideIfNotExist = true);
 	void LoadCardBackAsset(CTransparentImage* cardComponent, Card* card, bool isHalfCard);
 	CString GetCardAssetPath(Card* card);

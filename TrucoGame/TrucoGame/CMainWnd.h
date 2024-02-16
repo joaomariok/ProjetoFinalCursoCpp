@@ -23,6 +23,7 @@ public:
 	CMainWnd();
 	~CMainWnd();
 
+	int test = 0;
 	std::tuple<bool, bool> CheckIfPlayerNamesAreEmpty();
 
 	afx_msg void OnButtonClicked();
@@ -30,7 +31,7 @@ public:
 	afx_msg void OnTwoPlayersClicked();
 	afx_msg void OnFourPlayersClicked();
 	afx_msg LRESULT OnCustomMessage(WPARAM wParam, LPARAM lParam);
-	void SendMessageToGamingView(CGamingView* gamingView);
-	void SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent);
+	void SendMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent);
+	void SendBotMessageToGamingView(CGamingView* gamingView, GameEvents gameEvent, int gamingViewNumber);
 	DECLARE_MESSAGE_MAP()
 };
