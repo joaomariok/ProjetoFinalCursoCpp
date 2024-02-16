@@ -181,13 +181,13 @@ LRESULT CMainWnd::OnCustomMessage(WPARAM wParam, LPARAM lParam) {
 		controller_->PlayCard(1);
 		break;
 	case CARD2_PICKED_HIDDEN:
-		controller_->PlayCard(0, true);
+		controller_->PlayCard(1, true);
 		break;
 	case CARD3_PICKED:
 		controller_->PlayCard(2);
 		break;
 	case CARD3_PICKED_HIDDEN:
-		controller_->PlayCard(0, true);
+		controller_->PlayCard(2, true);
 		break;
 	case TRUCO:
 		controller_->Trucar();
