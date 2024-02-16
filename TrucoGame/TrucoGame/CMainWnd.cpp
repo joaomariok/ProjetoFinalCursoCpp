@@ -63,27 +63,21 @@ void CMainWnd::InitGameViews() {
 		while (gamingView_1.IsWindowVisible() && gamingView_2.IsWindowVisible())
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
-			if (Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer())) {
-				GameEvents gameEvent = TryBotPlay(*bot);
+
+			Bot* bot = dynamic_cast<Bot*>(controller_->GetCurrentPlayer());
+			Bot* trucoBot = dynamic_cast<Bot*>(controller_->GetCurrentTrucoPlayer());
+
+			if (bot || trucoBot) {
+				GameEvents gameEvent = bot != nullptr ? ExecuteBotDecisionMaking(*bot) : ExecuteBotDecisionMaking(*trucoBot);
 
 				SendBotMessageToGamingView(&gamingView_1, gameEvent, 1);
 				SendBotMessageToGamingView(&gamingView_2, gameEvent, 2);
 			}
+
 			OutputDebugStringW(L"Sleeping for 4 seconds\n");
 			std::this_thread::sleep_for(std::chrono::seconds(4));
 		}
 		}).detach();
-}
-
-GameEvents CMainWnd::TryBotPlay(Bot& bot) {
-	if (!controller_->CanPlay(&bot)) {
-		if (Bot* trucoBot = dynamic_cast<Bot*>(controller_->GetCurrentTrucoPlayer()))
-			return ExecuteBotDecisionMaking(*trucoBot);
-		else
-			return NONE;
-	}
-
-	return ExecuteBotDecisionMaking(bot);
 }
 
 GameEvents CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {

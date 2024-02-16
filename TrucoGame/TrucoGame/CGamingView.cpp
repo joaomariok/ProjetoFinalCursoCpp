@@ -261,7 +261,7 @@ void CGamingView::OnBnClickedTrucoBtn()
 void CGamingView::OnBnClickedDesceBtn()
 {
 	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
-		word_truco_p1.ShowWindow(SW_HIDE);
+		HideAnyTrucoImage();
 		SendMessageToParent(CONTINUE);
 	}
 	else {
@@ -272,7 +272,7 @@ void CGamingView::OnBnClickedDesceBtn()
 void CGamingView::OnBnClickedPassoBtn()
 {
 	if (controller_->CanRespondTruco(controller_->GetPlayer(player_number_))) {
-		word_truco_p1.ShowWindow(SW_HIDE);
+		HideAnyTrucoImage();
 		SendMessageToParent(QUIT);
 	}
 	else {

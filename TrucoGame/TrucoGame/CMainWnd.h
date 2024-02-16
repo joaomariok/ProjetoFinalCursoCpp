@@ -17,7 +17,6 @@ private:
 	std::unique_ptr<Controller> controller_ = nullptr;
 
 	void InitGameViews();
-	GameEvents TryBotPlay(Bot& bot);
 	GameEvents ExecuteBotDecisionMaking(Bot& bot);
 
 public:
