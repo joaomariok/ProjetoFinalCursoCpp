@@ -25,13 +25,14 @@ public:
 		Round& operator=(Round&& other) noexcept = default;
 		~Round() = default;
 
-		void PlayCard(int card_index);
+		void PlayCard(int card_index, bool is_hidden = false);
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
 		void RunFromMaoDeOnze();
 		bool HasWinner() const;
 		bool IsInTrucoState() const { return is_in_truco_state_; }
+		bool CanAskForTruco() const { return can_ask_for_truco_; }
 		bool CanRespondTruco(Player* player) const;
 
 		Player* GetWinner() { return current_winner_; }
@@ -56,6 +57,7 @@ public:
 		Card* vira_;
 		Player* first_player_;
 		bool is_in_truco_state_ = false;
+		bool can_ask_for_truco_ = true;
 	};
 
 	class HandRound {
@@ -71,7 +73,7 @@ public:
 
 		void InitRound();
 
-		void PlayCard(int card_index);
+		void PlayCard(int card_index, bool is_hidden = false);
 		void Truco();
 		void AcceptTruco();
 		void RunFromTruco();
@@ -126,7 +128,7 @@ public:
 	void ResetGame();
 	void CheckHandRoundFinished();
 
-	void PlayCard(int cardIndex);
+	void PlayCard(int cardIndex, bool is_hidden = false);
 
     void SetPlayer(int position, Player player);
 	Player* GetPlayer(int position) const;

@@ -18,7 +18,7 @@ public:
 
 	std::vector<Card> GetPlayerHand(Player* player);
 
-	void PlayCard(int card_index);
+	void PlayCard(int card_index, bool is_hidden = false);
 
 	void Trucar();
 	void AcceptTruco();
@@ -34,6 +34,7 @@ public:
 	std::vector<Card> GetDiscardedCards();
 	bool IsPlayerTurn(Player* player) const;
 	bool IsInTrucoState() const;
+	bool CanAskForTruco() const;
 	bool CanRespondTruco(Player* player) const;
 	bool CanPlay(Player* player) const;
 	std::vector<Player*> GetHandRoundWinners();

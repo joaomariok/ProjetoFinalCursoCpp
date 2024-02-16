@@ -21,10 +21,13 @@ public:
 	bool IsZap() const;
 	void SetIsManilha();
 	bool IsManilha() const;
+	void SetIsHidden(bool is_hidden);
+	bool IsHidden() const;
 	bool IsBiggerThan(Card card) const;
 
 private:
 	Suit suit_;
 	Rank rank_;
 	bool is_manilha_;
+	bool is_hidden_;
 };

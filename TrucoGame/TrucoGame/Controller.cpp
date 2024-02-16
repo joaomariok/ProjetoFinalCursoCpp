@@ -19,8 +19,8 @@ std::vector<Card> Controller::GetPlayerHand(Player* player) {
 	return player->GetHand();
 }
 
-void Controller::PlayCard(int card_index) {
-	model_->PlayCard(card_index);
+void Controller::PlayCard(int card_index, bool is_hidden) {
+	model_->PlayCard(card_index, is_hidden);
 }
 
 void Controller::ShowResponse(int response, std::string inputType) {
@@ -99,6 +99,11 @@ bool Controller::IsPlayerTurn(Player* player) const {
 bool Controller::IsInTrucoState() const {
 	Model::Round* current_round = model_->GetCurrentRound();
 	return current_round ? current_round->IsInTrucoState() : false;
+}
+
+bool Controller::CanAskForTruco() const {
+	Model::Round* current_round = model_->GetCurrentRound();
+	return current_round ? current_round->CanAskForTruco() : true;
 }
 
 bool Controller::CanRespondTruco(Player* player) const {

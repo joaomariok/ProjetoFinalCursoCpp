@@ -259,7 +259,7 @@ void CGamingView::OnPaint() {
 
 void CGamingView::OnBnClickedTrucoBtn() {
 	Player* player = controller_->GetPlayer(player_number_);
-	if (controller_->CanPlay(player)) {
+	if (controller_->CanPlay(player) && controller_->CanAskForTruco()) {
 		word_truco_p1.ShowWindow(SW_SHOW);
 		SendMessageToParent(TRUCO);
 	}

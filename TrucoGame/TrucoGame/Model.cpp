@@ -54,9 +54,11 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()), first_player_(first_player) {
 	current_player_ = first_player;
 	current_truco_player_ = nullptr;
+	is_in_truco_state_ = false;
+	can_ask_for_truco_ = true;
 }
 
-void Model::Round::PlayCard(int card_index) {
+void Model::Round::PlayCard(int card_index, bool is_hidden) {
 	if (Bot* bot_ = dynamic_cast<Bot*>(current_player_)) {
 		if (discarded_cards_.size() > 0) {
 			bot_->SetChallengingCard(discarded_cards_[discarded_cards_.size() - 1]);
@@ -64,8 +66,9 @@ void Model::Round::PlayCard(int card_index) {
 	}
 
 	Card played_card = current_player_->PlayCard(card_index);
+	played_card.SetIsHidden(is_hidden);
 	discarded_cards_.push_back(played_card);
-	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
+	if (!is_hidden && (discarded_cards_.size() == 1 || IsBiggestCard(played_card))) {
 		current_winner_ = current_player_;
 	}
 
@@ -77,6 +80,8 @@ void Model::Round::PlayCard(int card_index) {
 			partner_player->IncreaseRoundScore();
 		}
 	}
+
+	can_ask_for_truco_ = true;
 }
 
 void Model::Round::Truco() {
@@ -88,6 +93,7 @@ void Model::Round::Truco() {
 
 void Model::Round::AcceptTruco() {
 	is_in_truco_state_ = false;
+	can_ask_for_truco_ = false;
 	current_truco_player_ = nullptr;
 }
 
@@ -115,6 +121,8 @@ void Model::Round::ClearRound(Player* new_player) {
 	discarded_cards_.clear();
 	first_player_ = new_player;
 	current_player_ = new_player;
+	is_in_truco_state_ = false;
+	can_ask_for_truco_ = true;
 }
 
 bool Model::Round::WasLastPlayer() const {
@@ -137,6 +145,9 @@ bool Model::Round::DidSomebodyWin() const {
 
 bool Model::Round::IsBiggestCard(Card current_card) const {
 	for (Card card : discarded_cards_) {
+		if (card.IsHidden()) {
+			continue;
+		}
 		if (card.IsBiggerThan(current_card)) {
 			return false;
 		}
@@ -194,8 +205,8 @@ void Model::HandRound::IncreaseScoreForWinner()
 	is_finished_ = true;
 }
 
-void Model::HandRound::PlayCard(int card_index) {
-	current_round_->PlayCard(card_index);
+void Model::HandRound::PlayCard(int card_index, bool is_hidden) {
+	current_round_->PlayCard(card_index, is_hidden);
 
 	if (current_round_->IsRoundFinished()) {
 		InitRound();
@@ -377,8 +388,8 @@ void Model::CheckHandRoundFinished() {
 	}
 }
 
-void Model::PlayCard(int card_index) {
-	current_hand_round_->PlayCard(card_index);
+void Model::PlayCard(int card_index, bool is_hidden) {
+	current_hand_round_->PlayCard(card_index, is_hidden);
 	CheckHandRoundFinished();
 }
 
