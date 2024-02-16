@@ -30,6 +30,8 @@ private:
 	CRect card1_rect, card2_rect, card3_rect;
 
 	int player_number_;
+	bool mao_de_onze_dialog_opened = false;
+	bool game_over_dialog_opened = false;
 	Controller* controller_;
 
 	void HideAnyTrucoImage();

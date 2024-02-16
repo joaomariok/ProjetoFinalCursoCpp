@@ -166,7 +166,8 @@ void CGamingView::OnPaint() {
 				if (i == 1) player1_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
 				if (i == 2) player2_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
 
-				if (playerScore >= 12) {
+				if (playerScore >= 12 && !game_over_dialog_opened) {
+					game_over_dialog_opened = true;
 					if (i == player_number_) {
 						AfxMessageBox(L"Parabéns! Você venceu o jogo!!");
 						EndDialog(0);
@@ -175,6 +176,7 @@ void CGamingView::OnPaint() {
 						AfxMessageBox(L"Que pena! Você perdeu o jogo...");
 						EndDialog(0);
 					}
+					game_over_dialog_opened = false;
 				}
 			}
 
@@ -182,7 +184,8 @@ void CGamingView::OnPaint() {
 			if (i == player_number_) {
 				//Is the current player, so it must to show its cards, except if it's a Mao de Ferro
 
-				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11) {
+				if (controller_->IsMaoDeOnze() && numberOfPlayers == 4 && player->GetScore() == 11 && !mao_de_onze_dialog_opened) {
+					mao_de_onze_dialog_opened = true;
 					if (Player* player = controller_->GetPlayer(i + 1)) { //Get its partner
 						std::vector<Card> partnerCards = player->GetHand();
 						if (partnerCards.size() == 3) {
@@ -196,6 +199,7 @@ void CGamingView::OnPaint() {
 								controller_->RunFromMaoDeOnze();
 						}
 					}
+					mao_de_onze_dialog_opened = false;
 				}
 				if (controller_->IsMaoDeFerro()) {
 					LoadCardBackAsset(&card_1, cards.size() > 0 ? &cards[0] : nullptr, false);
