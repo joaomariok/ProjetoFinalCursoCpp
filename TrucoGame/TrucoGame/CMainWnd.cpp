@@ -105,7 +105,7 @@ GameEvents CMainWnd::ExecuteBotDecisionMaking(Bot& bot) {
 			OnCustomMessage(QUIT, 0);
 		}
 	}
-	else if (!controller_->IsInTrucoState() && bot.AskTruco()) {
+	else if (!controller_->IsInTrucoState() && controller_->CanAskForTruco() && bot.AskTruco()) {
 		gameEvent = TRUCO;
 		OnCustomMessage(TRUCO, 0);
 	}
