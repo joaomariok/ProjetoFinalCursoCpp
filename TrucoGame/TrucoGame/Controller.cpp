@@ -23,28 +23,42 @@ void Controller::PlayCard(int card_index) {
 	model_->PlayCard(card_index);
 }
 
-bool Controller::LoadGame() {
+void Controller::ShowResponse(int response, std::string inputType) {
+	std::string message0 = "Erro ao " + inputType + " o jogo!";
+	std::string type1 = inputType == "salvar" ? "salvo" : "carregado";
+	std::string message1 = "Jogo " + type1 + " com sucesso!";
+	switch (response) {
+	case 0:
+		AfxMessageBox(CString(message0.c_str()));
+		break;
+	case 1:
+		AfxMessageBox(CString(message1.c_str()));
+		break;
+	case 2:
+		AfxMessageBox(L"Erro de E/S!");
+		break;
+	case 3:
+		AfxMessageBox(L"Erro de alocação de memória!");
+		break;
+	case 4:
+		AfxMessageBox(L"Erro de conversão de tipo!");
+		break;
+	case 5:
+		AfxMessageBox(L"Erro ao tentar abrir arquivo!");
+		break;
+	}
+}
+
+int Controller::LoadGame() {
 	Model tmp_model;
-	bool response = save_->LoadGame(tmp_model);
-	if (response) {
-		model_->Load(tmp_model);
-		AfxMessageBox(L"Jogo carregado com sucesso!");
-	}
-	else {
-		AfxMessageBox(L"Erro ao carregar o jogo!");
-	}
+	int response = save_->LoadGame(tmp_model);
+	ShowResponse(response, "carregar");
 	return response;
 }
 
-bool Controller::SaveGame() {
-	bool response = save_->SaveGame(*model_);
-	if (response) {
-		AfxMessageBox(L"Jogo salvo com sucesso!");
-	}
-	else {
-		AfxMessageBox(L"Erro ao salvar o jogo!");
-	}
-	return response;
+void Controller::SaveGame() {
+	int response = save_->SaveGame(*model_);
+	ShowResponse(response, "salvar");
 }
 
 void Controller::Trucar() {
