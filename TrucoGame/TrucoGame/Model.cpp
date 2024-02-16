@@ -68,7 +68,7 @@ void Model::Round::PlayCard(int card_index, bool is_hidden) {
 	Card played_card = current_player_->PlayCard(card_index);
 	played_card.SetIsHidden(is_hidden);
 	discarded_cards_.push_back(played_card);
-	if (discarded_cards_.size() == 1 || IsBiggestCard(played_card)) {
+	if (!is_hidden && (discarded_cards_.size() == 1 || IsBiggestCard(played_card))) {
 		current_winner_ = current_player_;
 	}
 
@@ -145,6 +145,9 @@ bool Model::Round::DidSomebodyWin() const {
 
 bool Model::Round::IsBiggestCard(Card current_card) const {
 	for (Card card : discarded_cards_) {
+		if (card.IsHidden()) {
+			continue;
+		}
 		if (card.IsBiggerThan(current_card)) {
 			return false;
 		}
