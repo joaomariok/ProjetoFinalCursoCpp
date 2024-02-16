@@ -225,6 +225,7 @@ void CGamingView::OnPaint() {
 		if (firstPlayerIndex > numberOfPlayers) firstPlayerIndex = 1;
 		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, true);
 	}
+	LoadCardAsset(&card_vira, controller_->GetVira());
 
 	/*PAINT ROUND STATUS*/
 	std::vector<Player*> winners = controller_->GetHandRoundWinners();
