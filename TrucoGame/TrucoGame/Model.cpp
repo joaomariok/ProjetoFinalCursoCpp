@@ -54,6 +54,8 @@ Model::Round::Round(std::vector<Player*>& players, Card* vira, Player* first_pla
 	players_(players), vira_(vira), discarded_cards_(std::vector<Card>()), first_player_(first_player) {
 	current_player_ = first_player;
 	current_truco_player_ = nullptr;
+	is_in_truco_state_ = false;
+	can_ask_for_truco_ = true;
 }
 
 void Model::Round::PlayCard(int card_index, bool is_hidden) {
@@ -78,6 +80,8 @@ void Model::Round::PlayCard(int card_index, bool is_hidden) {
 			partner_player->IncreaseRoundScore();
 		}
 	}
+
+	can_ask_for_truco_ = true;
 }
 
 void Model::Round::Truco() {
@@ -89,6 +93,7 @@ void Model::Round::Truco() {
 
 void Model::Round::AcceptTruco() {
 	is_in_truco_state_ = false;
+	can_ask_for_truco_ = false;
 	current_truco_player_ = nullptr;
 }
 
@@ -116,6 +121,8 @@ void Model::Round::ClearRound(Player* new_player) {
 	discarded_cards_.clear();
 	first_player_ = new_player;
 	current_player_ = new_player;
+	is_in_truco_state_ = false;
+	can_ask_for_truco_ = true;
 }
 
 bool Model::Round::WasLastPlayer() const {

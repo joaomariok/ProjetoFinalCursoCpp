@@ -34,6 +34,7 @@ public:
 	std::vector<Card> GetDiscardedCards();
 	bool IsPlayerTurn(Player* player) const;
 	bool IsInTrucoState() const;
+	bool CanAskForTruco() const;
 	bool CanRespondTruco(Player* player) const;
 	bool CanPlay(Player* player) const;
 	std::vector<Player*> GetHandRoundWinners();

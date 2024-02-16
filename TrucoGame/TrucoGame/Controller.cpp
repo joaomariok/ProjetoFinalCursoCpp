@@ -101,6 +101,11 @@ bool Controller::IsInTrucoState() const {
 	return current_round ? current_round->IsInTrucoState() : false;
 }
 
+bool Controller::CanAskForTruco() const {
+	Model::Round* current_round = model_->GetCurrentRound();
+	return current_round ? current_round->CanAskForTruco() : true;
+}
+
 bool Controller::CanRespondTruco(Player* player) const {
 	Model::Round* current_round = model_->GetCurrentRound();
 	return current_round ? current_round->CanRespondTruco(player) : false;

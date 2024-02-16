@@ -32,6 +32,7 @@ public:
 		void RunFromMaoDeOnze();
 		bool HasWinner() const;
 		bool IsInTrucoState() const { return is_in_truco_state_; }
+		bool CanAskForTruco() const { return can_ask_for_truco_; }
 		bool CanRespondTruco(Player* player) const;
 
 		Player* GetWinner() { return current_winner_; }
@@ -56,6 +57,7 @@ public:
 		Card* vira_;
 		Player* first_player_;
 		bool is_in_truco_state_ = false;
+		bool can_ask_for_truco_ = true;
 	};
 
 	class HandRound {
