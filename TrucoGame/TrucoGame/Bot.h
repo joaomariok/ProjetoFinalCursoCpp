@@ -23,6 +23,8 @@ public:
 	Card PlayCard(int card_index) override;
 	void SetHand(std::vector<Card>& new_hand) override;
 
+	~Bot() = default;
+
 private:
 	int percentage_to_ask_truco_;
 	int percentage_to_accept_truco_;

@@ -120,7 +120,7 @@ public:
 	~Model() = default;
 
 	void Init(std::string player_one_name, std::string player_two_name, bool has_four_players);
-	void Load(const Model& model);
+	void Load(Model* model);
 
 	void InitHandRound();
 	void ResetGame();
@@ -137,7 +137,8 @@ public:
 	Card* GetVira() const;
 	bool GetHasFourPlayers() const { return has_four_players_; }
 	void SetHasFourPlayers(bool has_four_players);
-	int GetCurrentRoundNumber() const { return current_hand_round_number_; }
+	int GetCurrentHandRoundNumber() const { return current_hand_round_number_; }
+	void SetCurrentHandRoundNumber(int current_hand_round_number) { current_hand_round_number_ = current_hand_round_number; }
 	int GetFirstPlayerIndex();
 	Model::HandRound* GetCurrentHandRound() { return current_hand_round_.get(); }
 	Model::Round* GetCurrentRound() { return current_hand_round_->GetCurrentRound(); }

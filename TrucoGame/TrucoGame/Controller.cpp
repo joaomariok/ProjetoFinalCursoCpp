@@ -25,26 +25,15 @@ void Controller::PlayCard(int card_index) {
 
 bool Controller::LoadGame() {
 	Model tmp_model;
-	bool response = save_->LoadGame(tmp_model);
-	if (response) {
-		model_->Load(tmp_model);
-		AfxMessageBox(L"Jogo carregado com sucesso!");
+	bool loaded = save_->LoadGame(&tmp_model);
+	if (loaded) {
+		model_->Load(&tmp_model);
 	}
-	else {
-		AfxMessageBox(L"Erro ao carregar o jogo!");
-	}
-	return response;
+	return loaded;
 }
 
 bool Controller::SaveGame() {
-	bool response = save_->SaveGame(*model_);
-	if (response) {
-		AfxMessageBox(L"Jogo salvo com sucesso!");
-	}
-	else {
-		AfxMessageBox(L"Erro ao salvar o jogo!");
-	}
-	return response;
+	return save_->SaveGame(*model_);
 }
 
 void Controller::Trucar() {

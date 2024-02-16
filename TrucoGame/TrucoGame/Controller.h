@@ -26,6 +26,7 @@ public:
 	void RunFromMaoDeOnze();
 	bool LoadGame();
 	bool SaveGame();
+	bool ThereIsALoad() { return save_->ThereIsALoad(); }
 	int GetPlayerScore(Player* player) { return player->GetScore(); }
 	int GetNumberOfPlayers() { return model_->GetHasFourPlayers() ? 4 : 2; }
 	Player* GetPlayer(int position) { return model_->GetPlayer(position); }

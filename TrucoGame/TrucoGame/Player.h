@@ -1,5 +1,6 @@
 #pragma once
 #include "Card.h"
+#include "SerializablePlayer.h"
 #include <vector>
 #include <string>
 
@@ -34,9 +35,10 @@ public:
 	int GetRoundScore() const { return round_score_; }
 	void ResetRoundScore() { round_score_ = 0; }
 
+	void DeserializePlayer(SerializablePlayer s_player);
+	SerializablePlayer SerializePlayer();
+
 	virtual ~Player();
-	/*void PrintHand();
-	void Truco();*/
 
 private:
 	int player_number_;

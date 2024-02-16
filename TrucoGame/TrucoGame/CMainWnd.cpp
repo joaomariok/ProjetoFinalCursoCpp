@@ -23,7 +23,6 @@ CMainWnd::CMainWnd() {
 	startButton.Create(_T("Jogar"), WS_CHILD | WS_VISIBLE, CRect(375, 470, 622, 500), this, 3);
 
 	loadGameButton.Create(_T("Carregar Jogo"), WS_CHILD | WS_VISIBLE, CRect(665, 470, 912, 500), this, 6);
-	//loadGameButton.EnableWindow(FALSE);
 
 	twoPlayersRBtn.Create(_T("2 jogadores"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(725, 340, 972, 360), this, 4);
 	fourPlayerRBtn.Create(_T("4 jogadores"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(725, 370, 972, 390), this, 5);
@@ -111,18 +110,25 @@ void CMainWnd::OnButtonClicked() {
 	std::string playerOneString(CW2A(playerOneName.GetString()));
 	std::string playerTwoString(CW2A(playerTwoName.GetString()));
 
-	controller_ = std::make_unique<Controller>(this);
+	if (!controller_)
+		controller_ = std::make_unique<Controller>(this);
 	controller_->Init(playerOneString, playerTwoString, hasFourPlayers);
 
 	InitGameViews();
 }
 
 void CMainWnd::OnLoadGameButtonClicked() {
-	// TODO: Checar se existe arquivo de save
-	controller_ = std::make_unique<Controller>(this);
-	bool response = controller_->LoadGame();
-	if (response) {
-		InitGameViews();
+	if (gamingView_1.GetSafeHwnd() != NULL || gamingView_2.GetSafeHwnd() != NULL) {
+		AfxMessageBox(L"Uma partida já foi iniciada nessa instância. Por favor reabra o programa para carregar um jogo salvo.");
+	}
+	else {
+		controller_ = std::make_unique<Controller>(this);
+		if (!controller_->ThereIsALoad()) {
+			AfxMessageBox(L"Não há um jogo salvo para carregar. Inicie um novo jogo e clique no botão Salvar.");
+		}
+		else if (controller_->LoadGame()) {
+			InitGameViews();
+		}
 	}
 }
 

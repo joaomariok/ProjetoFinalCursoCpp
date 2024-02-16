@@ -263,7 +263,7 @@ void CGamingView::OnBnClickedDesceBtn()
 		SendMessageToParent(CONTINUE);
 	}
 	else {
-		AfxMessageBox(L"Espere sua vez");
+		AfxMessageBox(L"Jogada inválida. Espere sua vez ou por um pedido de truco.");
 	}
 }
 
@@ -274,15 +274,17 @@ void CGamingView::OnBnClickedPassoBtn()
 		SendMessageToParent(QUIT);
 	}
 	else {
-		AfxMessageBox(L"Espere sua vez");
+		AfxMessageBox(L"Jogada inválida. Espere sua vez ou por um pedido de truco.");
 	}
 }
 
 void CGamingView::OnBnClickedSaveGameBtn()
 {
-	bool response = controller_->SaveGame();
-	if (!response) {
-		//Call dialog error
+	if (bool saved = controller_->SaveGame()) {
+		AfxMessageBox(L"Jogo salvo em 'C:/TrucoGame/save.txt'. Seu nome e pontuação serão mantidos mas as cartas desta rodada serão perdidas.");
+	}
+	else {
+		AfxMessageBox(L"Erro ao salvar o jogo.");
 	}
 }
 
