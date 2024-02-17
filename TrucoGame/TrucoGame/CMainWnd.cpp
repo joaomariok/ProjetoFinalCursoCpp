@@ -59,7 +59,7 @@ void CMainWnd::InitGameViews() {
 	startButton.EnableWindow(FALSE);
 
 	std::thread([&]() {
-		while (gamingView_1.IsWindowVisible() && gamingView_2.IsWindowVisible())
+		while (gamingView_1.IsWindowVisible() && gamingView_2.IsWindowVisible() && !controller_->IsGameFinished())
 		{
 			OutputDebugStringW(L"Starting Bot thread\n");
 
