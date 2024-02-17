@@ -9,7 +9,7 @@ Repositório para o projeto final do curso de C++
 
 ## Documentos
 * Documento de UML (ProjetoFinalCursoCpp\Documents\UML.pdf)
-* Documento de Requisitos (ProjetoFinalCursoCpp\Documents\?)
+* Documento de Requisitos (ProjetoFinalCursoCpp\Documents\Requisitos.pdf)
 
 ## Como buildar o projeto (Visual Studio 2022)
 * Clone o repositório
