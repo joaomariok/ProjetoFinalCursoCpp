@@ -147,6 +147,7 @@ public:
 	Model::Round* GetCurrentRound() { return current_hand_round_->GetCurrentRound(); }
 	bool IsMaoDeOnze() { return current_hand_round_->GetHandState() == HandRound::MAO_DE_ONZE; }
 	bool IsMaoDeFerro() { return current_hand_round_->GetHandState() == HandRound::MAO_DE_FERRO; }
+	bool IsGameFinished() const { return is_finished_; }
 
 private:
 	std::unique_ptr<HandRound> current_hand_round_ = nullptr;

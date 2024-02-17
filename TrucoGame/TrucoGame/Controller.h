@@ -46,6 +46,7 @@ public:
 	int GetCurrentRoundNumber();
 	bool IsMaoDeFerro() { return model_->IsMaoDeFerro(); }
 	bool IsMaoDeOnze() { return model_->IsMaoDeOnze(); }
+	bool IsGameFinished() { return model_->IsGameFinished(); }
 	void ShowResponse(int response, std::string inputType);
 
 private:
