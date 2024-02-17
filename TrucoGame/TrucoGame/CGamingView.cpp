@@ -197,6 +197,11 @@ void CGamingView::OnPaint() {
 	roundValue.Format(_T("%d"), controller_->GetCurrentHandValue());
 	round_value.SetText(roundValue);
 
+	/*PAINT CURRENT PLAYER MESSAGE*/
+	CString currentPlayerString(controller_->GetCurrentPlayer()->GetName().c_str());
+	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
+	current_player.SetText(currentPlayerString, RGB(255, 255, 255), 10, false, true);
+
 	/* PAINT ALL PLAYER CARDS */
 	int numberOfPlayers = controller_->GetNumberOfPlayers();
 	for (int i = 1; i <= numberOfPlayers; ++i)
@@ -273,11 +278,6 @@ void CGamingView::OnPaint() {
 			firstPlayerIndex = 1;
 		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, true);
 	}
-
-	/*PAINT CURRENT PLAYER MESSAGE*/
-	CString currentPlayerString(controller_->GetCurrentPlayer()->GetName().c_str());
-	currentPlayerString.Format(_T("Vez do jogador: %s"), currentPlayerString);
-	current_player.SetText(currentPlayerString, RGB(255, 255, 255), 10, false, true);
 
 	/*HIDE TRUCO WORDS*/
 	if (!controller_->IsInTrucoState()) {
