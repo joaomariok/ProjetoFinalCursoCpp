@@ -145,7 +145,7 @@ BOOL CGamingView::OnInitDialog() {
 		viewButton->SetFont(&font);
 
 	check_hide_card_btn.SetFont(&font);
-	
+
 	return TRUE;
 }
 
@@ -154,37 +154,39 @@ void CGamingView::OnPaint() {
 
 	/*PAINT VIRA*/
 	LoadCardAsset(&card_vira, controller_->GetVira());
+
+	/* PAINT PLAYER SCORE */
+	for (int i = 1; i <= 2; i++) {
+		Player* player = controller_->GetPlayer(i);
+		int playerScore = player->GetScore();
+		CString c_playerScore;
+		c_playerScore.Format(_T("%d"), playerScore);
+		if (i == 1) player1_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
+		if (i == 2) player2_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
+
+		if (playerScore >= 12 && !game_over_dialog_opened) {
+			CString title;
+			title.Format(_T("Jogador %d"), player_number_);
+			game_over_dialog_opened = true;
+
+			if (i == player_number_) {
+				MessageBox(L"Parabéns! Você venceu o jogo!!", title);
+			}
+			else {
+				MessageBox(L"Que pena! Você perdeu o jogo...", title);
+			}
+
+			EndDialog(0);
+			game_over_dialog_opened = false;
+		}
+	}
+
 	/* PAINT ALL PLAYER CARDS */
 	int numberOfPlayers = controller_->GetNumberOfPlayers();
 	for (int i = 1; i <= numberOfPlayers; ++i)
 	{
 		Player* player = controller_->GetPlayer(i);
 		if (player) {
-			/*PAINT PLAYER SCORE*/
-			if (i == 1 || i == 2) {
-				int playerScore = player->GetScore();
-				CString c_playerScore;
-				c_playerScore.Format(_T("%d"), playerScore);
-				if (i == 1) player1_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
-				if (i == 2) player2_score.SetText(c_playerScore, RGB(0, 0, 0), 10, false, true);
-
-				if (playerScore >= 12 && !game_over_dialog_opened) {
-					CString title;
-					title.Format(_T("Jogador %d"), player_number_);
-					game_over_dialog_opened = true;
-
-					if (i == player_number_) {
-						MessageBox(L"Parabéns! Você venceu o jogo!!", title);
-					}
-					else {
-						MessageBox(L"Que pena! Você perdeu o jogo...", title);
-					}
-
-					EndDialog(0);
-					game_over_dialog_opened = false;
-				}
-			}
-
 			std::vector<Card> cards = player->GetHand();
 			if (i == player_number_) {
 				//Is the current player, so it must to show its cards, except if it's a Mao de Ferro
@@ -199,7 +201,7 @@ void CGamingView::OnPaint() {
 					LoadCardAsset(&card_2, cards.size() > 1 ? &cards[1] : nullptr);
 					LoadCardAsset(&card_3, cards.size() > 2 ? &cards[2] : nullptr);
 				}
-				if (controller_->IsMaoDeOnze() && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0 && 
+				if (controller_->IsMaoDeOnze() && player->GetScore() == 11 && !mao_de_onze_dialog_opened && controller_->GetDiscardedCards().size() == 0 &&
 					cards.size() == 3 && mao_de_onze_last_hand_round_checked != controller_->GetCurrentHandRoundNumber()) {
 
 					mao_de_onze_last_hand_round_checked = controller_->GetCurrentHandRoundNumber();
@@ -556,7 +558,7 @@ void CGamingView::LoadCardAsset(CTransparentImage* cardComponent, Card* card, bo
 CString CGamingView::GetCardAssetPath(Card* card) {
 	if (card->IsHidden())
 		return  _T("Assets/CardBack.png");
-	
+
 	CString cardSuit, cardRank;
 
 	switch (card->GetSuit()) {
