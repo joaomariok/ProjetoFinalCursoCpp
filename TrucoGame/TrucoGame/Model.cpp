@@ -107,10 +107,8 @@ void Model::Round::RunFromTruco() {
 }
 
 void Model::Round::RunFromMaoDeOnze() {
-	if (players_.size() > 2)
+	if (players_.size() >= 2)
 		current_winner_ = players_[0]->GetScore() == WIN_POINTS - 1 ? players_[1] : players_[0];
-	else
-		current_winner_ = player_utils::GetNextPlayer(players_, current_player_);
 }
 
 bool Model::Round::HasWinner() const {
