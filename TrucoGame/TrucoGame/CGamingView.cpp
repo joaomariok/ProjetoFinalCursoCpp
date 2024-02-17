@@ -181,6 +181,22 @@ void CGamingView::OnPaint() {
 		}
 	}
 
+	/*PAINT ROUND STATUS*/
+	std::vector<Player*> winners = controller_->GetHandRoundWinners();
+	if (winners.size() > 0) {
+		score_1_img.LoadImage(winners[0]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+		if (winners.size() > 2) score_3_img.LoadImage(winners[2]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
+	}
+	else {
+		score_1_img.LoadImage(_T(""));
+		score_2_img.LoadImage(_T(""));
+		score_3_img.LoadImage(_T(""));
+	}
+	CString roundValue;
+	roundValue.Format(_T("%d"), controller_->GetCurrentHandValue());
+	round_value.SetText(roundValue);
+
 	/* PAINT ALL PLAYER CARDS */
 	int numberOfPlayers = controller_->GetNumberOfPlayers();
 	for (int i = 1; i <= numberOfPlayers; ++i)
@@ -257,22 +273,6 @@ void CGamingView::OnPaint() {
 			firstPlayerIndex = 1;
 		LoadCardAsset(GetRoundCardComponent(firstPlayerIndex++, numberOfPlayers), discardedCards.size() > 3 ? &discardedCards[3] : nullptr, true);
 	}
-
-	/*PAINT ROUND STATUS*/
-	std::vector<Player*> winners = controller_->GetHandRoundWinners();
-	if (winners.size() > 0) {
-		score_1_img.LoadImage(winners[0]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
-		if (winners.size() > 1) score_2_img.LoadImage(winners[1]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
-		if (winners.size() > 2) score_3_img.LoadImage(winners[2]->GetGroup() == Player::Group::GROUP_1 ? _T("Assets/Blue.png") : _T("Assets/Red.png"));
-	}
-	else {
-		score_1_img.LoadImage(_T(""));
-		score_2_img.LoadImage(_T(""));
-		score_3_img.LoadImage(_T(""));
-	}
-	CString roundValue;
-	roundValue.Format(_T("%d"), controller_->GetCurrentHandValue());
-	round_value.SetText(roundValue);
 
 	/*PAINT CURRENT PLAYER MESSAGE*/
 	CString currentPlayerString(controller_->GetCurrentPlayer()->GetName().c_str());
