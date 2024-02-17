@@ -7,6 +7,10 @@ Repositório para o projeto final do curso de C++
 - Matheus Barbosa
 - Thiago Freitas
 
+## Documentos
+* Documento de UML (ProjetoFinalCursoCpp\Documents\UML.pdf)
+* Documento de Requisitos (ProjetoFinalCursoCpp\Documents\?)
+
 ## Como buildar o projeto (Visual Studio 2022)
 * Clone o repositório
 * Abra a solution (ProjetoFinalCursoCpp\TrucoGame\TrucoGame.sln)
